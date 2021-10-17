@@ -1,0 +1,10 @@
+.Container {
+  align-items: center;
+  justify-content: space-evenly;
+  display: flex;
+  flex-direction: row;
+}
+
+.Text {
+  font-size: 12px;
+}
