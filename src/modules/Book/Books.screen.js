@@ -1,22 +1,23 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import BookList from "../Book/components/BookList.component";
 import XLSX from "xlsx";
 import Search from "../../core/Search/Search.component";
 import Legend from "../../core/Legend/Legend.component";
+import { getBooks, createBook, deleteBook } from "./Book.api";
 import { Typography, Box, Button, Tooltip } from "@mui/material";
+import { useSnackbar } from "notistack";
 import "fontsource-roboto";
 import "../Layout/Layout.css";
-// import { useAlert } from "../../hooks/useAlert";
 
 export default function BooksImport() {
   const [books, setBooks] = useState([]);
   const [search, setSearch] = useState("");
-  // const alert = useAlert();
+  const { enqueueSnackbar } = useSnackbar();
 
   const filteredBooks = useMemo(() => {
     if (!search) return books;
     return books.filter((elem) => {
-      const bookTitle = elem.name.toString().toLowerCase();
+      const bookTitle = elem.title.toString().toLowerCase();
       const bookAuthor = elem.author.toString().toLowerCase();
       return (
         bookTitle.includes(search.toString().toLowerCase()) ||
@@ -24,6 +25,14 @@ export default function BooksImport() {
       );
     });
   }, [search, books]);
+
+  useEffect(() => {
+    getBooks().payload.then((response) => setBooks(response.data));
+  }, []);
+
+  const handleErrorAlert = (variant) => () => {
+    enqueueSnackbar("Nu puteți incărca un fișier cu acest format", { variant });
+  };
 
   const getExtension = (file) => {
     const splittedFile = file.name.split(".");
@@ -39,7 +48,7 @@ export default function BooksImport() {
   const makeSet = (array) => {
     return array.filter(
       (v, i, a) =>
-        a.findIndex((t) => t.name === v.name && t.author === v.author) === i
+        a.findIndex((t) => t.title === v.title && t.author === v.author) === i
     );
   };
 
@@ -56,16 +65,16 @@ export default function BooksImport() {
 
       const fileData = XLSX.utils.sheet_to_json(workSheet, { header: 1 });
       let booksData = fileData.map((data) => ({
-        id: Math.random().toString(36).substr(2, 9),
-        name: data[0],
+        title: data[0],
         author: data[1],
         difficulty: data[2],
         points: data[3],
         isbn: data[4],
       }));
-      if (booksData[0].name === "Titlu") {
+      if (booksData[0].title === "Titlu") {
         booksData.shift();
       }
+      booksData.map((book) => createBook(book));
       booksData.push(...books);
       booksData = makeSet(booksData);
       setBooks(booksData);
@@ -73,12 +82,13 @@ export default function BooksImport() {
     if (file !== undefined && getExtension(file)) {
       reader.readAsBinaryString(file);
     } else {
-      // alert("error", "Nu puteți încărca un fișier de acest tip!", true);
-      // TODO: pop error alert
+      handleErrorAlert("error");
+      enqueueSnackbar("Nu puteți incărca un fișier cu acest format", "error");
     }
   };
 
   const handleDelete = (id) => {
+    deleteBook(id);
     const newBooks = books.filter((book) => book.id !== id);
     setBooks(newBooks);
   };

@@ -34,7 +34,7 @@ export default function Book({ book, onDelete }) {
             <MenuBookTwoToneIcon style={{ fill: colorByDifficulty() }} />
           </ListItemIcon>
           <ListItemText
-            primary={book.name}
+            primary={book.title}
             secondaryTypographyProps={{ style: { whiteSpace: "pre-wrap" } }}
             secondary={book.author + "\npunctaj: " + book.points}
           />
