@@ -15,7 +15,6 @@ import {
   IconButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import "./NavigationMenu.css";
 
 const drawerWidth = 240;
 const history = createBrowserHistory();
@@ -47,13 +46,12 @@ const MyToolbar = withStyles(styles)(({ classes, title, onMenuClick }) => (
       <Toolbar>
         <IconButton
           className={classes.menuButton}
-          color="inherit"
           aria-label="Menu"
           onClick={onMenuClick}
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" color="inherit" className={classes.flex}>
+        <Typography variant="h6" className={classes.flex}>
           {title}
         </Typography>
       </Toolbar>
@@ -105,9 +103,9 @@ const MyDrawer = withStyles(styles)(
   )
 );
 
-function NavigationMenu({ classes, variant, sections }) {
+function NavigationMenu({ classes, variant, sections, changePrimary }) {
   const [drawer, setDrawer] = useState(false);
-  const [title, setTitle] = useState("Prima pagina");
+  const [title, setTitle] = useState("");
 
   const toggleDrawer = () => {
     setDrawer(!drawer);
@@ -117,6 +115,7 @@ function NavigationMenu({ classes, variant, sections }) {
     setTitle(title);
     setDrawer(variant === "temporary" ? false : drawer);
     setDrawer(!drawer);
+    changePrimary();
   };
 
   return (

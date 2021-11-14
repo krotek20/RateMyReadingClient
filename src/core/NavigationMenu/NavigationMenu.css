@@ -1,9 +1,0 @@
-ul > a.active {
-  background: orange;
-  color: white;
-  transition: background-color 0.2s ease, padding 0.8s linear;
-}
-
-ul > a.active:hover {
-  background: #ee9b00;
-}

@@ -12,7 +12,7 @@ import {
 
 export default function Book({ book, onDelete }) {
   const colorByDifficulty = () => {
-    if (book.difficulty === "usor") return "#40916c";
+    if (book.difficulty === "incepator") return "#40916c";
     if (book.difficulty === "mediu") return "#fcbf49";
     if (book.difficulty === "greu") return "#ae2012";
   };

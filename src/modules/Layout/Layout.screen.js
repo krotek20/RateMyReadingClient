@@ -8,22 +8,22 @@ import DashBoard from "../DashBoard/DashBoard.screen";
 import AddQuestions from "../Question/Question.screen";
 import { CssBaseline } from "@mui/material";
 
-function Layout() {
+function Layout({ handleColorChange }) {
   const adminSections = [
     {
-      name: "Prima pagina",
+      name: "Prima pagină",
       href: "/",
       icon: <HomeIcon />,
       screen: <DashBoard />,
     },
     {
-      name: "Lista carti",
+      name: "Listă cărți",
       href: "/carti",
       icon: <BookIcon />,
       screen: <BooksImport />,
     },
     {
-      name: "Adauga intrebari",
+      name: "Adaugă întrebări",
       href: "/intrebari",
       icon: <QuestionIcon />,
       screen: <AddQuestions />,
@@ -32,7 +32,10 @@ function Layout() {
   return (
     <>
       <CssBaseline />
-      <NavigationMenu sections={adminSections} />
+      <NavigationMenu
+        sections={adminSections}
+        changePrimary={handleColorChange}
+      />
     </>
   );
 }

@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import AlertReducer from "./Alert/Alert";
+import QuestionReducer from "./Question/Question";
 
 export const store = configureStore({
   reducer: {
-    alert: AlertReducer,
+    question: QuestionReducer,
   },
 });

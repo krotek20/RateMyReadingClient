@@ -9,7 +9,7 @@ import { useSnackbar } from "notistack";
 import "fontsource-roboto";
 import "../Layout/Layout.css";
 
-export default function BooksImport() {
+function BooksImport() {
   const [books, setBooks] = useState([]);
   const [search, setSearch] = useState("");
   const { enqueueSnackbar } = useSnackbar();
@@ -28,10 +28,10 @@ export default function BooksImport() {
 
   useEffect(() => {
     getBooks().payload.then((response) => setBooks(response.data));
-  }, []);
+  }, [setBooks]);
 
-  const handleErrorAlert = (variant) => () => {
-    enqueueSnackbar("Nu puteți incărca un fișier cu acest format", { variant });
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, { variant });
   };
 
   const getExtension = (file) => {
@@ -74,16 +74,19 @@ export default function BooksImport() {
       if (booksData[0].title === "Titlu") {
         booksData.shift();
       }
-      booksData.map((book) => createBook(book));
+      booksData.map((book) =>
+        book.title !== undefined ? createBook(book) : undefined
+      );
       booksData.push(...books);
       booksData = makeSet(booksData);
       setBooks(booksData);
     };
+
     if (file !== undefined && getExtension(file)) {
       reader.readAsBinaryString(file);
+      handleAlert("success", "Cărțile au fost incărcate cu succes!");
     } else {
-      handleErrorAlert("error");
-      enqueueSnackbar("Nu puteți incărca un fișier cu acest format", "error");
+      handleAlert("error", "Nu puteți incărca un fișier cu acest format!");
     }
   };
 
@@ -91,6 +94,7 @@ export default function BooksImport() {
     deleteBook(id);
     const newBooks = books.filter((book) => book.id !== id);
     setBooks(newBooks);
+    handleAlert("success", "Cartea a fost ștearsă cu succes!");
   };
 
   return (
@@ -136,3 +140,5 @@ export default function BooksImport() {
     </>
   );
 }
+
+export default BooksImport;
