@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, TextField, Autocomplete, Button, Tooltip } from "@mui/material";
+import { Box, Button, Tooltip } from "@mui/material";
 import { getBooks } from "../Book/Book.api";
 import {
   getSavedQuestions,
@@ -15,7 +15,9 @@ import {
   removeAll,
 } from "../../redux/Question/Question";
 import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 import "./Question.css";
+import BookAutoComplete from "../../core/BookAutoComplete/BookAutoComplete.component";
 
 export default function AddQuestions() {
   const [books, setBooks] = useState([]);
@@ -23,10 +25,16 @@ export default function AddQuestions() {
   const questions = useSelector((state) => state.question.activeQuestions);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getBooks().payload.then((response) => setBooks(response.data));
-  }, [setBooks]);
+    getBooks()
+      .payload.then((response) => setBooks(response.data))
+      .catch((error) => {
+        console.log(error);
+        navigate("/login", { replace: true });
+      });
+  }, [setBooks, navigate]);
 
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, { variant });
@@ -41,11 +49,16 @@ export default function AddQuestions() {
     if (books.some((b) => b.id === book.id)) {
       setCurrentBookId(book.id);
       dispatch(removeAll());
-      getSavedQuestions(book.id, 1).payload.then((response) => {
-        for (const resp of response.data) {
-          dispatch(addQuestion(resp));
-        }
-      });
+      getSavedQuestions(book.id, 1)
+        .payload.then((response) => {
+          for (const resp of response.data) {
+            dispatch(addQuestion(resp));
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          navigate("/login", { replace: true });
+        });
     }
   };
 
@@ -54,6 +67,7 @@ export default function AddQuestions() {
       const newQuestion = {
         bookId: currentBookId,
         userId: 1,
+        type: 1,
         answer1: "",
         answer2: "",
         answer3: "",
@@ -62,9 +76,12 @@ export default function AddQuestions() {
         question: "",
         status: 0,
       };
-      createQuestion(newQuestion).payload.then((response) =>
-        dispatch(addQuestion(response.data))
-      );
+      createQuestion(newQuestion)
+        .payload.then((response) => dispatch(addQuestion(response.data)))
+        .catch((error) => {
+          console.log(error);
+          navigate("/login", { replace: true });
+        });
       handleAlert("success", "Întrebare adăugată cu succes!");
     } else {
       handleAlert(
@@ -93,7 +110,10 @@ export default function AddQuestions() {
   };
 
   const handleOnDelete = (id) => {
-    deleteQuestion(id);
+    deleteQuestion(id).payload.catch((error) => {
+      console.log(error);
+      navigate("/login", { replace: true });
+    });
     dispatch(removeQuestion(id));
     handleAlert("success", "Ștergere efectuată cu succes!");
   };
@@ -114,31 +134,19 @@ export default function AddQuestions() {
           "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
       }}
     >
-      <Autocomplete
-        id="grouped-demo"
-        options={books.sort(
-          (a, b) =>
-            -b.title
-              .charAt(0)
-              .toLowerCase()
-              .localeCompare(a.title.charAt(0).toLowerCase())
-        )}
-        groupBy={(option) => option.title.charAt(0)}
-        getOptionLabel={(option) => option.title}
-        sx={{ width: 300, marginTop: "10px" }}
-        renderInput={(params) => (
-          <TextField {...params} id="bookTextField" label="Alege carte" />
-        )}
-        onChange={(event, value) => handleBookSelection(value)}
-      />
-      {questions.map((question) => (
-        <QuestionItem
-          key={question.id}
-          question={question}
-          noOfActiveQuestions={questions.length}
-          onDelete={handleOnDelete}
-        />
-      ))}
+      <BookAutoComplete books={books} bookSelection={handleBookSelection} />
+      {currentBookId !== 0 ? (
+        questions.map((question) => (
+          <QuestionItem
+            key={question.id}
+            question={question}
+            noOfActiveQuestions={questions.length}
+            onDelete={handleOnDelete}
+          />
+        ))
+      ) : (
+        <></>
+      )}
       <Box
         sx={{
           padding: "10px",

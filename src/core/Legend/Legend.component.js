@@ -7,15 +7,19 @@ export default function Legend() {
     <div className="Container">
       <div className="Container">
         <CircleIcon sx={{ color: "#40916c", fontSize: "15px" }}></CircleIcon>
-        <p className="Text">Ușor</p>
+        <p className="Text">Începtător</p>
       </div>
       <div className="Container">
         <CircleIcon sx={{ color: "#fcbf49", fontSize: "15px" }}></CircleIcon>
-        <p className="Text">Mediu</p>
+        <p className="Text">Intermediar</p>
+      </div>
+      <div className="Container">
+        <CircleIcon sx={{ color: "#f3722c", fontSize: "15px" }}></CircleIcon>
+        <p className="Text">Avansat</p>
       </div>
       <div className="Container">
         <CircleIcon sx={{ color: "#ae2012", fontSize: "15px" }}></CircleIcon>
-        <p className="Text">Greu</p>
+        <p className="Text">Expert</p>
       </div>
     </div>
   );

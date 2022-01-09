@@ -6,6 +6,7 @@ import {
   FormControl,
   FormLabel,
   RadioGroup,
+  Typography,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { updateQuestion } from "../../redux/Question/Question";
@@ -47,24 +48,38 @@ export default function Answers({ labels, question }) {
   return (
     <FormControl
       sx={{
-        margin: "10px",
+        m: 1.2,
+        flex: 1,
       }}
     >
       <FormLabel component="legend">Răspunsuri</FormLabel>
       <RadioGroup aria-label="raspunsuri" name="radio-buttons-group">
         {labels.map((label) => (
-          <Box sx={{ margin: "10px" }} key={label}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              my: 1,
+              flex: 1,
+              alignItems: "center",
+            }}
+            key={label}
+          >
             <Radio {...controlProps(label)} />
-            <TextField
-              key={label}
-              id={label}
-              placeholder="Răspuns"
-              multiline
-              style={{ zIndex: "999", width: "80vw", maxWidth: 450 }}
-              defaultValue={question[label]}
-              inputProps={{ maxLength: 250 }}
-              onChange={handleAnswerChange}
-            />
+            {labels.length === 4 ? (
+              <TextField
+                key={label}
+                id={label}
+                placeholder="Răspuns"
+                multiline
+                style={{ zIndex: "999", width: "80vw", maxWidth: 450 }}
+                defaultValue={question[label]}
+                inputProps={{ maxLength: 250 }}
+                onChange={handleAnswerChange}
+              />
+            ) : (
+              <Typography>{label}</Typography>
+            )}
           </Box>
         ))}
       </RadioGroup>

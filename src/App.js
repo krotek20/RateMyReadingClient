@@ -8,6 +8,7 @@ import { store } from "./redux/store";
 import AppConfig from "./config/App.config.js";
 import Grid from "@mui/material/Grid";
 import axios from "axios";
+import { BrowserRouter } from "react-router-dom";
 axios.defaults.baseURL = AppConfig;
 
 const randomColor = () =>
@@ -28,9 +29,9 @@ const convertToDarken = (hex, percent) => {
 
   return (
     "#" +
-    (0 | ((1 << 8) + r * (1 - percent / 100))).toString(16).substr(1) +
-    (0 | ((1 << 8) + g * (1 - percent / 100))).toString(16).substr(1) +
-    (0 | ((1 << 8) + b * (1 - percent / 100))).toString(16).substr(1)
+    (0 | ((1 << 8) + r * (1 - percent / 100))).toString(16).substring(1) +
+    (0 | ((1 << 8) + g * (1 - percent / 100))).toString(16).substring(1) +
+    (0 | ((1 << 8) + b * (1 - percent / 100))).toString(16).substring(1)
   );
 };
 
@@ -46,6 +47,7 @@ const App = () => {
       createTheme({
         palette: {
           primary: { main: primary },
+          secondary: { main: darkenPrimary },
           text: { primary: darkenPrimary },
         },
       }),
@@ -72,7 +74,9 @@ const App = () => {
             style={{ minHeight: "100vh" }}
           >
             <Grid item xs={3}>
-              <Layout handleColorChange={setRandomPrimary} />
+              <BrowserRouter>
+                <Layout handleColorChange={setRandomPrimary} />
+              </BrowserRouter>
             </Grid>
           </Grid>
         </SnackbarProvider>

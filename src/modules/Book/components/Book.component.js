@@ -9,14 +9,9 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
+import { colorByDifficulty } from "../../../utils";
 
 export default function Book({ book, onDelete }) {
-  const colorByDifficulty = () => {
-    if (book.difficulty === "incepator") return "#40916c";
-    if (book.difficulty === "mediu") return "#fcbf49";
-    if (book.difficulty === "greu") return "#ae2012";
-  };
-
   return (
     <Tooltip title={`ISBN: ${book.isbn}`} arrow placement="left">
       <ListItem
@@ -31,7 +26,7 @@ export default function Book({ book, onDelete }) {
       >
         <ListItemButton>
           <ListItemIcon>
-            <MenuBookTwoToneIcon style={{ fill: colorByDifficulty() }} />
+            <MenuBookTwoToneIcon style={{ fill: colorByDifficulty(book) }} />
           </ListItemIcon>
           <ListItemText
             primary={book.title}

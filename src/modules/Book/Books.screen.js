@@ -8,11 +8,13 @@ import { Typography, Box, Button, Tooltip } from "@mui/material";
 import { useSnackbar } from "notistack";
 import "fontsource-roboto";
 import "../Layout/Layout.css";
+import { useNavigate } from "react-router-dom";
 
 function BooksImport() {
   const [books, setBooks] = useState([]);
   const [search, setSearch] = useState("");
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   const filteredBooks = useMemo(() => {
     if (!search) return books;
@@ -27,8 +29,13 @@ function BooksImport() {
   }, [search, books]);
 
   useEffect(() => {
-    getBooks().payload.then((response) => setBooks(response.data));
-  }, [setBooks]);
+    getBooks()
+      .payload.then((response) => setBooks(response.data))
+      .catch((error) => {
+        console.log(error);
+        navigate("/login", { replace: true });
+      });
+  }, [setBooks, navigate]);
 
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, { variant });
@@ -91,7 +98,7 @@ function BooksImport() {
   };
 
   const handleDelete = (id) => {
-    deleteBook(id);
+    deleteBook(id).payload.catch(() => navigate("/login", { replace: true }));
     const newBooks = books.filter((book) => book.id !== id);
     setBooks(newBooks);
     handleAlert("success", "Cartea a fost ștearsă cu succes!");
@@ -101,41 +108,42 @@ function BooksImport() {
     <>
       <Box
         sx={{
+          flex: 1,
           width: "100%",
           borderRadius: "10px",
           padding: "10px",
           maxWidth: 360,
           bgcolor: "white",
           alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
           zIndex: 10,
           boxShadow:
             "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
         }}
       >
-        <div className="app">
-          <Typography variant="h5">Lista cărților</Typography>
-          {books.length > 0 && (
-            <>
-              <Search
-                searchFunction={(e) => setSearch(e.target.value)}
-                text="Caută după titlu / autor"
-              />
-              <Legend />
-            </>
-          )}
-          <BookList books={filteredBooks} onDelete={handleDelete} />
-          <Tooltip title="Selecteaza un excel sau un csv" arrow>
-            <Button variant="contained" component="label">
-              Adaugă cărți
-              <input
-                type="file"
-                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/plain"
-                onChange={importExcel}
-                hidden
-              />
-            </Button>
-          </Tooltip>
-        </div>
+        <Typography variant="h5">Lista cărților</Typography>
+        {books.length > 0 && (
+          <>
+            <Search
+              searchFunction={(e) => setSearch(e.target.value)}
+              text="Caută după titlu / autor"
+            />
+            <Legend />
+          </>
+        )}
+        <BookList books={filteredBooks} onDelete={handleDelete} />
+        <Tooltip title="Selecteaza un excel sau un csv" arrow>
+          <Button variant="contained" component="label">
+            Adaugă cărți
+            <input
+              type="file"
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/plain"
+              onChange={importExcel}
+              hidden
+            />
+          </Button>
+        </Tooltip>
       </Box>
     </>
   );

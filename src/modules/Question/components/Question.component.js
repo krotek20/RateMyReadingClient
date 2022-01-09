@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, TextField, Tooltip, IconButton } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Tooltip,
+  IconButton,
+  Switch,
+  Typography,
+} from "@mui/material";
 import { useDispatch } from "react-redux";
 import { updateQuestion } from "../../../redux/Question/Question";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
@@ -14,6 +21,10 @@ export default function QuestionItem({
 
   const handleOnChange = (e) => {
     dispatch(updateQuestion({ ...question, question: e.target.value }));
+  };
+
+  const handleSwitchChange = (e) => {
+    dispatch(updateQuestion({ ...question, type: e.target.checked ? 0 : 1 }));
   };
 
   return (
@@ -72,9 +83,31 @@ export default function QuestionItem({
           multiline
         />
         <Answers
-          labels={[...Array(4).keys()].map((x) => "answer" + (x + 1))}
+          labels={
+            question.type === 0
+              ? ["Adevarat", "Fals"]
+              : [...Array(4).keys()].map((x) => "answer" + (x + 1))
+          }
           question={question}
         />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            mx: 2.5,
+            alignItems: "center",
+          }}
+        >
+          <Switch
+            checked={question.type === 0 ? true : false}
+            color="primary"
+            onChange={handleSwitchChange}
+          />
+          <Typography>
+            {question.type === 0 ? "Adevarat / Fals" : "4 răspunsuri"}
+          </Typography>
+        </Box>
       </Box>
     </Tooltip>
   );

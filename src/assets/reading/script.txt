@@ -1,0 +1,1 @@
+dir /b | findstr /v /i "\.txt$" > .\ImageReadingList.txt

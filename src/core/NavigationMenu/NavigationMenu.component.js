@@ -1,7 +1,6 @@
 import React, { useState, Fragment } from "react";
 import clsx from "clsx";
-import { Router, Route, NavLink } from "react-router-dom";
-import { createBrowserHistory } from "history";
+import { Route, NavLink, useNavigate, Routes } from "react-router-dom";
 import { withStyles } from "@mui/styles";
 import {
   AppBar,
@@ -13,11 +12,14 @@ import {
   ListItemText,
   ListItemIcon,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { logout } from "./Logout.api";
+import { unIndexedSections } from "../../utils";
 
 const drawerWidth = 240;
-const history = createBrowserHistory();
 
 const styles = (theme) => ({
   root: {
@@ -40,29 +42,38 @@ const styles = (theme) => ({
   },
 });
 
-const MyToolbar = withStyles(styles)(({ classes, title, onMenuClick }) => (
-  <Fragment>
-    <AppBar>
-      <Toolbar>
-        <IconButton
-          className={classes.menuButton}
-          aria-label="Menu"
-          onClick={onMenuClick}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" className={classes.flex}>
-          {title}
-        </Typography>
-      </Toolbar>
-    </AppBar>
-    <div className={classes.toolbarMargin} />
-  </Fragment>
-));
+const MyToolbar = withStyles(styles)(
+  ({ classes, title, onMenuClick, onLogoutClick }) => (
+    <Fragment>
+      <AppBar>
+        <Toolbar>
+          <Tooltip title="Meniu" arrow>
+            <IconButton
+              className={classes.menuButton}
+              aria-label="Menu"
+              onClick={onMenuClick}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Tooltip>
+          <Typography variant="h6" className={classes.flex}>
+            {title}
+          </Typography>
+          <Tooltip title="Deconectare" arrow>
+            <IconButton aria-label="Logout" onClick={() => onLogoutClick()}>
+              <LogoutIcon />
+            </IconButton>
+          </Tooltip>
+        </Toolbar>
+      </AppBar>
+      <div className={classes.toolbarMargin} />
+    </Fragment>
+  )
+);
 
 const MyDrawer = withStyles(styles)(
   ({ classes, variant, open, onClose, onItemClick, sections }) => (
-    <Router history={history}>
+    <>
       <Drawer
         variant={variant}
         open={open}
@@ -81,7 +92,6 @@ const MyDrawer = withStyles(styles)(
             <ListItem
               button
               key={index}
-              exact
               component={NavLink}
               to={href}
               onClick={onItemClick(name)}
@@ -92,20 +102,20 @@ const MyDrawer = withStyles(styles)(
           ))}
         </List>
       </Drawer>
-      <main>
-        {sections.map(({ href, screen }, index) => (
-          <Route key={index} exact path={href}>
-            {screen}
-          </Route>
-        ))}
-      </main>
-    </Router>
+      <Routes>
+        {[...sections, ...unIndexedSections].map(({ href, screen }, index) => {
+          console.log(href);
+          return <Route key={index} path={href} element={screen} />;
+        })}
+      </Routes>
+    </>
   )
 );
 
 function NavigationMenu({ classes, variant, sections, changePrimary }) {
   const [drawer, setDrawer] = useState(false);
   const [title, setTitle] = useState("");
+  const navigate = useNavigate();
 
   const toggleDrawer = () => {
     setDrawer(!drawer);
@@ -118,9 +128,18 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
     changePrimary();
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+
   return (
     <div className={classes.root}>
-      <MyToolbar title={title} onMenuClick={toggleDrawer} />
+      <MyToolbar
+        title={title}
+        onMenuClick={toggleDrawer}
+        onLogoutClick={handleLogout}
+      />
       <MyDrawer
         open={drawer}
         onClose={toggleDrawer}
