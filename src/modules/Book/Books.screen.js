@@ -31,8 +31,7 @@ function BooksImport() {
   useEffect(() => {
     getBooks()
       .payload.then((response) => setBooks(response.data))
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
         navigate("/login", { replace: true });
       });
   }, [setBooks, navigate]);
@@ -105,47 +104,45 @@ function BooksImport() {
   };
 
   return (
-    <>
-      <Box
-        sx={{
-          flex: 1,
-          width: "100%",
-          borderRadius: "10px",
-          padding: "10px",
-          maxWidth: 360,
-          bgcolor: "white",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          zIndex: 10,
-          boxShadow:
-            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-        }}
-      >
-        <Typography variant="h5">Lista cărților</Typography>
-        {books.length > 0 && (
-          <>
-            <Search
-              searchFunction={(e) => setSearch(e.target.value)}
-              text="Caută după titlu / autor"
-            />
-            <Legend />
-          </>
-        )}
-        <BookList books={filteredBooks} onDelete={handleDelete} />
-        <Tooltip title="Selecteaza un excel sau un csv" arrow>
-          <Button variant="contained" component="label">
-            Adaugă cărți
-            <input
-              type="file"
-              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/plain"
-              onChange={importExcel}
-              hidden
-            />
-          </Button>
-        </Tooltip>
-      </Box>
-    </>
+    <Box
+      sx={{
+        flex: 1,
+        width: "100%",
+        borderRadius: "10px",
+        padding: "10px",
+        maxWidth: 360,
+        bgcolor: "white",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        zIndex: 10,
+        boxShadow:
+          "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+      }}
+    >
+      <Typography variant="h5">Lista cărților</Typography>
+      {books.length > 0 && (
+        <>
+          <Search
+            searchFunction={(e) => setSearch(e.target.value)}
+            text="Caută după titlu / autor"
+          />
+          <Legend />
+        </>
+      )}
+      <BookList books={filteredBooks} onDelete={handleDelete} />
+      <Tooltip title="Selecteaza un excel sau un csv" arrow>
+        <Button variant="contained" component="label">
+          Adaugă cărți
+          <input
+            type="file"
+            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/plain"
+            onChange={importExcel}
+            hidden
+          />
+        </Button>
+      </Tooltip>
+    </Box>
   );
 }
 

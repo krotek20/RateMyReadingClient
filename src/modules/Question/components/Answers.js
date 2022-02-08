@@ -9,37 +9,33 @@ import {
   Typography,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { updateQuestion } from "../../redux/Question/Question";
+import { updateQuestion } from "../../../redux/Question/Question";
 
 export default function Answers({ labels, question }) {
-  const [selectedValue, setSelectedValue] = useState(
-    "answer" + question.correctAnswer
-  );
+  const [selectedValue, setSelectedValue] = useState(0);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
-    const correctAnswer = e.target.value;
-    setSelectedValue(correctAnswer);
+    setSelectedValue(e);
     dispatch(
       updateQuestion({
         ...question,
-        correctAnswer: parseInt(
-          correctAnswer.slice(correctAnswer.length - 1),
-          10
-        ),
+        correctAnswer: e,
       })
     );
   };
 
   const handleAnswerChange = (e) => {
-    dispatch(
-      updateQuestion({ ...question, [`${e.target.id}`]: e.target.value })
-    );
+    if (e.target.value !== "") {
+      dispatch(
+        updateQuestion({ ...question, [`${e.target.id}`]: e.target.value })
+      );
+    }
   };
 
-  const controlProps = (item) => ({
-    checked: selectedValue === item,
-    onChange: handleChange,
+  const controlProps = (item, index) => ({
+    checked: selectedValue === index,
+    onChange: () => handleChange(index),
     value: item,
     name: "color-radio-button-demo",
     inputProps: { "aria-label": item },
@@ -54,7 +50,7 @@ export default function Answers({ labels, question }) {
     >
       <FormLabel component="legend">Răspunsuri</FormLabel>
       <RadioGroup aria-label="raspunsuri" name="radio-buttons-group">
-        {labels.map((label) => (
+        {labels.map((label, index) => (
           <Box
             sx={{
               display: "flex",
@@ -65,17 +61,18 @@ export default function Answers({ labels, question }) {
             }}
             key={label}
           >
-            <Radio {...controlProps(label)} />
+            <Radio {...controlProps(label, index + 1)} />
             {labels.length === 4 ? (
               <TextField
                 key={label}
                 id={label}
                 placeholder="Răspuns"
                 multiline
-                style={{ zIndex: "999", width: "80vw", maxWidth: 450 }}
+                fullWidth
+                style={{ zIndex: "999", width: "80vw", maxWidth: 500 }}
                 defaultValue={question[label]}
                 inputProps={{ maxLength: 250 }}
-                onChange={handleAnswerChange}
+                onBlur={handleAnswerChange}
               />
             ) : (
               <Typography>{label}</Typography>

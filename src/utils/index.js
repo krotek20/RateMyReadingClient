@@ -1,10 +1,12 @@
 import BooksImport from "../modules/Book/Books.screen";
 import BookIcon from "@mui/icons-material/Book";
 import HomeIcon from "@mui/icons-material/Home";
-import QuestionIcon from "@mui/icons-material/QuestionAnswer";
+import QuizIcon from "@mui/icons-material/Quiz";
+import AddTaskIcon from "@mui/icons-material/AddTask";
 import DashBoard from "../modules/DashBoard/DashBoard.screen";
 import AddQuestions from "../modules/Question/Question.screen";
 import QuizScreen from "../modules/Quiz/QuizScreen";
+import QuestionApprovalScreen from "../modules/Question/QuestionApprovalScreen";
 
 const dashBoardScreen = {
   name: "Prima pagină",
@@ -23,13 +25,20 @@ const booksScreen = {
 const addQuestionsScreen = {
   name: "Adaugă întrebări",
   href: "intrebari",
-  icon: <QuestionIcon />,
+  icon: <QuizIcon />,
   screen: <AddQuestions />,
 };
 
 const quizScreen = {
-  href: "quiz",
+  href: "quiz/:quizId",
   screen: <QuizScreen />,
+};
+
+const approveQuestionsScreen = {
+  name: "Verifică întrebări",
+  href: "verifica_intrebare",
+  icon: <AddTaskIcon />,
+  screen: <QuestionApprovalScreen />,
 };
 
 export const childSections = [dashBoardScreen];
@@ -40,6 +49,7 @@ export const superAdminSections = [
   dashBoardScreen,
   booksScreen,
   addQuestionsScreen,
+  approveQuestionsScreen,
 ];
 
 export const unIndexedSections = [quizScreen];
@@ -147,8 +157,8 @@ export const avatarNames = [
 ];
 
 export const colorByDifficulty = (book) => {
-  if (book.difficulty === "incepator") return "#40916c";
-  if (book.difficulty === "intermediar") return "#fcbf49";
-  if (book.difficulty === "avansat") return "#f3722c";
-  if (book.difficulty === "expert") return "#ae2012";
+  if (book.difficulty === "incepator") return "#f4a261";
+  if (book.difficulty === "intermediar") return "#ffd166";
+  if (book.difficulty === "avansat") return "#99d98c";
+  if (book.difficulty === "expert") return "#06d6a0";
 };

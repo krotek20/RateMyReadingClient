@@ -1,15 +1,21 @@
 import axios from "axios";
 import { getAccessToken } from "axios-jwt";
 
-export const getSavedQuestions = (bookId, userId) => {
+export const getSavedQuestions = (bookId) => {
   return {
     type: "GET_SAVED_QUESTIONS",
-    payload: axios.get(
-      `/question/savedQuestions?bookId=${bookId}&userId=${userId}`,
-      {
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-      }
-    ),
+    payload: axios.get(`/question/savedQuestions?bookId=${bookId}`, {
+      headers: { Authorization: `Bearer ${getAccessToken()}` },
+    }),
+  };
+};
+
+export const getUnapprovedQuestions = () => {
+  return {
+    type: "GET_UNAPPROVED_QUESTIONS",
+    payload: axios.get(`/question/unapprovedQuestions`, {
+      headers: { Authorization: `Bearer ${getAccessToken()}` },
+    }),
   };
 };
 

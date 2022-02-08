@@ -18,6 +18,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { logout } from "./Logout.api";
 import { unIndexedSections } from "../../utils";
+import { getUnapprovedQuestions } from "../../modules/Question/Question.api";
 
 const drawerWidth = 240;
 
@@ -104,7 +105,6 @@ const MyDrawer = withStyles(styles)(
       </Drawer>
       <Routes>
         {[...sections, ...unIndexedSections].map(({ href, screen }, index) => {
-          console.log(href);
           return <Route key={index} path={href} element={screen} />;
         })}
       </Routes>

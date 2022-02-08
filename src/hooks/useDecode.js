@@ -1,11 +1,11 @@
 import { getAccessToken } from "axios-jwt";
-import jwt from "jwt-decode";
+import jwt_decode from "jwt-decode";
 
 export function useDecode() {
   const token = getAccessToken();
 
   function decode() {
-    return jwt(token);
+    return jwt_decode(token);
   }
 
   return decode;

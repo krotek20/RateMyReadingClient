@@ -10,13 +10,9 @@ import {
 import { useDispatch } from "react-redux";
 import { updateQuestion } from "../../../redux/Question/Question";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
-import Answers from "../../../core/QuestionAnswer/Answer.component";
+import Answers from "./Answers";
 
-export default function QuestionItem({
-  question,
-  noOfActiveQuestions,
-  onDelete,
-}) {
+export default function Question({ question, noOfActiveQuestions, onDelete }) {
   const dispatch = useDispatch();
 
   const handleOnChange = (e) => {
@@ -85,7 +81,7 @@ export default function QuestionItem({
         <Answers
           labels={
             question.type === 0
-              ? ["Adevarat", "Fals"]
+              ? ["Adevărat", "Fals"]
               : [...Array(4).keys()].map((x) => "answer" + (x + 1))
           }
           question={question}
@@ -94,18 +90,21 @@ export default function QuestionItem({
           sx={{
             display: "flex",
             flexDirection: "row",
-            justifyContent: "flex-start",
+            justifyContent: "center",
             mx: 2.5,
             alignItems: "center",
           }}
         >
+          <Typography color={`${question.type === 1 ? "secondary" : ""}`}>
+            4 răspunsuri
+          </Typography>
           <Switch
             checked={question.type === 0 ? true : false}
             color="primary"
             onChange={handleSwitchChange}
           />
-          <Typography>
-            {question.type === 0 ? "Adevarat / Fals" : "4 răspunsuri"}
+          <Typography color={`${question.type === 0 ? "secondary" : ""}`}>
+            Adevarat / Fals
           </Typography>
         </Box>
       </Box>

@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Tooltip, Typography, Box } from "@mui/material";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getBooks } from "../Book/Book.api";
 import "./DashBoard.scss";
 import BookAutoComplete from "../../core/BookAutoComplete/BookAutoComplete.component";
 import BookCard from "./components/BookCard";
 import { avatarNames } from "../../utils";
 import Legend from "../../core/Legend/Legend.component";
+import { quizGeneration } from "../Quiz/Quiz.api";
+import { getId } from "../Login/Login.api";
+import { useSnackbar } from "notistack";
+import { useDispatch } from "react-redux";
+import { addQuiz, removeQuiz } from "../../redux/Quiz/Quiz";
 
 const unselectedPalette = "?colors=e9ecef,dee2e6,adb5bd,6c757d,495057";
 
@@ -16,6 +21,8 @@ export default function DashBoard() {
   const avatarName =
     avatarNames[Math.floor(Math.random() * avatarNames.length)];
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getBooks()
@@ -25,6 +32,36 @@ export default function DashBoard() {
         navigate("/login", { replace: true });
       });
   }, [setBooks, navigate]);
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, { variant });
+  };
+
+  const generateQuiz = () => {
+    if (book !== null) {
+      getId()
+        .payload.then((res) => res.data)
+        .then((userId) =>
+          quizGeneration(book.id, userId)
+            .payload.then((res) => {
+              dispatch(removeQuiz());
+              if (res.status === 200) {
+                dispatch(addQuiz(res.data));
+              }
+              return res;
+            })
+            .then((res) => {
+              navigate(`quiz/${res.data.id}`);
+            })
+            .catch(() => {
+              handleAlert(
+                "error",
+                "Nu există suficiente întrebări pentru a începe un quiz pe această carte!"
+              );
+            })
+        );
+    }
+  };
 
   return (
     <Box className="container_first">
@@ -51,7 +88,7 @@ export default function DashBoard() {
           <Box sx={{ mt: 2 }}>
             <Tooltip title="START QUIZ" arrow>
               {book ? (
-                <Box component={NavLink} to="quiz">
+                <Box onClick={generateQuiz}>
                   <img
                     className="start_quiz_img_active"
                     src={`https://source.boringavatars.com/beam/100/${avatarName}/`}

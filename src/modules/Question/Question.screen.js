@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Tooltip } from "@mui/material";
+import { Box, Button, Tooltip, Typography } from "@mui/material";
 import { getBooks } from "../Book/Book.api";
 import {
   getSavedQuestions,
@@ -7,7 +7,7 @@ import {
   deleteQuestion,
   updateQuestion,
 } from "./Question.api";
-import QuestionItem from "./components/Question.component";
+import Question from "./components/Question";
 import { useSelector, useDispatch } from "react-redux";
 import {
   addQuestion,
@@ -18,6 +18,7 @@ import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import "./Question.css";
 import BookAutoComplete from "../../core/BookAutoComplete/BookAutoComplete.component";
+import { getId } from "../Login/Login.api";
 
 export default function AddQuestions() {
   const [books, setBooks] = useState([]);
@@ -31,8 +32,9 @@ export default function AddQuestions() {
     getBooks()
       .payload.then((response) => setBooks(response.data))
       .catch((error) => {
-        console.log(error);
-        navigate("/login", { replace: true });
+        if (error.response.status === 403) {
+          navigate("/login", { replace: true });
+        }
       });
   }, [setBooks, navigate]);
 
@@ -42,21 +44,20 @@ export default function AddQuestions() {
 
   const handleBookSelection = (book) => {
     if (book === null) {
-      setCurrentBookId(0);
       dispatch(removeAll());
+      setCurrentBookId(0);
       return;
     }
     if (books.some((b) => b.id === book.id)) {
-      setCurrentBookId(book.id);
       dispatch(removeAll());
-      getSavedQuestions(book.id, 1)
+      getSavedQuestions(book.id)
         .payload.then((response) => {
           for (const resp of response.data) {
             dispatch(addQuestion(resp));
           }
+          setCurrentBookId(book.id);
         })
         .catch((error) => {
-          console.log(error);
           navigate("/login", { replace: true });
         });
     }
@@ -76,11 +77,15 @@ export default function AddQuestions() {
         question: "",
         status: 0,
       };
-      createQuestion(newQuestion)
-        .payload.then((response) => dispatch(addQuestion(response.data)))
-        .catch((error) => {
-          console.log(error);
-          navigate("/login", { replace: true });
+      getId()
+        .payload.then((res) => res.data)
+        .then((userId) => (newQuestion.userId = userId))
+        .then(() => {
+          createQuestion(newQuestion)
+            .payload.then((response) => dispatch(addQuestion(response.data)))
+            .catch((error) => {
+              navigate("/login", { replace: true });
+            });
         });
       handleAlert("success", "Întrebare adăugată cu succes!");
     } else {
@@ -93,7 +98,13 @@ export default function AddQuestions() {
 
   const handleLocalSave = () => {
     if (questions.length >= 5 && currentBookId !== 0) {
-      questions.map((x) => updateQuestion(x));
+      questions.forEach((x) => {
+        if (x.question !== "") {
+          updateQuestion({ ...x, status: 0 }).payload.catch((error) => {
+            navigate("/login", { replace: true });
+          });
+        }
+      });
       handleAlert("success", "Salvare efectuată cu succes!");
     } else {
       handleAlert(
@@ -111,11 +122,54 @@ export default function AddQuestions() {
 
   const handleOnDelete = (id) => {
     deleteQuestion(id).payload.catch((error) => {
-      console.log(error);
       navigate("/login", { replace: true });
     });
     dispatch(removeQuestion(id));
     handleAlert("success", "Ștergere efectuată cu succes!");
+  };
+
+  const checkQuestion = (question) => {
+    if (question.question === null) return false;
+    if (question.answer1 === null) return false;
+    if (question.answer2 === null) return false;
+    if (
+      question.type === 1 &&
+      (question.answer3 === null || question.answer4 === null)
+    ) {
+      return false;
+    }
+    if (question.correctAnswer === null) return false;
+    return true;
+  };
+
+  const handleSendForValidation = () => {
+    if (questions.length >= 5 && currentBookId !== 0) {
+      for (let question of questions) {
+        if (question.type === 0) {
+          question = { ...question, answer1: "Adevarat", answer2: "Fals" };
+        }
+        if (!checkQuestion(question)) {
+          handleAlert("error", "Toate întrebările trebuie să fie completate");
+          return;
+        }
+      }
+      questions.forEach((x) => {
+        updateQuestion({ ...x, status: 1 }).payload.catch(() => {
+          navigate("/login", { replace: true });
+        });
+      });
+      handleAlert(
+        "success",
+        "Întrebările au fost trimise cu succes catre validare"
+      );
+      dispatch(removeAll());
+      setCurrentBookId(0);
+    } else {
+      handleAlert(
+        "error",
+        "Trebuie sa aveți o carte selectată pentru a salva întrebările!"
+      );
+    }
   };
 
   return (
@@ -135,9 +189,15 @@ export default function AddQuestions() {
       }}
     >
       <BookAutoComplete books={books} bookSelection={handleBookSelection} />
-      {currentBookId !== 0 ? (
+      <Box sx={{ mt: 2 }}>
+        <Typography sx={{ fontSize: 13 }}>
+          Puteți salva local întrebările create folosind
+        </Typography>
+      </Box>
+      <Typography sx={{ fontSize: 13 }}>CTRL + SHIFT + S</Typography>
+      {currentBookId !== 0 && questions.length !== 0 ? (
         questions.map((question) => (
-          <QuestionItem
+          <Question
             key={question.id}
             question={question}
             noOfActiveQuestions={questions.length}
@@ -159,7 +219,11 @@ export default function AddQuestions() {
           </Button>
         </Tooltip>
         <Tooltip title="Trimite întrebările compuse" arrow placement="top">
-          <Button variant="contained" size="medium">
+          <Button
+            variant="contained"
+            size="medium"
+            onClick={handleSendForValidation}
+          >
             Trimite
           </Button>
         </Tooltip>
