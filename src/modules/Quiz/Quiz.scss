@@ -1,6 +1,10 @@
 .container {
   flex: 1;
 
+  &_timeLimit {
+    text-align: center;
+  }
+
   &_question {
     border: 1px solid #ccc;
     border-radius: 10px;

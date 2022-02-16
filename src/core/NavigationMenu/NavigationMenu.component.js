@@ -18,7 +18,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { logout } from "./Logout.api";
 import { unIndexedSections } from "../../utils";
-import { getUnapprovedQuestions } from "../../modules/Question/Question.api";
 
 const drawerWidth = 240;
 

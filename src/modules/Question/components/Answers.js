@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { updateQuestion } from "../../../redux/Question/Question";
 
 export default function Answers({ labels, question }) {
-  const [selectedValue, setSelectedValue] = useState(0);
+  const [selectedValue, setSelectedValue] = useState(question.correctAnswer);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -28,7 +28,10 @@ export default function Answers({ labels, question }) {
   const handleAnswerChange = (e) => {
     if (e.target.value !== "") {
       dispatch(
-        updateQuestion({ ...question, [`${e.target.id}`]: e.target.value })
+        updateQuestion({
+          ...question,
+          [`${e.target.id}`]: e.target.value.trim(),
+        })
       );
     }
   };
@@ -69,7 +72,7 @@ export default function Answers({ labels, question }) {
                 placeholder="Răspuns"
                 multiline
                 fullWidth
-                style={{ zIndex: "999", width: "80vw", maxWidth: 500 }}
+                style={{ flex: 1, width: "80vw", maxWidth: 389 }}
                 defaultValue={question[label]}
                 inputProps={{ maxLength: 250 }}
                 onBlur={handleAnswerChange}

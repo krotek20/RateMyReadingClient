@@ -19,6 +19,15 @@ export const getUnapprovedQuestions = () => {
   };
 };
 
+export const getDeniedQuestions = () => {
+  return {
+    type: "GET_DENIED_QUESTIONS",
+    payload: axios.get(`/question/deniedQuestions`, {
+      headers: { Authorization: `Bearer ${getAccessToken()}` },
+    }),
+  };
+};
+
 export const getQuestion = (questionId) => {
   return {
     type: "GET_QUESTION",

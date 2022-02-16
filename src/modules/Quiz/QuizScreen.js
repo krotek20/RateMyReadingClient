@@ -1,13 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Tooltip, Button } from "@mui/material";
 import { useTheme } from "@mui/styles";
 import "./Quiz.scss";
 import Question from "./components/Question";
-import { selectedAnswers } from "./components/Question";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { quizSubmit } from "./Quiz.api";
+import { addQuizResult } from "../../redux/Quiz/QuizResult";
+import { useSnackbar } from "notistack";
+import { minTwoDigits } from "../../utils";
 
 export default function QuizScreen() {
+  const quiz = useSelector((state) => state.quiz);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const selectedAnswers = quiz.questions.map((x) =>
+    x.correctAnswer ? x.correctAnswer : ""
+  );
+
+  const calculateTimeLeft = () => {
+    const timeLimit = new Date(quiz.startDate);
+    timeLimit.setMinutes(timeLimit.getMinutes() + 25);
+    const currentTime = new Date();
+    let difference = +timeLimit - +currentTime;
+    let timeLeft = {};
+
+    if (difference > 0) {
+      timeLeft = {
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60),
+      };
+      return timeLeft;
+    }
+
+    return null;
+  };
+
   const [selectedQuestion, setSelectedQuestion] = useState(1);
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
   const theme = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateTimeLeft());
+      if (timeLeft === null) {
+        handleFinishQuiz();
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  });
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, { variant });
+  };
 
   const getTextColor = () => {
     const bgColor = theme.palette.secondary.main;
@@ -41,10 +89,58 @@ export default function QuizScreen() {
     }
   };
 
-  const handleFinishQuiz = () => {};
+  const handleFinishQuiz = () => {
+    let body = {};
+    body.quizId = quiz.id;
+    body.endDate = new Date();
+    body.questions = [];
+    for (const question of quiz.questions) {
+      body.questions.push({
+        questionId: question.id,
+        chosenAnswer:
+          question.correctAnswer !== undefined ? question.correctAnswer : -1,
+      });
+    }
+    quizSubmit(body)
+      .payload.then((res) => {
+        if (res.status === 200) {
+          dispatch(addQuizResult(res.data));
+        }
+        return Promise.resolve();
+      })
+      .then(() => {
+        navigate("finish");
+      })
+      .catch((err) => {
+        if (err.response.status === 500) {
+          handleAlert("error", "Acest chestionar a fost deja completat!");
+          navigate("/");
+        } else {
+          navigate("/login");
+        }
+      });
+  };
+
+  console.log(quiz);
 
   return (
     <Box className="container">
+      <Box className="container_timeLimit">
+        <Typography sx={{ fontSize: 25 }}>{quiz.book.title}</Typography>
+        <Typography
+          sx={{
+            fontSize: 20,
+            color:
+              timeLeft.minutes && timeLeft.minutes < 1 ? "#ee6c4d" : "#000",
+          }}
+        >
+          {timeLeft !== null
+            ? `Timp rămas: ${minTwoDigits(timeLeft.minutes)}:${minTwoDigits(
+                timeLeft.seconds
+              )}`
+            : `Timpul a expirat`}
+        </Typography>
+      </Box>
       <Box className="container_tab">
         <Typography color="secondary">Navigare printre întrebări</Typography>
         <Box className="container_navigation">
@@ -55,16 +151,16 @@ export default function QuizScreen() {
               onClick={() => handleNavigationClick(item + 1)}
               sx={{
                 bgcolor: `${
-                  selectedAnswers[item + 1] && item + 1 == selectedQuestion
+                  selectedAnswers[item] && item + 1 == selectedQuestion
                     ? "secondary.main"
-                    : selectedAnswers[item + 1]
+                    : selectedAnswers[item]
                     ? "primary.main"
                     : item + 1 == selectedQuestion
                     ? "secondary.main"
                     : "white"
                 }`,
                 color: `${
-                  selectedAnswers[item + 1] || item + 1 == selectedQuestion
+                  selectedAnswers[item] || item + 1 == selectedQuestion
                     ? getTextColor()
                     : "black"
                 }`,
@@ -79,7 +175,10 @@ export default function QuizScreen() {
           ))}
         </Box>
       </Box>
-      <Question questionIndex={selectedQuestion - 1} />
+      <Question
+        questionIndex={selectedQuestion - 1}
+        selectedAnswer={selectedAnswers[selectedQuestion - 1]}
+      />
       <Box
         sx={{
           display: "flex",
@@ -104,7 +203,9 @@ export default function QuizScreen() {
           <Button
             variant="contained"
             size="medium"
-            onClick={incrementQuestion}
+            onClick={
+              selectedQuestion < 5 ? incrementQuestion : handleFinishQuiz
+            }
             sx={{ m: 2 }}
           >
             {selectedQuestion < 5 ? "Următoare" : "Finalizează"}

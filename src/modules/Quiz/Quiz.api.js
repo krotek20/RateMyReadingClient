@@ -9,3 +9,12 @@ export const quizGeneration = (bookId, userId) => {
     }),
   };
 };
+
+export const quizSubmit = (body) => {
+  return {
+    type: "SUBMIT_QUIZ",
+    payload: axios.post("/quiz/submit", body, {
+      headers: { Authorization: `Bearer ${getAccessToken()}` },
+    }),
+  };
+};

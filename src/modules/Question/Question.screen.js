@@ -58,7 +58,9 @@ export default function AddQuestions() {
           setCurrentBookId(book.id);
         })
         .catch((error) => {
-          navigate("/login", { replace: true });
+          if (error.response.status === 403) {
+            navigate("/login", { replace: true });
+          }
         });
     }
   };
@@ -76,6 +78,7 @@ export default function AddQuestions() {
         correctAnswer: 0,
         question: "",
         status: 0,
+        pageNumber: null,
       };
       getId()
         .payload.then((res) => res.data)
@@ -84,7 +87,9 @@ export default function AddQuestions() {
           createQuestion(newQuestion)
             .payload.then((response) => dispatch(addQuestion(response.data)))
             .catch((error) => {
-              navigate("/login", { replace: true });
+              if (error.response.status === 403) {
+                navigate("/login", { replace: true });
+              }
             });
         });
       handleAlert("success", "Întrebare adăugată cu succes!");
@@ -100,8 +105,19 @@ export default function AddQuestions() {
     if (questions.length >= 5 && currentBookId !== 0) {
       questions.forEach((x) => {
         if (x.question !== "") {
+          if (x.type === 0) {
+            x = {
+              ...x,
+              answer1: "Adevărat",
+              answer2: "Fals",
+              answer3: "",
+              answer4: "",
+            };
+          }
           updateQuestion({ ...x, status: 0 }).payload.catch((error) => {
-            navigate("/login", { replace: true });
+            if (error.response.status === 403) {
+              navigate("/login", { replace: true });
+            }
           });
         }
       });
@@ -121,20 +137,28 @@ export default function AddQuestions() {
   };
 
   const handleOnDelete = (id) => {
-    deleteQuestion(id).payload.catch((error) => {
-      navigate("/login", { replace: true });
-    });
-    dispatch(removeQuestion(id));
-    handleAlert("success", "Ștergere efectuată cu succes!");
+    deleteQuestion(id)
+      .payload.then((res) => {
+        if (res.status === 200) {
+          dispatch(removeQuestion(id));
+          handleAlert("success", "Ștergere efectuată cu succes!");
+        }
+      })
+      .catch((error) => {
+        if (error.response.status === 403) {
+          navigate("/login", { replace: true });
+        }
+      });
   };
 
   const checkQuestion = (question) => {
     if (question.question === null) return false;
-    if (question.answer1 === null) return false;
-    if (question.answer2 === null) return false;
     if (
       question.type === 1 &&
-      (question.answer3 === null || question.answer4 === null)
+      (question.answer1 === null ||
+        question.answer2 === null ||
+        question.answer3 === null ||
+        question.answer4 === null)
     ) {
       return false;
     }
@@ -154,8 +178,10 @@ export default function AddQuestions() {
         }
       }
       questions.forEach((x) => {
-        updateQuestion({ ...x, status: 1 }).payload.catch(() => {
-          navigate("/login", { replace: true });
+        updateQuestion({ ...x, status: 1 }).payload.catch((error) => {
+          if (error.response.status === 403) {
+            navigate("/login", { replace: true });
+          }
         });
       });
       handleAlert(
@@ -175,12 +201,12 @@ export default function AddQuestions() {
   return (
     <Box
       sx={{
-        width: "100%",
+        flex: 1,
         borderRadius: "10px",
         padding: "10px",
-        bgcolor: "white",
+        bgcolor: "#f8f9fa",
         display: "flex",
-        maxWidth: 600,
+        maxWidth: 500,
         flexDirection: "column",
         alignItems: "center",
         zIndex: 10,
@@ -196,12 +222,13 @@ export default function AddQuestions() {
       </Box>
       <Typography sx={{ fontSize: 13 }}>CTRL + SHIFT + S</Typography>
       {currentBookId !== 0 && questions.length !== 0 ? (
-        questions.map((question) => (
+        questions.map((question, index) => (
           <Question
             key={question.id}
             question={question}
             noOfActiveQuestions={questions.length}
             onDelete={handleOnDelete}
+            counter={index + 1}
           />
         ))
       ) : (

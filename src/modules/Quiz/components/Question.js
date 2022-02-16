@@ -2,13 +2,13 @@ import React from "react";
 import "../Quiz.scss";
 import { Typography, Box } from "@mui/material";
 import Answers from "./Answers";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateAnswer } from "../../../redux/Quiz/Quiz";
 
-export const selectedAnswers = [...Array(5).keys()].map(() => "");
-
-export default function Question({ questionIndex }) {
+export default function Question({ questionIndex, selectedAnswer }) {
   const questions = useSelector((state) => state.quiz.questions);
-  console.log(questions);
+  const dispatch = useDispatch();
+
   return questions.length > 0 ? (
     <Box
       key={questionIndex}
@@ -19,14 +19,13 @@ export default function Question({ questionIndex }) {
         },
       }}
     >
-      <Typography variant="h6">{questions[questionIndex].question}</Typography>
+      <Typography variant="h6" sx={{ userSelect: "none" }}>
+        {questions[questionIndex].question}
+      </Typography>
       <Answers
         labels={
           questions[questionIndex].type === 0
-            ? [
-                questions[questionIndex].answer1,
-                questions[questionIndex].answer2,
-              ]
+            ? ["Adevărat", "Fals"]
             : [
                 questions[questionIndex].answer1,
                 questions[questionIndex].answer2,
@@ -34,10 +33,16 @@ export default function Question({ questionIndex }) {
                 questions[questionIndex].answer4,
               ]
         }
-        handleIsAnswered={(selectedAnswer) => {
-          selectedAnswers[questionIndex] = selectedAnswer;
+        handleIsAnswered={(chosenAnswer) => {
+          selectedAnswer = chosenAnswer;
+          dispatch(
+            updateAnswer({
+              questionId: questions[questionIndex].id,
+              correctAnswer: chosenAnswer,
+            })
+          );
         }}
-        selectedAnswer={selectedAnswers[questionIndex]}
+        selectedAnswer={selectedAnswer}
       />
     </Box>
   ) : (

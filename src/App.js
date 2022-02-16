@@ -9,6 +9,8 @@ import AppConfig from "./config/App.config.js";
 import Grid from "@mui/material/Grid";
 import axios from "axios";
 import { BrowserRouter } from "react-router-dom";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistStore } from "redux-persist";
 axios.defaults.baseURL = AppConfig;
 
 const randomColor = () =>
@@ -61,25 +63,29 @@ const App = () => {
     setDarkenPrimary(darkenColor);
   };
 
+  const persistor = persistStore(store);
+
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <SnackbarProvider TransitionComponent={Slide} dense>
-          <Grid
-            container
-            spacing={0}
-            direction="column"
-            alignItems="center"
-            justifyContent="center"
-            style={{ minHeight: "100vh" }}
-          >
-            <Grid item xs={3}>
-              <BrowserRouter>
-                <Layout handleColorChange={setRandomPrimary} />
-              </BrowserRouter>
+        <PersistGate loading={null} persistor={persistor}>
+          <SnackbarProvider TransitionComponent={Slide} dense>
+            <Grid
+              container
+              spacing={0}
+              direction="column"
+              alignItems="center"
+              justifyContent="center"
+              style={{ minHeight: "100vh" }}
+            >
+              <Grid item xs={3}>
+                <BrowserRouter>
+                  <Layout handleColorChange={setRandomPrimary} />
+                </BrowserRouter>
+              </Grid>
             </Grid>
-          </Grid>
-        </SnackbarProvider>
+          </SnackbarProvider>
+        </PersistGate>
       </Provider>
     </ThemeProvider>
   );

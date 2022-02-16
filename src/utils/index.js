@@ -2,11 +2,14 @@ import BooksImport from "../modules/Book/Books.screen";
 import BookIcon from "@mui/icons-material/Book";
 import HomeIcon from "@mui/icons-material/Home";
 import QuizIcon from "@mui/icons-material/Quiz";
+import EditIcon from "@mui/icons-material/Edit";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import DashBoard from "../modules/DashBoard/DashBoard.screen";
 import AddQuestions from "../modules/Question/Question.screen";
 import QuizScreen from "../modules/Quiz/QuizScreen";
-import QuestionApprovalScreen from "../modules/Question/QuestionApprovalScreen";
+import ApprovedQuestions from "../modules/Question/ApprovedQuestions.screen";
+import FinishScreen from "../modules/Finish/Finish.screen";
+import DeniedQuestions from "../modules/Question/DeniedQuestions.screen";
 
 const dashBoardScreen = {
   name: "Prima pagină",
@@ -34,11 +37,23 @@ const quizScreen = {
   screen: <QuizScreen />,
 };
 
-const approveQuestionsScreen = {
+const approvedQuestionsScreen = {
   name: "Verifică întrebări",
   href: "verifica_intrebare",
   icon: <AddTaskIcon />,
-  screen: <QuestionApprovalScreen />,
+  screen: <ApprovedQuestions />,
+};
+
+const deniedQuestionsScreen = {
+  name: "Editează întrebări",
+  href: "editeaza_intrebare",
+  icon: <EditIcon />,
+  screen: <DeniedQuestions />,
+};
+
+const finishScreen = {
+  href: "quiz/:quizId/finish",
+  screen: <FinishScreen />,
 };
 
 export const childSections = [dashBoardScreen];
@@ -49,10 +64,11 @@ export const superAdminSections = [
   dashBoardScreen,
   booksScreen,
   addQuestionsScreen,
-  approveQuestionsScreen,
+  approvedQuestionsScreen,
+  deniedQuestionsScreen,
 ];
 
-export const unIndexedSections = [quizScreen];
+export const unIndexedSections = [quizScreen, finishScreen];
 
 export const avatarNames = [
   "Mary Baker",
@@ -161,4 +177,8 @@ export const colorByDifficulty = (book) => {
   if (book.difficulty === "intermediar") return "#ffd166";
   if (book.difficulty === "avansat") return "#99d98c";
   if (book.difficulty === "expert") return "#06d6a0";
+};
+
+export const minTwoDigits = (n) => {
+  return (n < 10 ? "0" : "") + n;
 };

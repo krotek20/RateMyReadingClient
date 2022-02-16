@@ -8,21 +8,18 @@ import {
   Typography,
 } from "@mui/material";
 
-const answers = ["a", "b", "c", "d"];
-
 export default function Answers({ labels, handleIsAnswered, selectedAnswer }) {
   const [selectedValue, setSelectedValue] = useState(selectedAnswer);
 
-  const handleChange = (e) => {
-    const correctAnswer = e.target.value;
-    setSelectedValue(correctAnswer);
-    handleIsAnswered(correctAnswer);
-    selectedAnswer = correctAnswer;
+  const handleChange = (index) => {
+    setSelectedValue(index);
+    handleIsAnswered(index);
+    selectedAnswer = index;
   };
 
-  const controlProps = (item) => ({
-    checked: selectedValue === item,
-    onChange: handleChange,
+  const controlProps = (item, index) => ({
+    checked: selectedValue === index,
+    onChange: () => handleChange(index),
     value: item,
     name: "color-radio-button-demo",
     inputProps: { "aria-label": item },
@@ -50,9 +47,13 @@ export default function Answers({ labels, handleIsAnswered, selectedAnswer }) {
             }}
             key={label}
           >
-            <Typography>{answers[index]}.</Typography>
-            <Radio {...controlProps(label)} />
-            <Typography>{label}</Typography>
+            <Radio {...controlProps(label, index + 1)} />
+            <Typography
+              sx={{ fontSize: 18, cursor: "pointer", userSelect: "none" }}
+              onClick={() => handleChange(index + 1)}
+            >
+              {label}
+            </Typography>
           </Box>
         ))}
       </RadioGroup>

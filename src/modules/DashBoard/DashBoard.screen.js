@@ -28,8 +28,9 @@ export default function DashBoard() {
     getBooks()
       .payload.then((response) => setBooks(response.data))
       .catch((error) => {
-        console.log(error);
-        navigate("/login", { replace: true });
+        if (error.response.status === 403) {
+          navigate("/login", { replace: true });
+        }
       });
   }, [setBooks, navigate]);
 
@@ -53,11 +54,15 @@ export default function DashBoard() {
             .then((res) => {
               navigate(`quiz/${res.data.id}`);
             })
-            .catch(() => {
-              handleAlert(
-                "error",
-                "Nu există suficiente întrebări pentru a începe un quiz pe această carte!"
-              );
+            .catch((error) => {
+              if (error.response.status !== 403) {
+                handleAlert(
+                  "error",
+                  "Nu există suficiente întrebări pentru a începe un quiz pe această carte!"
+                );
+              } else {
+                navigate("/login");
+              }
             })
         );
     }

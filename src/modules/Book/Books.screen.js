@@ -9,6 +9,9 @@ import { useSnackbar } from "notistack";
 import "fontsource-roboto";
 import "../Layout/Layout.css";
 import { useNavigate } from "react-router-dom";
+import ConfirmDialog, {
+  confirmDialog,
+} from "../../core/Dialogs/ConfirmDialog.component";
 
 function BooksImport() {
   const [books, setBooks] = useState([]);
@@ -130,7 +133,15 @@ function BooksImport() {
           <Legend />
         </>
       )}
-      <BookList books={filteredBooks} onDelete={handleDelete} />
+      <BookList
+        books={filteredBooks}
+        onDelete={(id) =>
+          confirmDialog("Ești sigur că dorești să ștergi acestă carte?", () =>
+            handleDelete(id)
+          )
+        }
+      />
+      <ConfirmDialog />
       <Tooltip title="Selecteaza un excel sau un csv" arrow>
         <Button variant="contained" component="label">
           Adaugă cărți

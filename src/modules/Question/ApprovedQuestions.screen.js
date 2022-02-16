@@ -4,8 +4,11 @@ import { createQuestion, getUnapprovedQuestions } from "./Question.api";
 import { useNavigate } from "react-router-dom";
 import QuestionList from "./components/QuestionList";
 import { useSnackbar } from "notistack";
+import FormDialogPreview, {
+  formDialogPreview,
+} from "../../core/Dialogs/FormDialogPreview.component";
 
-export default function QuestionApprovalScreen() {
+export default function ApprovedQuestions() {
   const [questions, setQuestions] = useState([]);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -37,22 +40,36 @@ export default function QuestionApprovalScreen() {
           populateQuestionList.current();
         }
       })
-      .catch(() => {
-        navigate("/login", { replace: true });
+      .catch((error) => {
+        if (error.response.status === 403) {
+          navigate("/login", { replace: true });
+        }
       });
   };
 
   const handleDeny = (item) => {
-    createQuestion({ ...item, status: 0 })
+    createQuestion({ ...item, status: 3 })
       .payload.then((response) => {
         if (response.status === 200) {
           handleAlert("success", "Întrebarea a fost refuzată cu succes");
           populateQuestionList.current();
         }
       })
-      .catch(() => {
-        navigate("/login", { replace: true });
+      .catch((error) => {
+        if (error.response.status === 403) {
+          navigate("/login", { replace: true });
+        }
       });
+  };
+
+  const handleOpenDialog = (item) => {
+    formDialogPreview(
+      item.question,
+      item.book.title,
+      item.author.username,
+      () => handleApprove(item),
+      () => handleDeny(item.question)
+    );
   };
 
   return (
@@ -73,11 +90,14 @@ export default function QuestionApprovalScreen() {
       }}
     >
       <Typography variant="h5">Întrebări care necesită aprobare</Typography>
+      <Typography>Apasă pe o întrebare pentru a o vizualiza</Typography>
       <QuestionList
         questions={questions}
         onApprove={handleApprove}
         onDeny={handleDeny}
+        onOpenDialog={handleOpenDialog}
       />
+      <FormDialogPreview />
     </Box>
   );
 }
