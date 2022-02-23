@@ -79,7 +79,7 @@ export default function DashBoard() {
         >
           Selectează o carte și începe quiz-ul!
         </Typography>
-        <Legend />
+        <Legend onClick={() => {}} />
       </Box>
       <Box className="container_second">
         <Box

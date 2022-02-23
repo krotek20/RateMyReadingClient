@@ -93,7 +93,7 @@ const FormDialogPreview = () => {
           {question.type === 0 ? (
             <Box>
               {[...Array(2)].map((x, i) => (
-                <Box className={c.boxStyle}>
+                <Box className={c.boxStyle} key={i}>
                   <Radio disabled checked={question.correctAnswer === i + 1} />
                   <Typography
                     sx={{

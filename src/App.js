@@ -3,6 +3,8 @@ import Layout from "./modules/Layout/Layout.screen";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Provider } from "react-redux";
 import { SnackbarProvider } from "notistack";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import Slide from "@mui/material/Slide";
 import { store } from "./redux/store";
 import AppConfig from "./config/App.config.js";
@@ -70,20 +72,22 @@ const App = () => {
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <SnackbarProvider TransitionComponent={Slide} dense>
-            <Grid
-              container
-              spacing={0}
-              direction="column"
-              alignItems="center"
-              justifyContent="center"
-              style={{ minHeight: "100vh" }}
-            >
-              <Grid item xs={3}>
-                <BrowserRouter>
-                  <Layout handleColorChange={setRandomPrimary} />
-                </BrowserRouter>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Grid
+                container
+                spacing={0}
+                direction="column"
+                alignItems="center"
+                justifyContent="center"
+                style={{ minHeight: "100vh" }}
+              >
+                <Grid item xs={3}>
+                  <BrowserRouter>
+                    <Layout handleColorChange={setRandomPrimary} />
+                  </BrowserRouter>
+                </Grid>
               </Grid>
-            </Grid>
+            </LocalizationProvider>
           </SnackbarProvider>
         </PersistGate>
       </Provider>

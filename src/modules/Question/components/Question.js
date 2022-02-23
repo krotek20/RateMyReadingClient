@@ -61,7 +61,13 @@ export default function Question({
       }}
       title={
         noOfActiveQuestions > 5 ? (
-          <IconButton aria-label="delete" onClick={() => onDelete(question.id)}>
+          <IconButton
+            aria-label="delete"
+            onClick={() => {
+              console.log(question);
+              return onDelete(question.id);
+            }}
+          >
             <DeleteTwoToneIcon color="primary" />
           </IconButton>
         ) : (

@@ -5,6 +5,16 @@
   flex-direction: row;
 }
 
+.clickable {
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.clickable:hover {
+  transform: scale(1.1);
+}
+
 .Text {
   font-size: 12px;
   margin-left: 3px;

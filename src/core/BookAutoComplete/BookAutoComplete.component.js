@@ -8,11 +8,17 @@ import {
 } from "@mui/material";
 import MenuBookTwoToneIcon from "@mui/icons-material/MenuBookTwoTone";
 import { colorByDifficulty } from "../../utils";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentBook } from "../../redux/Book/CurrentBook";
 
 export default function BookAutoComplete({ books, bookSelection, difficulty }) {
+  const currentBook = useSelector((state) => state.currentBook);
+  const dispatch = useDispatch();
+
   return (
     <Autocomplete
       id="grouped-demo"
+      value={currentBook}
       options={books.sort(
         (a, b) =>
           -b.title
@@ -20,6 +26,7 @@ export default function BookAutoComplete({ books, bookSelection, difficulty }) {
             .toLowerCase()
             .localeCompare(a.title.charAt(0).toLowerCase())
       )}
+      isOptionEqualToValue={(option, value) => option.title === value.title}
       groupBy={(option) => option.title.charAt(0)}
       getOptionLabel={(option) => option.title}
       renderOption={(props, option) => (
@@ -49,7 +56,13 @@ export default function BookAutoComplete({ books, bookSelection, difficulty }) {
           color="primary"
         />
       )}
-      onChange={(event, value) => bookSelection(value)}
+      onChange={(event, value, reason) => {
+        if (reason === "clear") {
+          dispatch(setCurrentBook(null));
+        } else {
+          bookSelection(value);
+        }
+      }}
     />
   );
 }

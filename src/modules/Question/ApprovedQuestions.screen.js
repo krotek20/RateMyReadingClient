@@ -7,11 +7,18 @@ import { useSnackbar } from "notistack";
 import FormDialogPreview, {
   formDialogPreview,
 } from "../../core/Dialogs/FormDialogPreview.component";
+import { useDispatch } from "react-redux";
+import {
+  decrementUnapprovedQuestions,
+  incremenetDeniedQuestions,
+} from "../../redux/Badge/Badge";
 
 export default function ApprovedQuestions() {
   const [questions, setQuestions] = useState([]);
   const navigate = useNavigate();
+
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
 
   const populateQuestionList = useRef();
   populateQuestionList.current = () => {
@@ -37,6 +44,7 @@ export default function ApprovedQuestions() {
       .payload.then((response) => {
         if (response.status === 200) {
           handleAlert("success", "Întrebarea a fost acceptată cu succes");
+          dispatch(decrementUnapprovedQuestions());
           populateQuestionList.current();
         }
       })
@@ -52,6 +60,8 @@ export default function ApprovedQuestions() {
       .payload.then((response) => {
         if (response.status === 200) {
           handleAlert("success", "Întrebarea a fost refuzată cu succes");
+          dispatch(decrementUnapprovedQuestions());
+          dispatch(incremenetDeniedQuestions());
           populateQuestionList.current();
         }
       })

@@ -11,10 +11,14 @@ import { useSnackbar } from "notistack";
 import FormDialogEdit, {
   formDialogEdit,
 } from "../../core/Dialogs/FormDialogEdit.component";
+import { useDispatch } from "react-redux";
+import { decrementDeniedQuestions } from "../../redux/Badge/Badge";
 
 export default function DeniedQuestions() {
   const [questions, setQuestions] = useState([]);
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   const populateQuestionList = useRef();
@@ -41,6 +45,7 @@ export default function DeniedQuestions() {
       .payload.then((response) => {
         if (response.status === 200) {
           handleAlert("success", "Întrebarea a fost acceptată cu succes");
+          dispatch(decrementDeniedQuestions());
           populateQuestionList.current();
         }
       })
@@ -56,6 +61,7 @@ export default function DeniedQuestions() {
       .payload.then((res) => {
         if (res.status === 200) {
           handleAlert("success", "Ștergere efectuată cu succes!");
+          dispatch(decrementDeniedQuestions());
           populateQuestionList.current();
         }
       })

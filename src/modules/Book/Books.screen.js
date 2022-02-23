@@ -12,46 +12,61 @@ import { useNavigate } from "react-router-dom";
 import ConfirmDialog, {
   confirmDialog,
 } from "../../core/Dialogs/ConfirmDialog.component";
+import { localeIncludes, getExtension } from "../../utils";
 
 function BooksImport() {
   const [books, setBooks] = useState([]);
   const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("");
+
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const filteredBooks = useMemo(() => {
-    if (!search) return books;
+    if (!search && !filter) return books;
+    if (!search)
+      return books.filter((elem) =>
+        localeIncludes(elem.difficulty, filter, {
+          usage: "search",
+          sensitivity: "base",
+        })
+      );
     return books.filter((elem) => {
+      if (
+        filter &&
+        !localeIncludes(elem.difficulty, filter, {
+          usage: "search",
+          sensitivity: "base",
+        })
+      )
+        return false;
       const bookTitle = elem.title.toString().toLowerCase();
       const bookAuthor = elem.author.toString().toLowerCase();
       return (
-        bookTitle.includes(search.toString().toLowerCase()) ||
-        bookAuthor.includes(search.toString().toLowerCase())
+        localeIncludes(bookTitle, search.toString().toLowerCase(), {
+          usage: "search",
+          sensitivity: "base",
+        }) ||
+        localeIncludes(bookAuthor, search.toString().toLowerCase(), {
+          usage: "search",
+          sensitivity: "base",
+        })
       );
     });
-  }, [search, books]);
+  }, [search, filter, books]);
 
   useEffect(() => {
     getBooks()
       .payload.then((response) => setBooks(response.data))
-      .catch(() => {
-        navigate("/login", { replace: true });
+      .catch((error) => {
+        if (error.response.status === 403) {
+          navigate("/login", { replace: true });
+        }
       });
   }, [setBooks, navigate]);
 
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, { variant });
-  };
-
-  const getExtension = (file) => {
-    const splittedFile = file.name.split(".");
-    const extension = splittedFile[splittedFile.length - 1];
-    return (
-      extension === "xlsx" ||
-      extension === "xls" ||
-      extension === "txt" ||
-      extension === "csv"
-    );
   };
 
   const makeSet = (array) => {
@@ -61,7 +76,7 @@ function BooksImport() {
     );
   };
 
-  const importExcel = (e) => {
+  const handleImportExcel = (e) => {
     const file = e.target.files[0];
 
     const reader = new FileReader();
@@ -123,14 +138,19 @@ function BooksImport() {
           "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
       }}
     >
-      <Typography variant="h5">Lista cărților</Typography>
+      <Typography variant="h5" color="secondary.main">
+        Lista cărților
+      </Typography>
       {books.length > 0 && (
         <>
           <Search
             searchFunction={(e) => setSearch(e.target.value)}
             text="Caută după titlu / autor"
           />
-          <Legend />
+          <Typography fontSize={13} color="secondary.main">
+            Apasă pe un nivel de dificultate pentru filtrare
+          </Typography>
+          <Legend onClick={(e) => setFilter(filter === e ? "" : e)} clickable />
         </>
       )}
       <BookList
@@ -148,7 +168,7 @@ function BooksImport() {
           <input
             type="file"
             accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/plain"
-            onChange={importExcel}
+            onChange={handleImportExcel}
             hidden
           />
         </Button>

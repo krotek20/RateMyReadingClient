@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect, useMemo, Fragment } from "react";
 import clsx from "clsx";
 import { Route, NavLink, useNavigate, Routes } from "react-router-dom";
 import { withStyles } from "@mui/styles";
@@ -8,16 +8,34 @@ import {
   Typography,
   Drawer,
   List,
-  ListItem,
   ListItemText,
   ListItemIcon,
   IconButton,
   Tooltip,
+  Divider,
+  ListItemButton,
+  Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { logout } from "./Logout.api";
-import { unIndexedSections } from "../../utils";
+import {
+  getNoOfDeniedQuestions,
+  getNoOfUnapprovedQuestions,
+  getTextColor,
+  unIndexedSections,
+} from "../../utils";
+import create from "zustand";
+import { useTheme } from "@mui/styles";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setDeniedQuestions,
+  setUnapprovedQuestions,
+} from "../../redux/Badge/Badge";
+
+const useDrawerStore = create(() => ({
+  selected: 0,
+}));
 
 const drawerWidth = 240;
 
@@ -43,7 +61,14 @@ const styles = (theme) => ({
 });
 
 const MyToolbar = withStyles(styles)(
-  ({ classes, title, onMenuClick, onLogoutClick }) => (
+  ({
+    classes,
+    title,
+    onMenuClick,
+    onLogoutClick,
+    bgColor,
+    noOfPendingQuestions,
+  }) => (
     <Fragment>
       <AppBar>
         <Toolbar>
@@ -53,7 +78,9 @@ const MyToolbar = withStyles(styles)(
               aria-label="Menu"
               onClick={onMenuClick}
             >
-              <MenuIcon />
+              <Badge badgeContent={noOfPendingQuestions} color="error">
+                <MenuIcon style={{ fill: getTextColor(bgColor) }} />
+              </Badge>
             </IconButton>
           </Tooltip>
           <Typography variant="h6" className={classes.flex}>
@@ -61,7 +88,7 @@ const MyToolbar = withStyles(styles)(
           </Typography>
           <Tooltip title="Deconectare" arrow>
             <IconButton aria-label="Logout" onClick={() => onLogoutClick()}>
-              <LogoutIcon />
+              <LogoutIcon style={{ fill: getTextColor(bgColor) }} />
             </IconButton>
           </Tooltip>
         </Toolbar>
@@ -72,7 +99,16 @@ const MyToolbar = withStyles(styles)(
 );
 
 const MyDrawer = withStyles(styles)(
-  ({ classes, variant, open, onClose, onItemClick, sections }) => (
+  ({
+    classes,
+    variant,
+    open,
+    onClose,
+    onItemClick,
+    sections,
+    noOfDeniedQuestions,
+    noOfUnapprovedQuestions,
+  }) => (
     <>
       <Drawer
         variant={variant}
@@ -87,23 +123,41 @@ const MyDrawer = withStyles(styles)(
             [classes.toolbarMargin]: variant === "persistent",
           })}
         />
-        <List>
-          {sections.map(({ name, href, icon }, index) => (
-            <ListItem
-              button
-              key={index}
-              component={NavLink}
-              to={href}
-              onClick={onItemClick(name)}
-            >
-              <ListItemIcon>{icon}</ListItemIcon>
-              <ListItemText primary={name} />
-            </ListItem>
-          ))}
+        <List component="nav">
+          {sections.map(({ name, href, icon }, index) =>
+            href === "divider" ? (
+              <Divider key={index} />
+            ) : (
+              <ListItemButton
+                key={index}
+                component={NavLink}
+                to={href}
+                selected={useDrawerStore().selected === index}
+                onClick={onItemClick(name, index)}
+              >
+                <ListItemIcon>
+                  <Badge
+                    badgeContent={
+                      href === "intrebari/verifica"
+                        ? noOfUnapprovedQuestions
+                        : href === "intrebari/editeaza"
+                        ? noOfDeniedQuestions
+                        : 0
+                    }
+                    color="error"
+                  >
+                    {icon}
+                  </Badge>
+                </ListItemIcon>
+                <ListItemText primary={name} />
+              </ListItemButton>
+            )
+          )}
         </List>
       </Drawer>
       <Routes>
         {[...sections, ...unIndexedSections].map(({ href, screen }, index) => {
+          if (href === "divider") return null;
           return <Route key={index} path={href} element={screen} />;
         })}
       </Routes>
@@ -114,14 +168,25 @@ const MyDrawer = withStyles(styles)(
 function NavigationMenu({ classes, variant, sections, changePrimary }) {
   const [drawer, setDrawer] = useState(false);
   const [title, setTitle] = useState("");
+
+  const noOfDeniedQuestions = useSelector(
+    (state) => state.badge.noOfDeniedQuestions
+  );
+  const noOfUnapprovedQuestions = useSelector(
+    (state) => state.badge.noOfUnapprovedQuestions
+  );
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const toggleDrawer = () => {
     setDrawer(!drawer);
   };
 
-  const onItemClick = (title) => () => {
+  const onItemClick = (title, index) => () => {
     setTitle(title);
+    useDrawerStore.setState({ selected: index });
     setDrawer(variant === "temporary" ? false : drawer);
     setDrawer(!drawer);
     changePrimary();
@@ -132,12 +197,27 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
     navigate("/login", { replace: true });
   };
 
+  useEffect(() => {
+    getNoOfDeniedQuestions().then((res1) => {
+      dispatch(setDeniedQuestions(res1));
+      getNoOfUnapprovedQuestions().then((res2) => {
+        dispatch(setUnapprovedQuestions(res2));
+      });
+    });
+  }, []);
+
+  const noOfQuestions = useMemo(() => {
+    return noOfDeniedQuestions + noOfUnapprovedQuestions;
+  }, [noOfDeniedQuestions, noOfUnapprovedQuestions]);
+
   return (
     <div className={classes.root}>
       <MyToolbar
         title={title}
         onMenuClick={toggleDrawer}
         onLogoutClick={handleLogout}
+        bgColor={theme.palette.primary.main}
+        noOfPendingQuestions={noOfQuestions}
       />
       <MyDrawer
         open={drawer}
@@ -145,6 +225,8 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
         onItemClick={onItemClick}
         variant={variant}
         sections={sections}
+        noOfDeniedQuestions={noOfDeniedQuestions}
+        noOfUnapprovedQuestions={noOfUnapprovedQuestions}
       />
     </div>
   );

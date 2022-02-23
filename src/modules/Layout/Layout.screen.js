@@ -4,7 +4,11 @@ import { Routes, Navigate, Route } from "react-router-dom";
 import "./Layout.css";
 import RoleEnsurer from "./RoleEnsurer.route";
 import NavigationMenu from "../../core/NavigationMenu/NavigationMenu.component";
-import { superAdminSections, childSections } from "../../utils";
+import {
+  superAdminSections,
+  childSections,
+  contributorSections,
+} from "../../utils";
 
 function Layout({ handleColorChange }) {
   return (
@@ -27,6 +31,17 @@ function Layout({ handleColorChange }) {
           <RoleEnsurer roles={["ROLE_STUDENT"]}>
             <NavigationMenu
               sections={childSections}
+              changePrimary={handleColorChange}
+            />
+          </RoleEnsurer>
+        }
+      />
+      <Route
+        path="contributor/*"
+        element={
+          <RoleEnsurer roles={["ROLE_CONTRIBUTOR"]}>
+            <NavigationMenu
+              sections={contributorSections}
               changePrimary={handleColorChange}
             />
           </RoleEnsurer>

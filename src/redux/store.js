@@ -6,11 +6,15 @@ import { combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
 import thunk from "redux-thunk";
 import QuizResultReducer from "./Quiz/QuizResult";
+import BadgeReducer from "./Badge/Badge";
+import CurrentBookReducer from "./Book/CurrentBook";
 
 const reducers = combineReducers({
   question: QuestionReducer,
   quiz: QuizReducer,
   quizResult: QuizResultReducer,
+  badge: BadgeReducer,
+  currentBook: CurrentBookReducer,
 });
 
 const persistConfig = {
