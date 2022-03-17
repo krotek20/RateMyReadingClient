@@ -9,7 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: caravanalecturiireact
-      PROJECT_ID: caravana-lecturii-330311
+      ARTIFACT_REPO: react-docker-repo
+      PROJECT_ID: ${{ GCP_PROJECT_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -36,7 +37,13 @@ jobs:
         env:
           GIT_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
         run: |-
-          docker tag $IMAGE_NAME:latest europe-central2-docker.pkg.dev/$PROJECT_ID/react-docker-repo/$IMAGE_NAME:latest
-          docker tag $IMAGE_NAME:latest europe-central2-docker.pkg.dev/$PROJECT_ID/react-docker-repo/$IMAGE_NAME:$GIT_TAG
-          docker push europe-central2-docker.pkg.dev/$PROJECT_ID/react-docker-repo/$IMAGE_NAME:latest
-          docker push europe-central2-docker.pkg.dev/$PROJECT_ID/react-docker-repo/$IMAGE_NAME:$GIT_TAG
+          docker tag $IMAGE_NAME:latest europe-central2-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPO/$IMAGE_NAME:latest
+          docker tag $IMAGE_NAME:latest europe-central2-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPO/$IMAGE_NAME:$GIT_TAG
+          docker push europe-central2-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPO/$IMAGE_NAME:latest
+          docker push europe-central2-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPO/$IMAGE_NAME:$GIT_TAG
+
+      - id: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v0
+        with:
+          service: caravanalecturiireact
+          image: europe-central2-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPO/$IMAGE_NAME:$GIT_TAG
