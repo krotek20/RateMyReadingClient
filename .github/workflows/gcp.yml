@@ -46,6 +46,8 @@ jobs:
       - name: Deploy to Cloud Run
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v0
+        env:
+          GIT_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
         with:
           service: caravanalecturiireact
           image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}:${{ env.GIT_TAG }}
