@@ -49,3 +49,9 @@ jobs:
           service: caravanalecturiireact
           image: europe-central2-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPO/$IMAGE_NAME:$GIT_TAG
           region: europe-central2
+          project_id: $PROJECT_ID
+          secrets: |
+            PROJECT_ID: $PROJECT_ID
+            ARTIFACT_REPO: $ARTIFACT_REPO
+            IMAGE_NAME: $IMAGE_NAME
+            GIT_TAG: $GIT_TAG
