@@ -32,6 +32,8 @@ import {
   setDeniedQuestions,
   setUnapprovedQuestions,
 } from "../../redux/Badge/Badge";
+import { setCurrentBook } from "../../redux/Book/CurrentBook";
+import { useDecode } from "../../hooks/useDecode";
 
 const useDrawerStore = create(() => ({
   selected: 0,
@@ -41,7 +43,12 @@ const drawerWidth = 240;
 
 const styles = (theme) => ({
   root: {
-    flexGrow: 1,
+    flex: 1,
+    padding: "15px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   flex: {
     flex: 1,
@@ -68,9 +75,10 @@ const MyToolbar = withStyles(styles)(
     onLogoutClick,
     bgColor,
     noOfPendingQuestions,
+    role,
   }) => (
     <Fragment>
-      <AppBar>
+      <AppBar position="fixed">
         <Toolbar>
           <Tooltip title="Meniu" arrow>
             <IconButton
@@ -78,9 +86,13 @@ const MyToolbar = withStyles(styles)(
               aria-label="Menu"
               onClick={onMenuClick}
             >
-              <Badge badgeContent={noOfPendingQuestions} color="error">
+              {role === "ROLE_SUPERADMIN" ? (
+                <Badge badgeContent={noOfPendingQuestions} color="error">
+                  <MenuIcon style={{ fill: getTextColor(bgColor) }} />
+                </Badge>
+              ) : (
                 <MenuIcon style={{ fill: getTextColor(bgColor) }} />
-              </Badge>
+              )}
             </IconButton>
           </Tooltip>
           <Typography variant="h6" className={classes.flex}>
@@ -168,6 +180,8 @@ const MyDrawer = withStyles(styles)(
 function NavigationMenu({ classes, variant, sections, changePrimary }) {
   const [drawer, setDrawer] = useState(false);
   const [title, setTitle] = useState("");
+  const decode = useDecode();
+  const user = decode();
 
   const noOfDeniedQuestions = useSelector(
     (state) => state.badge.noOfDeniedQuestions
@@ -189,6 +203,7 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
     useDrawerStore.setState({ selected: index });
     setDrawer(variant === "temporary" ? false : drawer);
     setDrawer(!drawer);
+    dispatch(setCurrentBook(null));
     changePrimary();
   };
 
@@ -204,7 +219,7 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
         dispatch(setUnapprovedQuestions(res2));
       });
     });
-  }, []);
+  }, [dispatch]);
 
   const noOfQuestions = useMemo(() => {
     return noOfDeniedQuestions + noOfUnapprovedQuestions;
@@ -218,6 +233,7 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
         onLogoutClick={handleLogout}
         bgColor={theme.palette.primary.main}
         noOfPendingQuestions={noOfQuestions}
+        role={user.roles[0]}
       />
       <MyDrawer
         open={drawer}

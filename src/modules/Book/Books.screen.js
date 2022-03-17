@@ -69,13 +69,6 @@ function BooksImport() {
     enqueueSnackbar(message, { variant });
   };
 
-  const makeSet = (array) => {
-    return array.filter(
-      (v, i, a) =>
-        a.findIndex((t) => t.title === v.title && t.author === v.author) === i
-    );
-  };
-
   const handleImportExcel = (e) => {
     const file = e.target.files[0];
 
@@ -89,29 +82,39 @@ function BooksImport() {
 
       const fileData = XLSX.utils.sheet_to_json(workSheet, { header: 1 });
       let booksData = fileData.map((data) => ({
-        title: data[0],
-        author: data[1],
-        difficulty: data[2],
-        points: data[3],
-        isbn: data[4],
+        title: data[0] ? data[0].trim() : "",
+        author: data[1] ? data[1].trim() : "",
+        difficulty: data[2] ? data[2].trim() : "",
+        points: data[3] ? data[3].trim() : 0,
+        isbn: data[4] ? data[4].trim() : 0,
+        publisher: data[5] ? data[5].trim() : "",
       }));
-      if (booksData[0].title === "Titlu") {
+      if (booksData[0].title.trim() === "Titlu" || !booksData[0].title) {
         booksData.shift();
       }
-      booksData.map((book) =>
-        book.title !== undefined ? createBook(book) : undefined
-      );
-      booksData.push(...books);
-      booksData = makeSet(booksData);
-      setBooks(booksData);
+      booksData.forEach((book) => {
+        if (book.title !== "") {
+          createBook(book).payload.then((res) => {
+            if (res.status === 200) {
+              setBooks((prevState) => [...prevState, { ...res.data }]);
+            }
+          });
+        }
+      });
     };
 
     if (file !== undefined && getExtension(file)) {
       reader.readAsBinaryString(file);
       handleAlert("success", "Cărțile au fost incărcate cu succes!");
     } else {
-      handleAlert("error", "Nu puteți incărca un fișier cu acest format!");
+      handleAlert(
+        "error",
+        "Nu puteți incărca un fișier cu acest format! Puteți adăuga doar fișiere EXCEL sau CSV!"
+      );
     }
+
+    const input = document.getElementById("excelInputBook");
+    input.value = "";
   };
 
   const handleDelete = (id) => {
@@ -142,7 +145,7 @@ function BooksImport() {
         Lista cărților
       </Typography>
       {books.length > 0 && (
-        <>
+        <Box my={1}>
           <Search
             searchFunction={(e) => setSearch(e.target.value)}
             text="Caută după titlu / autor"
@@ -151,7 +154,7 @@ function BooksImport() {
             Apasă pe un nivel de dificultate pentru filtrare
           </Typography>
           <Legend onClick={(e) => setFilter(filter === e ? "" : e)} clickable />
-        </>
+        </Box>
       )}
       <BookList
         books={filteredBooks}
@@ -166,6 +169,7 @@ function BooksImport() {
         <Button variant="contained" component="label">
           Adaugă cărți
           <input
+            id="excelInputBook"
             type="file"
             accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/plain"
             onChange={handleImportExcel}

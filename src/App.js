@@ -5,14 +5,14 @@ import { Provider } from "react-redux";
 import { SnackbarProvider } from "notistack";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import Slide from "@mui/material/Slide";
 import { store } from "./redux/store";
 import AppConfig from "./config/App.config.js";
-import Grid from "@mui/material/Grid";
+import { Grid, Slide } from "@mui/material";
 import axios from "axios";
 import { BrowserRouter } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
+import Loading from "./core/Loading/Loading.screen";
 axios.defaults.baseURL = AppConfig;
 
 const randomColor = () =>
@@ -70,16 +70,16 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
+        <PersistGate loading={<Loading />} persistor={persistor}>
           <SnackbarProvider TransitionComponent={Slide} dense>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Grid
                 container
                 spacing={0}
+                flex={1}
                 direction="column"
                 alignItems="center"
                 justifyContent="center"
-                style={{ minHeight: "100vh" }}
               >
                 <Grid item xs={3}>
                   <BrowserRouter>

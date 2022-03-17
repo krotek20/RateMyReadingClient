@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAccessToken } from "axios-jwt";
 
-export const register = (user, role) => {
+export const register = (user, role, school) => {
   switch (role) {
     case "ROLE_STUDENT":
       return {
@@ -27,9 +27,13 @@ export const register = (user, role) => {
     case "ROLE_LOCALADMIN":
       return {
         type: "REGISTER_LOCALADMIN",
-        payload: axios.post(`/registerLocalAdmin`, user, {
-          headers: { Authorization: `Bearer ${getAccessToken()}` },
-        }),
+        payload: axios.post(
+          `/registerLocalAdmin`,
+          { user, school },
+          {
+            headers: { Authorization: `Bearer ${getAccessToken()}` },
+          }
+        ),
       };
     default:
       return {

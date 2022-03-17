@@ -18,3 +18,19 @@ export const getId = () => {
     }),
   };
 };
+
+export const forgotPassword = (username) => {
+  return {
+    type: "FORGOT_PASSWORD",
+    payload: axios.get(`/forgotPassword?username=${username}`),
+  };
+};
+
+export const confirmForgotPassword = (username, key) => {
+  return {
+    type: "CONFIRM_FORGOT_PASSWORD",
+    payload: axios.get(
+      `/forgotPasswordConfirm?username=${username}&key=${key}`
+    ),
+  };
+};

@@ -3,6 +3,7 @@ import BookIcon from "@mui/icons-material/Book";
 import HomeIcon from "@mui/icons-material/Home";
 import QuizIcon from "@mui/icons-material/Quiz";
 import EditIcon from "@mui/icons-material/Edit";
+import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import DashBoard from "../modules/DashBoard/DashBoard.screen";
@@ -16,6 +17,7 @@ import {
   getDeniedQuestions,
   getUnapprovedQuestions,
 } from "../modules/Question/Question.api";
+import ModifyUser from "../modules/User/ModifyUser.screen";
 
 const dashBoardScreen = {
   name: "Prima pagină",
@@ -69,6 +71,13 @@ const addUserScreen = {
   screen: <AddUser />,
 };
 
+const modifyUserScreen = {
+  name: "Modifică utilizatori",
+  href: "user/modify",
+  icon: <AccessibilityIcon />,
+  screen: <ModifyUser />,
+};
+
 const divider = {
   href: "divider",
   screen: "divider",
@@ -76,10 +85,19 @@ const divider = {
 
 export const childSections = [dashBoardScreen];
 
+export const teacherSections = [dashBoardScreen, divider, addUserScreen];
+
 export const contributorSections = [
   dashBoardScreen,
   divider,
   addQuestionsScreen,
+];
+
+export const localAdminSections = [
+  dashBoardScreen,
+  divider,
+  addUserScreen,
+  modifyUserScreen,
 ];
 
 export const superAdminSections = [
@@ -91,6 +109,7 @@ export const superAdminSections = [
   deniedQuestionsScreen,
   divider,
   addUserScreen,
+  modifyUserScreen,
 ];
 
 export const unIndexedSections = [quizScreen, finishScreen];
@@ -197,11 +216,18 @@ export const avatarNames = [
   "Mary Walton",
 ];
 
-export const colorByDifficulty = (book) => {
-  if (book.difficulty === "incepator") return "#3FA796";
-  if (book.difficulty === "intermediar") return "#502064";
-  if (book.difficulty === "avansat") return "#FFBD35";
-  if (book.difficulty === "expert") return "#1572A1";
+export const colorByDifficulty = (difficulty) => {
+  if (!difficulty) {
+    return "";
+  }
+  if (
+    difficulty.toLowerCase().trim() === "incepator" ||
+    difficulty.toLowerCase().trim() === "începător"
+  )
+    return "#3FA796";
+  if (difficulty.toLowerCase().trim() === "mediu") return "#502064";
+  if (difficulty.toLowerCase().trim() === "avansat") return "#FFBD35";
+  if (difficulty.toLowerCase().trim() === "expert") return "#1572A1";
 };
 
 export const minTwoDigits = (n) => {
@@ -280,4 +306,27 @@ export const getExtension = (file) => {
     extension === "txt" ||
     extension === "csv"
   );
+};
+
+export const feedbackQuiz = {
+  1: ["Ar fi bine să mai citești o dată cartea"],
+  2: ["Ar fi bine să mai citești o dată cartea"],
+  3: ["Citește cu mai multă atenție"],
+  4: ["Citește cu mai multă atenție"],
+  5: ["Nu renunța, poți mai bine!", "Am încredere că poți mai bine!"],
+  6: ["Ține-o tot așa!", "Tot înainte! continuă!"],
+  7: ["Bravo!", "Ești grozav!"],
+  8: ["Foarte bine!", "Sunt mândru de tine!", "Gândești foarte bine!"],
+  9: [
+    "Super!",
+    "Excelent",
+    "Te-ai descurcat de minune!",
+    "Ai făcut o treabă foarte bună!",
+  ],
+  10: [
+    "Esti cel mai tare!",
+    "Extraordinar",
+    "Cool! Ai luat punctaj maxim!",
+    "Ești foarte bun la asta!",
+  ],
 };

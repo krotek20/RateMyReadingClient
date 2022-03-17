@@ -77,7 +77,7 @@ export default function ApprovedQuestions() {
       item.question,
       item.book.title,
       item.author.username,
-      () => handleApprove(item),
+      () => handleApprove(item.question),
       () => handleDeny(item.question)
     );
   };
@@ -99,7 +99,9 @@ export default function ApprovedQuestions() {
           "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
       }}
     >
-      <Typography variant="h5">Întrebări care necesită aprobare</Typography>
+      <Typography variant="h5" color="secondary.main">
+        Întrebări care necesită aprobare
+      </Typography>
       <Typography>Apasă pe o întrebare pentru a o vizualiza</Typography>
       <QuestionList
         questions={questions}

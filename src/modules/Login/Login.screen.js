@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   Avatar,
   Button,
@@ -12,10 +12,11 @@ import {
 } from "@mui/material";
 import { login } from "./Login.api";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import { useSnackbar } from "notistack";
 import { setAuthTokens } from "axios-jwt";
-import { useNavigate } from "react-router-dom";
-import Image from "../../assets/reading/reading1.png";
+import { useNavigate, useLocation } from "react-router-dom";
+import Image from "../../assets/reading/homepage.jpg";
 import { config } from "../../config/Api.config";
 
 const Copyright = (props) => {
@@ -39,13 +40,27 @@ const Copyright = (props) => {
 export default function Login() {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const { state } = useLocation();
 
-  const handleAlert = (variant, message) => {
-    enqueueSnackbar(message, { variant });
-  };
+  const handleAlert = useCallback(
+    (variant, message) => {
+      enqueueSnackbar(message, { variant });
+    },
+    [enqueueSnackbar]
+  );
+
+  useEffect(() => {
+    if (state === true) {
+      handleAlert(
+        "success",
+        "Parola a fost resetată cu succes și trimisă pe email"
+      );
+    } else if (state === false) {
+      handleAlert("error", "Link-ul de confirmare nu este corect");
+    }
+  }, [handleAlert, state]);
 
   const handleSubmit = (event) => {
-    // start loader
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const body = new URLSearchParams();
@@ -124,6 +139,7 @@ export default function Login() {
               autoComplete="current-password"
             />
             <Button
+              startIcon={<VpnKeyIcon />}
               type="submit"
               fullWidth
               variant="contained"
@@ -132,7 +148,7 @@ export default function Login() {
               Contectează-te
             </Button>
           </Box>
-          <Link href="#" variant="body2" color="text.primary">
+          <Link href="/forgotPassword" variant="body2" color="text.primary">
             Ai uitat parola?
           </Link>
           <Copyright sx={{ mt: 5 }} />

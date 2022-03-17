@@ -9,6 +9,11 @@ import { quizSubmit } from "./Quiz.api";
 import { addQuizResult } from "../../redux/Quiz/QuizResult";
 import { useSnackbar } from "notistack";
 import { minTwoDigits, getTextColor } from "../../utils";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import DoneIcon from "@mui/icons-material/Done";
+import ConfirmDialog, {
+  confirmDialog,
+} from "../../core/Dialogs/ConfirmDialog.component";
 
 export default function QuizScreen() {
   const quiz = useSelector((state) => state.quiz);
@@ -21,7 +26,7 @@ export default function QuizScreen() {
 
   const calculateTimeLeft = () => {
     const timeLimit = new Date(quiz.startDate);
-    timeLimit.setMinutes(timeLimit.getMinutes() + 25);
+    timeLimit.setMinutes(timeLimit.getMinutes() + 15);
     const currentTime = new Date();
     let difference = +timeLimit - +currentTime;
     let timeLeft = {};
@@ -46,7 +51,7 @@ export default function QuizScreen() {
     const timer = setTimeout(() => {
       setTimeLeft(calculateTimeLeft());
       if (timeLeft === null) {
-        handleFinishQuiz();
+        // handleFinishQuiz();
       }
     }, 1000);
 
@@ -57,18 +62,30 @@ export default function QuizScreen() {
     enqueueSnackbar(message, { variant });
   };
 
-  const handleNavigationClick = (item) => {
-    setSelectedQuestion(item);
-  };
+  // const handleNavigationClick = (item) => {
+  //   setSelectedQuestion(item);
+  // };
 
-  const decrementQuestion = () => {
-    setSelectedQuestion(selectedQuestion - 1);
-  };
+  // const decrementQuestion = () => {
+  //   setSelectedQuestion(selectedQuestion - 1);
+  // };
 
-  const incrementQuestion = () => {
-    setSelectedQuestion(selectedQuestion + 1);
-    if (selectedQuestion + 1 === 10) {
-      handleFinishQuiz();
+  const incrementQuestion = (item) => {
+    if (!selectedAnswers[item]) {
+      confirmDialog(
+        "Nu ai ales nicio variantă de răspuns. Ești sigur că vrei să treci la următoarea întrebare?",
+        () => {
+          setSelectedQuestion(selectedQuestion + 1);
+          if (selectedQuestion + 1 === 5) {
+            handleFinishQuiz();
+          }
+        }
+      );
+    } else {
+      setSelectedQuestion(selectedQuestion + 1);
+      if (selectedQuestion + 1 === 5) {
+        handleFinishQuiz();
+      }
     }
   };
 
@@ -106,13 +123,14 @@ export default function QuizScreen() {
 
   return (
     <Box className="container">
+      <ConfirmDialog />
       <Box className="container_timeLimit">
         <Typography sx={{ fontSize: 25 }}>{quiz.book.title}</Typography>
         <Typography
           sx={{
             fontSize: 20,
-            color:
-              timeLeft.minutes && timeLeft.minutes < 1 ? "#ee6c4d" : "#000",
+            // color:
+            // timeLeft.minutes && timeLeft.minutes < 1 ? "#ee6c4d" : "#000",
           }}
         >
           {timeLeft !== null
@@ -129,19 +147,21 @@ export default function QuizScreen() {
             <Box
               key={item}
               className="container_navigation_circle"
-              onClick={() => handleNavigationClick(item + 1)}
+              // onClick={() => handleNavigationClick(item + 1)}
               sx={{
                 bgcolor: `${
-                  selectedAnswers[item] && item + 1 == selectedQuestion
+                  selectedAnswers[item] &&
+                  item + 1 === parseInt(selectedQuestion)
                     ? "secondary.main"
                     : selectedAnswers[item]
                     ? "primary.main"
-                    : item + 1 == selectedQuestion
+                    : item + 1 === parseInt(selectedQuestion)
                     ? "secondary.main"
                     : "white"
                 }`,
                 color: `${
-                  selectedAnswers[item] || item + 1 == selectedQuestion
+                  selectedAnswers[item] ||
+                  item + 1 === parseInt(selectedQuestion)
                     ? getTextColor(theme.palette.secondary.main)
                     : "black"
                 }`,
@@ -164,10 +184,10 @@ export default function QuizScreen() {
         sx={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
         }}
       >
-        <Tooltip title="Întrebarea anterioară" arrow placement="bottom">
+        {/* <Tooltip title="Întrebarea anterioară" arrow placement="bottom">
           <Button
             variant="contained"
             size="medium"
@@ -179,15 +199,24 @@ export default function QuizScreen() {
           >
             Înapoi
           </Button>
-        </Tooltip>
-        <Tooltip title="Întrebarea următoare" arrow placement="bottom">
+        </Tooltip> */}
+        <Tooltip
+          title={
+            selectedQuestion < 5 ? "Întrebarea următoare" : "Finalizează testul"
+          }
+          arrow
+          placement="bottom"
+        >
           <Button
             variant="contained"
             size="medium"
             onClick={
-              selectedQuestion < 5 ? incrementQuestion : handleFinishQuiz
+              selectedQuestion < 5
+                ? () => incrementQuestion(selectedQuestion - 1)
+                : handleFinishQuiz
             }
             sx={{ m: 2 }}
+            endIcon={selectedQuestion < 5 ? <ArrowForwardIcon /> : <DoneIcon />}
           >
             {selectedQuestion < 5 ? "Următoare" : "Finalizează"}
           </Button>

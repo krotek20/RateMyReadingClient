@@ -21,7 +21,10 @@ export default function BookCard({ book }) {
       }}
     >
       <MenuBookTwoToneIcon
-        style={{ fill: colorByDifficulty(book), alignSelf: "center" }}
+        style={{
+          fill: colorByDifficulty(book.difficulty),
+          alignSelf: "center",
+        }}
       />
       <Typography color="secondary" variant="h5">
         {book.title}
@@ -32,7 +35,7 @@ export default function BookCard({ book }) {
       <br></br>
       <Typography fontSize={13} alignSelf="flex-start">
         Dificultate:{" "}
-        <Box component="span" color={() => colorByDifficulty(book)}>
+        <Box component="span" color={() => colorByDifficulty(book.difficulty)}>
           {book.difficulty}
         </Box>
       </Typography>

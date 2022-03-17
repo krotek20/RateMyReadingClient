@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Tooltip, Typography, Box } from "@mui/material";
+import { Tooltip, Typography, Box, Skeleton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getBooks } from "../Book/Book.api";
 import "./DashBoard.scss";
@@ -10,19 +10,38 @@ import Legend from "../../core/Legend/Legend.component";
 import { quizGeneration } from "../Quiz/Quiz.api";
 import { getId } from "../Login/Login.api";
 import { useSnackbar } from "notistack";
-import { useDispatch } from "react-redux";
 import { addQuiz, removeQuiz } from "../../redux/Quiz/Quiz";
+import { setCurrentBook } from "../../redux/Book/CurrentBook";
+import { useDispatch, useSelector } from "react-redux";
 
 const unselectedPalette = "?colors=e9ecef,dee2e6,adb5bd,6c757d,495057";
 
 export default function DashBoard() {
   const [books, setBooks] = useState([]);
-  const [book, setBook] = useState(null);
-  const avatarName =
-    avatarNames[Math.floor(Math.random() * avatarNames.length)];
+  const [loading, setLoading] = useState(true);
+  const [avatarName, setAvatarName] = useState(
+    avatarNames[Math.floor(Math.random() * avatarNames.length)]
+  );
+
+  const book = useSelector((state) => state.currentBook);
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch();
+
+  const changeAvatarName = () => {
+    setAvatarName(avatarNames[Math.floor(Math.random() * avatarNames.length)]);
+  };
+
+  useEffect(() => {
+    window.addEventListener("afterload", changeAvatarName);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2500);
+    return () => {
+      window.removeEventListener("afterload", changeAvatarName);
+    };
+  }, []);
 
   useEffect(() => {
     getBooks()
@@ -77,7 +96,7 @@ export default function DashBoard() {
           component="div"
           sx={{ my: 2, textAlign: "center" }}
         >
-          Selectează o carte și începe quiz-ul!
+          Selectează o carte și începe!
         </Typography>
         <Legend onClick={() => {}} />
       </Box>
@@ -87,26 +106,42 @@ export default function DashBoard() {
         >
           <BookAutoComplete
             books={books}
-            bookSelection={(book) => setBook(book)}
+            bookSelection={(book) => dispatch(setCurrentBook(book))}
             difficulty={true}
           />
-          <Box sx={{ mt: 2 }}>
-            <Tooltip title="START QUIZ" arrow>
-              {book ? (
-                <Box onClick={generateQuiz}>
+          <Box
+            sx={{
+              mt: 2,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {loading ? (
+              <Skeleton
+                variant="circular"
+                width={100}
+                height={100}
+                animation="wave"
+              />
+            ) : (
+              <Tooltip title="START" arrow>
+                {book ? (
+                  <Box onClick={generateQuiz}>
+                    <img
+                      className="start_quiz_img_active"
+                      src={`https://source.boringavatars.com/beam/100/${avatarName}/`}
+                      alt="START"
+                    />
+                  </Box>
+                ) : (
                   <img
-                    className="start_quiz_img_active"
-                    src={`https://source.boringavatars.com/beam/100/${avatarName}/`}
-                    alt="START QUIZ"
+                    src={`https://source.boringavatars.com/beam/100/${avatarName}/${unselectedPalette}`}
+                    alt="START"
                   />
-                </Box>
-              ) : (
-                <img
-                  src={`https://source.boringavatars.com/beam/100/${avatarName}/${unselectedPalette}`}
-                  alt="START QUIZ"
-                />
-              )}
-            </Tooltip>
+                )}
+              </Tooltip>
+            )}
           </Box>
         </Box>
         <BookCard book={book} />

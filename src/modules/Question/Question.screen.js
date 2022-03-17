@@ -23,17 +23,30 @@ import BookAutoComplete from "../../core/BookAutoComplete/BookAutoComplete.compo
 import { getId } from "../Login/Login.api";
 import { incremenetUnapprovedQuestions } from "../../redux/Badge/Badge";
 import { getExtension } from "../../utils";
-
-const excelQuestions = [];
+import { useDecode } from "../../hooks/useDecode";
 
 export default function AddQuestions() {
   const [books, setBooks] = useState([]);
+  const [initialQuestion] = useState({
+    bookId: 0,
+    userId: 1,
+    type: 1,
+    answer1: "",
+    answer2: "",
+    answer3: "",
+    answer4: "",
+    correctAnswer: 0,
+    question: "",
+    status: 0,
+    pageNumber: null,
+  });
 
   const questions = useSelector((state) => state.question.activeQuestions);
   const currentBook = useSelector((state) => state.currentBook);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const decode = useDecode();
 
   useEffect(() => {
     getBooks()
@@ -73,7 +86,6 @@ export default function AddQuestions() {
   };
 
   const createNewQuestion = (newQuestion) => {
-    console.log(newQuestion);
     getId()
       .payload.then((res) => res.data)
       .then((userId) => (newQuestion.userId = userId))
@@ -94,19 +106,8 @@ export default function AddQuestions() {
 
   const handleAddQuestion = () => {
     if (currentBook) {
-      createNewQuestion({
-        bookId: currentBook.id,
-        userId: 1,
-        type: 1,
-        answer1: "",
-        answer2: "",
-        answer3: "",
-        answer4: "",
-        correctAnswer: 0,
-        question: "",
-        status: 0,
-        pageNumber: null,
-      });
+      let newQuestion = { ...initialQuestion, bookId: currentBook.id };
+      createNewQuestion({ ...newQuestion });
       handleAlert("success", "Întrebare adăugată cu succes!");
     } else {
       handleAlert(
@@ -132,7 +133,10 @@ export default function AddQuestions() {
       let bookId = 0;
       if (fileData[0][2] === "T") {
         books.forEach((book) => {
-          if (book.title === fileData[0][1]) {
+          if (
+            book.title.toLowerCase().trim() ===
+            fileData[0][1].toLowerCase().trim()
+          ) {
             bookId = book.id;
             dispatch(setCurrentBook(book));
           }
@@ -140,46 +144,48 @@ export default function AddQuestions() {
       }
       fileData.shift();
       let answerCount = 1;
-      let newQuestion = {
-        bookId: bookId,
-        userId: 1,
-        type: 1,
-        answer1: "",
-        answer2: "",
-        answer3: "",
-        answer4: "",
-        correctAnswer: 0,
-        question: "",
-        status: 0,
-        pageNumber: null,
-      };
+      let newQuestion = { ...initialQuestion, bookId: bookId };
+
       dispatch(removeAll());
-      fileData.forEach((question) => {
+      fileData.forEach((question, index) => {
         if (question[2] === "Q") {
           if (answerCount === 3 || answerCount === 5) {
             newQuestion.type = answerCount === 3 ? 0 : 1;
+            createNewQuestion({ ...newQuestion });
+            newQuestion = { ...initialQuestion, bookId: bookId };
           }
-          newQuestion.question = question[1];
+          newQuestion.question = question[1].trim();
           answerCount = 1;
         } else if (question[2] === 0 || question[2] === 1) {
-          newQuestion[`answer${answerCount}`] = question[1];
+          newQuestion[`answer${answerCount}`] = question[1].trim();
           if (question[2] === 1) {
             newQuestion.correctAnswer = answerCount;
           }
           answerCount += 1;
+          if (index === fileData.length - 1) {
+            if (answerCount === 3 || answerCount === 5) {
+              newQuestion.type = answerCount === 3 ? 0 : 1;
+              createNewQuestion({ ...newQuestion });
+            }
+          }
         }
       });
-      if (answerCount === 3 || answerCount === 5) {
-        newQuestion.type = answerCount === 3 ? 0 : 1;
-      }
+      newQuestion.type = answerCount === 3 ? 0 : 1;
+      createNewQuestion({ ...newQuestion });
     };
 
     if (file !== undefined && getExtension(file)) {
       reader.readAsBinaryString(file);
-      handleAlert("success", "Cărțile au fost incărcate cu succes!");
+      handleAlert("success", "Întrebările au fost incărcate cu succes!");
     } else {
-      handleAlert("error", "Nu puteți incărca un fișier cu acest format!");
+      handleAlert(
+        "error",
+        "Nu puteți incărca un fișier cu acest format! Puteți adăuga doar fișiere EXCEL sau CSV!"
+      );
     }
+
+    const input = document.getElementById("excelInputQuestion");
+    input.value = "";
   };
 
   const handleLocalSave = () => {
@@ -218,7 +224,6 @@ export default function AddQuestions() {
   };
 
   const handleOnDelete = (id) => {
-    console.log(id);
     deleteQuestion(id)
       .payload.then((res) => {
         if (res.status === 200) {
@@ -234,39 +239,52 @@ export default function AddQuestions() {
   };
 
   const checkQuestion = (question) => {
-    if (question.question === null) return false;
+    if (!question.question === null) return false;
     if (
       question.type === 1 &&
-      (question.answer1 === null ||
-        question.answer2 === null ||
-        question.answer3 === null ||
-        question.answer4 === null)
+      (!question.answer1 ||
+        !question.answer2 ||
+        !question.answer3 ||
+        !question.answer4)
     ) {
       return false;
     }
-    if (question.correctAnswer === null) return false;
+    if (!question.correctAnswer) return false;
     return true;
   };
 
   const handleSendForValidation = () => {
     if (questions.length >= 5 && currentBook) {
+      let index = 1;
       for (let question of questions) {
         if (question.type === 0) {
           question = { ...question, answer1: "Adevarat", answer2: "Fals" };
         }
         if (!checkQuestion(question)) {
-          handleAlert("error", "Toate întrebările trebuie să fie completate");
+          handleAlert(
+            "error",
+            `Toate întrebările trebuie să fie completate! (eroare la întrebarea ${index})`
+          );
           return;
         }
+        index += 1;
       }
+
+      const user = decode();
       questions.forEach((x) => {
-        dispatch(incremenetUnapprovedQuestions());
-        updateQuestion({ ...x, status: 1 }).payload.catch((error) => {
+        if (!user.roles.includes("ROLE_SUPERADMIN")) {
+          dispatch(incremenetUnapprovedQuestions());
+        }
+        updateQuestion({
+          ...x,
+          status: user.roles.includes("ROLE_SUPERADMIN") ? 2 : 1,
+        }).payload.catch((error) => {
           if (error.response.status === 403) {
             navigate("/login", { replace: true });
           }
         });
       });
+
       handleAlert(
         "success",
         "Întrebările au fost trimise cu succes catre validare"
@@ -366,6 +384,7 @@ export default function AddQuestions() {
           >
             <Button variant="contained" component="label">
               <input
+                id="excelInputQuestion"
                 className="input"
                 type="file"
                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/plain"

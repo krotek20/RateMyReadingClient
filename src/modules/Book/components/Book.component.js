@@ -26,7 +26,9 @@ export default function Book({ book, onDelete }) {
       >
         <ListItemButton>
           <ListItemIcon>
-            <MenuBookTwoToneIcon style={{ fill: colorByDifficulty(book) }} />
+            <MenuBookTwoToneIcon
+              style={{ fill: colorByDifficulty(book.difficulty) }}
+            />
           </ListItemIcon>
           <ListItemText
             primary={book.title}

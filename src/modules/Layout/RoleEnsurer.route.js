@@ -2,6 +2,14 @@ import { getAccessToken } from "axios-jwt";
 import { Navigate, useLocation } from "react-router-dom";
 import { useDecode } from "../../hooks/useDecode";
 
+const getPath = (role) => {
+  if (role === "ROLE_STUDENT") return "/elev";
+  if (role === "ROLE_CONTRIBUTOR") return "/contributor";
+  if (role === "ROLE_PROFESSOR") return "/teacher";
+  if (role === "ROLE_LOCALADMIN") return "/localadmin";
+  if (role === "ROLE_SUPERADMIN") return "/superadmin";
+};
+
 const RoleEnsurer = ({ children, roles }) => {
   const location = useLocation();
   const decode = useDecode();
@@ -14,7 +22,7 @@ const RoleEnsurer = ({ children, roles }) => {
   const userHasRequiredRole = user && roles.includes(user.roles[0]);
 
   if (!userHasRequiredRole) {
-    return <Navigate to="/superadmin" />;
+    return <Navigate to={getPath(user.roles[0])} />;
   }
 
   return children;

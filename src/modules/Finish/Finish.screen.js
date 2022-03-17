@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Box, Typography, Tooltip, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { minTwoDigits } from "../../utils";
+import { feedbackQuiz, minTwoDigits } from "../../utils";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import "./Finish.scss";
 
@@ -71,7 +71,16 @@ export default function FinishScreen() {
           {quiz.numberOfCorrectAnswers} / {quiz.numberOfQuestions}
         </Typography>
         <Typography>Răspunsuri corecte</Typography>
-        <Typography>Ați obținut {quiz.points} puncte. Felicitări!</Typography>
+        <Typography>
+          {
+            feedbackQuiz[quiz.numberOfCorrectAnswers][
+              Math.floor(
+                Math.random() * feedbackQuiz[quiz.numberOfCorrectAnswers].length
+              )
+            ]
+          }
+        </Typography>
+        <Typography mt={2}>Ai obținut {quiz.points} puncte.</Typography>
       </Box>
       <Box>
         <Tooltip title="ÎNTOARCE-TE LA PRIMA PAGINĂ" arrow>

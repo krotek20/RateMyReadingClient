@@ -30,11 +30,11 @@ export default function BookAutoComplete({ books, bookSelection, difficulty }) {
       groupBy={(option) => option.title.charAt(0)}
       getOptionLabel={(option) => option.title}
       renderOption={(props, option) => (
-        <ListItem {...props} disablePadding>
+        <ListItem {...props} disablePadding key={option.id}>
           {difficulty ? (
             <ListItemIcon>
               <MenuBookTwoToneIcon
-                style={{ fill: colorByDifficulty(option) }}
+                style={{ fill: colorByDifficulty(option.difficulty) }}
               />
             </ListItemIcon>
           ) : (
@@ -43,7 +43,8 @@ export default function BookAutoComplete({ books, bookSelection, difficulty }) {
           <ListItemText
             primary={option.title}
             secondaryTypographyProps={{ style: { whiteSpace: "pre-wrap" } }}
-            secondary={`de ${option.author}`}
+            secondary={`de ${option.author}
+${option.publisher}`}
           />
         </ListItem>
       )}

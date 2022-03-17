@@ -9,23 +9,23 @@ import QuizResultReducer from "./Quiz/QuizResult";
 import BadgeReducer from "./Badge/Badge";
 import CurrentBookReducer from "./Book/CurrentBook";
 
+const persistConfig = {
+  timeout: 2000,
+  key: "root",
+  storage,
+  whitelist: ["quiz"],
+};
+
 const reducers = combineReducers({
   question: QuestionReducer,
-  quiz: QuizReducer,
+  quiz: persistReducer(persistConfig, QuizReducer),
   quizResult: QuizResultReducer,
   badge: BadgeReducer,
   currentBook: CurrentBookReducer,
 });
 
-const persistConfig = {
-  key: "root",
-  storage,
-};
-
-const persistedReducer = persistReducer(persistConfig, reducers);
-
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: reducers,
   devTools: process.env.NODE_ENV !== "production",
   middleware: [thunk],
 });
