@@ -20,8 +20,8 @@ FROM fitiavana07/nginx-react
 # Copy built files
 COPY --from=build-stage /app/build /usr/share/nginx/html
 
-# 80 for HTTP
-EXPOSE 80
+# 443 for HTTPS
+EXPOSE 443
 
 # Run nginx
 CMD nginx -g 'daemon off;'
