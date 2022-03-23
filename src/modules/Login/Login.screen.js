@@ -28,7 +28,10 @@ const Copyright = (props) => {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="http://localhost:3000">
+      <Link
+        color="inherit"
+        href="https://caravanalecturiireact-gu67xo22hq-lm.a.run.app"
+      >
         Website
       </Link>
       {` ${new Date().getFullYear()}`}
@@ -125,7 +128,7 @@ export default function Login() {
               id="username"
               label="Nume de utilizator"
               name="username"
-              autoComplete="User"
+              autoComplete="username"
               autoFocus
             />
             <TextField

@@ -198,7 +198,7 @@ export default function AddUserForm({ role }) {
     label: label,
     variant: "standard",
     defaultValue: user[item],
-    onBlur: (e) => setUser({ ...user, [`${item}`]: e.target.value }),
+    onChange: (e) => setUser({ ...user, [`${item}`]: e.target.value }),
   });
 
   const datePickerProps = (item, label) => ({
