@@ -59,6 +59,7 @@ export default function AddUserForm({ role }) {
   };
 
   const handleAddUser = () => {
+    console.log(user);
     setLoading(true);
     if (!checkUserFields()) {
       register(user, role, school)

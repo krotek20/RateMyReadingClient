@@ -4,6 +4,11 @@ import { colorByDifficulty } from "../../../utils";
 import MenuBookTwoToneIcon from "@mui/icons-material/MenuBookTwoTone";
 
 export default function BookCard({ book }) {
+  const typographyProps = (fontSize, align) => ({
+    fontSize: fontSize,
+    alignSelf: align,
+  });
+
   return book ? (
     <Box
       sx={{
@@ -29,18 +34,18 @@ export default function BookCard({ book }) {
       <Typography color="secondary" variant="h5">
         {book.title}
       </Typography>
-      <Typography fontSize={11} alignSelf="flex-end">
+      <Typography {...typographyProps(11, "center")}>
         de {book.author}
       </Typography>
       <br></br>
-      <Typography fontSize={13} alignSelf="flex-start">
-        Dificultate:{" "}
-        <Box component="span" color={() => colorByDifficulty(book.difficulty)}>
-          {book.difficulty}
-        </Box>
+      <Typography {...typographyProps(13, "flex-start")}>
+        Dificultate: {book.difficulty}
       </Typography>
-      <Typography fontSize={13} alignSelf="flex-start">
+      <Typography {...typographyProps(13, "flex-start")}>
         Puncte: {book.points}
+      </Typography>
+      <Typography {...typographyProps(13, "flex-start")}>
+        Număr de încercări rămase: {2 - book.attempts}/2
       </Typography>
     </Box>
   ) : (

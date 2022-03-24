@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Tooltip, Typography, Box, Skeleton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { getBooks } from "../Book/Book.api";
+import { getBooksWithTries } from "../Book/Book.api";
 import "./DashBoard.scss";
 import BookAutoComplete from "../../core/BookAutoComplete/BookAutoComplete.component";
 import BookCard from "./components/BookCard";
-import { avatarNames } from "../../utils";
+import { avatarNames, convertToHoursAndMinutes } from "../../utils";
 import Legend from "../../core/Legend/Legend.component";
 import { quizGeneration } from "../Quiz/Quiz.api";
 import { getId } from "../Login/Login.api";
@@ -44,14 +44,20 @@ export default function DashBoard() {
   }, []);
 
   useEffect(() => {
-    getBooks()
-      .payload.then((response) => setBooks(response.data))
-      .catch((error) => {
-        if (error.response.status === 403) {
-          navigate("/login", { replace: true });
-        }
-      });
+    getId()
+      .payload.then((res) => res.data)
+      .then((userId) =>
+        getBooksWithTries(userId)
+          .payload.then((response) => setBooks(response.data))
+          .catch((error) => {
+            if (error.response.status === 403) {
+              navigate("/login", { replace: true });
+            }
+          })
+      );
   }, [setBooks, navigate]);
+
+  console.log(books);
 
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, { variant });
@@ -75,12 +81,27 @@ export default function DashBoard() {
             })
             .catch((error) => {
               if (error.response.status !== 403) {
+                console.log(error.response.data.message);
+                const [message, minutes] =
+                  error.response.data.message.split(":");
+                let time;
+                if (minutes) {
+                  time = convertToHoursAndMinutes(minutes);
+                }
                 handleAlert(
                   "error",
-                  "Nu există suficiente întrebări pentru a începe un quiz pe această carte!"
+                  message === "Intrebari insuficiente"
+                    ? "Nu există suficiente întrebări pentru a începe un chestionar pe această carte!"
+                    : message === "Maxim quizuri pe zi atins"
+                    ? "Limită atinsă! Ai voie sa rezolvi maxim 3 chestionare pe zi"
+                    : message === "Maxim incercari atins"
+                    ? "Ai atins numărul maxim de încercări pentru această carte! (maxim 2)"
+                    : message === "Prea putin timp intre incercari"
+                    ? `Poți completa din nou acest chestionar în ${time}`
+                    : "Server error"
                 );
               } else {
-                navigate("/login");
+                navigate("/login", { replace: true });
               }
             })
         );

@@ -128,7 +128,7 @@ export default function Login() {
               id="username"
               label="Nume de utilizator"
               name="username"
-              autoComplete="username"
+              autoComplete="user"
               autoFocus
             />
             <TextField

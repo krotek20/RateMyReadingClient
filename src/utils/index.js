@@ -330,3 +330,41 @@ export const feedbackQuiz = {
     "Ești foarte bun la asta!",
   ],
 };
+
+export const convertToHoursAndMinutes = (time) => {
+  const hours = Math.floor(time / 60);
+  const minutes = time % 60;
+  if (minutes === 0) {
+    if (hours <= 0) {
+      return "câteva secunde...";
+    }
+    if (hours === 1) {
+      return "1 oră";
+    }
+    return `${hours} ore`;
+  } else if (minutes === 1) {
+    if (hours <= 0) {
+      return "1 minut";
+    }
+    if (hours === 1) {
+      return "1 oră și 1 minut";
+    }
+    return `${hours} ore și 1 minut`;
+  } else if (minutes < 20) {
+    if (hours <= 0) {
+      return `${minutes} minute`;
+    }
+    if (hours === 1) {
+      return `1 oră și ${minutes} minute`;
+    }
+    return `${hours} ore și ${minutes} minute`;
+  } else {
+    if (hours <= 0) {
+      return `${minutes} de minute`;
+    }
+    if (hours === 1) {
+      return `1 oră și ${minutes} de minute`;
+    }
+    return `${hours} ore și ${minutes} de minute`;
+  }
+};

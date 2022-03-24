@@ -76,14 +76,14 @@ export default function QuizScreen() {
         "Nu ai ales nicio variantă de răspuns. Ești sigur că vrei să treci la următoarea întrebare?",
         () => {
           setSelectedQuestion(selectedQuestion + 1);
-          if (selectedQuestion + 1 === 5) {
+          if (selectedQuestion + 1 === 10) {
             handleFinishQuiz();
           }
         }
       );
     } else {
       setSelectedQuestion(selectedQuestion + 1);
-      if (selectedQuestion + 1 === 5) {
+      if (selectedQuestion + 1 === 10) {
         handleFinishQuiz();
       }
     }
@@ -143,7 +143,7 @@ export default function QuizScreen() {
       <Box className="container_tab">
         <Typography color="secondary">Navigare printre întrebări</Typography>
         <Box className="container_navigation">
-          {[...Array(5).keys()].map((item) => (
+          {[...Array(10).keys()].map((item) => (
             <Box
               key={item}
               className="container_navigation_circle"
@@ -202,7 +202,9 @@ export default function QuizScreen() {
         </Tooltip> */}
         <Tooltip
           title={
-            selectedQuestion < 5 ? "Întrebarea următoare" : "Finalizează testul"
+            selectedQuestion < 10
+              ? "Întrebarea următoare"
+              : "Finalizează testul"
           }
           arrow
           placement="bottom"
@@ -211,14 +213,16 @@ export default function QuizScreen() {
             variant="contained"
             size="medium"
             onClick={
-              selectedQuestion < 5
+              selectedQuestion < 10
                 ? () => incrementQuestion(selectedQuestion - 1)
                 : handleFinishQuiz
             }
             sx={{ m: 2 }}
-            endIcon={selectedQuestion < 5 ? <ArrowForwardIcon /> : <DoneIcon />}
+            endIcon={
+              selectedQuestion < 10 ? <ArrowForwardIcon /> : <DoneIcon />
+            }
           >
-            {selectedQuestion < 5 ? "Următoare" : "Finalizează"}
+            {selectedQuestion < 10 ? "Următoare" : "Finalizează"}
           </Button>
         </Tooltip>
       </Box>
