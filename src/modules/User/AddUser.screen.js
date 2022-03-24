@@ -57,7 +57,7 @@ export default function AddUser() {
           label="Rol"
           onChange={(e) => setRole(e.target.value)}
         >
-          {checkRole() !== 0 && (
+          {(checkRole() === 2 || checkRole() === 3) && (
             <MenuItem key="ROLE_STUDENT" value="ROLE_STUDENT">
               Elev
             </MenuItem>

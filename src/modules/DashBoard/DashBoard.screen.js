@@ -44,17 +44,13 @@ export default function DashBoard() {
   }, []);
 
   useEffect(() => {
-    getId()
-      .payload.then((res) => res.data)
-      .then((userId) =>
-        getBooksWithTries(userId)
-          .payload.then((response) => setBooks(response.data))
-          .catch((error) => {
-            if (error.response.status === 403) {
-              navigate("/login", { replace: true });
-            }
-          })
-      );
+    getBooksWithTries()
+      .payload.then((response) => setBooks(response.data))
+      .catch((error) => {
+        if (error.response.status === 403) {
+          navigate("/login", { replace: true });
+        }
+      });
   }, [setBooks, navigate]);
 
   const handleAlert = (variant, message) => {

@@ -10,10 +10,10 @@ export const getBooks = () => {
   };
 };
 
-export const getBooksWithTries = (userId) => {
+export const getBooksWithTries = () => {
   return {
     type: "GET_BOOKS_TRIES",
-    payload: axios.get(`/book/getAllUser?userId=${userId}`, {
+    payload: axios.get(`/book/getAllUser`, {
       headers: { Authorization: `Bearer ${getAccessToken()}` },
     }),
   };
