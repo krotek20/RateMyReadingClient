@@ -57,8 +57,6 @@ export default function DashBoard() {
       );
   }, [setBooks, navigate]);
 
-  console.log(books);
-
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, { variant });
   };
