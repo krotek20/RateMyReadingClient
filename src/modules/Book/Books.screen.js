@@ -81,18 +81,16 @@ function BooksImport() {
       const workSheet = workBook.Sheets[workSheetName];
 
       const fileData = XLSX.utils.sheet_to_json(workSheet, { header: 1 });
-      let booksData = fileData.map((data) => {
-        if (data.length !== 0) {
-          return {
-            title: data[0] ? data[0].trim() : "",
-            author: data[1] ? data[1].trim() : "",
-            difficulty: data[2] ? data[2].trim() : "",
-            points: data[3] ? data[3] : 0,
-            isbn: data[4] ? data[4] : 0,
-            publisher: data[5] ? data[5].trim() : "",
-          };
-        }
-      });
+      let booksData = fileData
+        .filter((data) => data.length !== 0)
+        .map((data) => ({
+          title: data[0] ? data[0].trim() : "",
+          author: data[1] ? data[1].trim() : "",
+          difficulty: data[2] ? data[2].trim() : "",
+          points: data[3] ? data[3] : 0,
+          isbn: data[4] ? data[4] : 0,
+          publisher: data[5] ? data[5].trim() : "",
+        }));
       console.log(booksData.length);
       let i = 0;
       if (booksData[0].title.trim() === "Titlu" || !booksData[0].title) {

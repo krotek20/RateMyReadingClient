@@ -69,7 +69,6 @@ export default function Login() {
     const body = new URLSearchParams();
     body.append("username", data.get("username"));
     body.append("password", data.get("password"));
-    console.log(body);
     login(body)
       .payload.then((response) => {
         setAuthTokens({
