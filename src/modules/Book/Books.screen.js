@@ -89,6 +89,7 @@ function BooksImport() {
         isbn: data[4] ? data[4].trim() : 0,
         publisher: data[5] ? data[5].trim() : "",
       }));
+      console.log(booksData);
       if (booksData[0].title.trim() === "Titlu" || !booksData[0].title) {
         booksData.shift();
       }
