@@ -93,13 +93,14 @@ function BooksImport() {
           };
         }
       });
+      console.log(booksData.length);
       let i = 0;
       if (booksData[0].title.trim() === "Titlu" || !booksData[0].title) {
         booksData.shift();
         i += 1;
       }
       booksData.forEach((book, index) => {
-        console.log(book);
+        console.log(!!book);
         if (
           !!book &&
           !!book.title &&
