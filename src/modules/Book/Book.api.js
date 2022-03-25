@@ -5,7 +5,10 @@ export const getBooks = () => {
   return {
     type: "GET_BOOKS",
     payload: axios.get("/book", {
-      headers: { Authorization: `Bearer ${getAccessToken()}` },
+      headers: {
+        Authorization: `Bearer ${getAccessToken()}`,
+        "Access-Control-Allow-Origin": "*",
+      },
     }),
   };
 };

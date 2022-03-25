@@ -82,7 +82,7 @@ function BooksImport() {
 
       const fileData = XLSX.utils.sheet_to_json(workSheet, { header: 1 });
       let booksData = fileData.map((data) => {
-        console.log(data[4]);
+        console.log(data);
         return {
           title: data[0] ? data[0].trim() : "",
           author: data[1] ? data[1].trim() : "",
