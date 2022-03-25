@@ -98,24 +98,25 @@ function BooksImport() {
         booksData.shift();
         i += 1;
       }
-      console.log("da");
       booksData.forEach((book, index) => {
+        console.log(book);
         if (
-          !book.title ||
-          !book.author ||
-          !book.difficulty ||
-          !book.publisher
+          !!book &&
+          !!book.title &&
+          !!book.author &&
+          !!book.difficulty &&
+          !!book.publisher
         ) {
-          handleAlert(
-            "error",
-            `Linia ${index + i} din excel conține informații incomplete`
-          );
-        } else {
           createBook(book).payload.then((res) => {
             if (res.status === 200) {
               setBooks((prevState) => [...prevState, { ...res.data }]);
             }
           });
+        } else {
+          handleAlert(
+            "error",
+            `Linia ${index + i} din excel conține informații incomplete`
+          );
         }
       });
     };
