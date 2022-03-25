@@ -83,7 +83,6 @@ function BooksImport() {
       const fileData = XLSX.utils.sheet_to_json(workSheet, { header: 1 });
       let booksData = fileData.map((data) => {
         if (data.length !== 0) {
-          console.log(data);
           return {
             title: data[0] ? data[0].trim() : "",
             author: data[1] ? data[1].trim() : "",
@@ -99,6 +98,7 @@ function BooksImport() {
         booksData.shift();
         i += 1;
       }
+      console.log("da");
       booksData.forEach((book, index) => {
         if (
           !book.title ||
