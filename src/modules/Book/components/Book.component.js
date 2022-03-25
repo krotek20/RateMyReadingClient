@@ -4,6 +4,7 @@ import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import {
   ListItem,
   ListItemText,
+  ListItemButton,
   ListItemIcon,
   IconButton,
   Tooltip,
@@ -23,16 +24,18 @@ export default function Book({ book, onDelete }) {
           </Tooltip>
         }
       >
-        <ListItemIcon>
-          <MenuBookTwoToneIcon
-            style={{ fill: colorByDifficulty(book.difficulty) }}
+        <ListItemButton>
+          <ListItemIcon>
+            <MenuBookTwoToneIcon
+              style={{ fill: colorByDifficulty(book.difficulty) }}
+            />
+          </ListItemIcon>
+          <ListItemText
+            primary={book.title}
+            secondaryTypographyProps={{ style: { whiteSpace: "pre-wrap" } }}
+            secondary={book.author + "\npunctaj: " + book.points}
           />
-        </ListItemIcon>
-        <ListItemText
-          primary={book.title}
-          secondaryTypographyProps={{ style: { whiteSpace: "pre-wrap" } }}
-          secondary={book.author + "\npunctaj: " + book.points}
-        />
+        </ListItemButton>
       </ListItem>
     </Tooltip>
   );

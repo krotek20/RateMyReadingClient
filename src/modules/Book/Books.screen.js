@@ -91,14 +91,12 @@ function BooksImport() {
           isbn: data[4] ? data[4] : 0,
           publisher: data[5] ? data[5].trim() : "",
         }));
-      console.log(booksData.length);
       let i = 0;
       if (booksData[0].title.trim() === "Titlu" || !booksData[0].title) {
         booksData.shift();
         i += 1;
       }
       booksData.forEach((book, index) => {
-        console.log(!!book);
         if (
           !!book &&
           !!book.title &&
