@@ -87,8 +87,8 @@ function BooksImport() {
           title: data[0] ? data[0].trim() : "",
           author: data[1] ? data[1].trim() : "",
           difficulty: data[2] ? data[2].trim() : "",
-          points: data[3] ? data[3].trim() : 0,
-          isbn: data[4] ? data[4].trim() : 0,
+          points: data[3] ? data[3] : 0,
+          isbn: data[4] ? data[4] : 0,
           publisher: data[5] ? data[5].trim() : "",
         };
       });
