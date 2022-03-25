@@ -69,6 +69,7 @@ export default function Login() {
     const body = new URLSearchParams();
     body.append("username", data.get("username"));
     body.append("password", data.get("password"));
+    console.log(body);
     login(body)
       .payload.then((response) => {
         setAuthTokens({
@@ -148,7 +149,7 @@ export default function Login() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Contectează-te
+              Conectează-te
             </Button>
           </Box>
           <Link href="/forgotPassword" variant="body2" color="text.primary">
