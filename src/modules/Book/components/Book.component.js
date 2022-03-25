@@ -33,7 +33,7 @@ export default function Book({ book, onDelete }) {
           <ListItemText
             primary={book.title}
             secondaryTypographyProps={{ style: { whiteSpace: "pre-wrap" } }}
-            secondary={book.author + "\npunctaj: " + book.points}
+            secondary={book.author + "\n" + book.publisher}
           />
         </ListItemButton>
       </ListItem>
