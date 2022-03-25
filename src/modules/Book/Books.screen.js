@@ -92,11 +92,23 @@ function BooksImport() {
           publisher: data[5] ? data[5].trim() : "",
         };
       });
+      let i = 0;
       if (booksData[0].title.trim() === "Titlu" || !booksData[0].title) {
         booksData.shift();
+        i += 1;
       }
-      booksData.forEach((book) => {
-        if (book.title !== "") {
+      booksData.forEach((book, index) => {
+        if (
+          !book.title ||
+          !book.author ||
+          !book.difficulty ||
+          !book.publisher
+        ) {
+          handleAlert(
+            "error",
+            `Linia ${index + i} din excel conține informații incomplete`
+          );
+        } else {
           createBook(book).payload.then((res) => {
             if (res.status === 200) {
               setBooks((prevState) => [...prevState, { ...res.data }]);
