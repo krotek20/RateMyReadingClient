@@ -10,6 +10,8 @@ import { LoadingButton } from "@mui/lab";
 import SaveIcon from "@mui/icons-material/Save";
 import PublishIcon from "@mui/icons-material/Publish";
 
+const mailFormat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+
 export default function AddUserForm({ role }) {
   const [user, setUser] = useState({
     firstname: "",
@@ -42,24 +44,35 @@ export default function AddUserForm({ role }) {
           !user.firstGradeRegistrationYear
         );
       case ("ROLE_CONTRIBUTOR", "ROLE_SUPERADMIN"):
-        return !user.firstname || !user.lastname || !user.email;
+        return (
+          !user.firstname ||
+          !user.lastname ||
+          !user.email ||
+          !user.email.match(mailFormat)
+        );
       case "ROLE_LOCALADMIN":
         return (
           !user.firstname ||
           !user.lastname ||
           !school.name ||
           !user.city ||
-          !user.email
+          !user.email ||
+          !user.email.match(mailFormat)
         );
       case "ROLE_PROFESSOR":
-        return !user.firstname || !user.lastname || !user.city || !user.email;
+        return (
+          !user.firstname ||
+          !user.lastname ||
+          !user.city ||
+          !user.email ||
+          !user.email.match(mailFormat)
+        );
       default:
         return null;
     }
   };
 
   const handleAddUser = () => {
-    console.log(user);
     setLoading(true);
     if (!checkUserFields()) {
       register(user, role, school)
@@ -93,7 +106,7 @@ export default function AddUserForm({ role }) {
     } else {
       handleAlert(
         "error",
-        "Asigurați-vă că ați completat toate câmpurile obligatorii"
+        "Asigurați-vă că ați completat toate câmpurile obligatorii cu valori valide"
       );
       setLoading(false);
     }
@@ -160,7 +173,11 @@ export default function AddUserForm({ role }) {
             );
           } else {
             register(newUser, role, newSchool)
-              .payload.then(() => {})
+              .payload.then((response) => {
+                if (response.status === 200) {
+                  handleAlert("success", "Utilizatori adăugați cu success!");
+                }
+              })
               .catch((error) => {
                 if (error.response.status === 403) {
                   navigate("/login", { replace: true });
@@ -177,7 +194,6 @@ export default function AddUserForm({ role }) {
 
       if (file !== undefined && getExtension(file)) {
         reader.readAsBinaryString(file);
-        handleAlert("success", "Utilizatori adăugați cu success!");
       } else {
         handleAlert(
           "error",
@@ -259,7 +275,10 @@ export default function AddUserForm({ role }) {
   );
 
   const professorForm = () => (
-    <Box display="flex" flexDirection="column" my={2}>
+    <Box display="flex" flexDirection="column">
+      <Typography color="secondary.main" fontSize={13} fontWeight="bold" mb={2}>
+        Asigurați-vă că ați introdus un email valid: example@yahoo.com
+      </Typography>
       <Box {...boxProps()}>
         <TextField {...textFieldProps("lastname", "Nume")} />
         <TextField {...textFieldProps("firstname", "Prenume")} />
@@ -272,7 +291,10 @@ export default function AddUserForm({ role }) {
   );
 
   const LocalAdminForm = () => (
-    <Box display="flex" flexDirection="column" my={2}>
+    <Box display="flex" flexDirection="column">
+      <Typography color="secondary.main" fontSize={13} fontWeight="bold" mb={2}>
+        Asigurați-vă că ați introdus un email valid: example@yahoo.com
+      </Typography>
       <Box {...boxProps()}>
         <TextField {...textFieldProps("lastname", "Nume")} />
         <TextField {...textFieldProps("firstname", "Prenume")} />
@@ -290,12 +312,15 @@ export default function AddUserForm({ role }) {
   );
 
   const contributorAndSuperAdminForm = () => (
-    <Box display="flex" flexDirection="column" my={2}>
+    <Box display="flex" flexDirection="column" mb={2}>
+      <Typography color="secondary.main" fontSize={13} fontWeight="bold" mb={2}>
+        Asigurați-vă că ați introdus un email valid: example@yahoo.com
+      </Typography>
       <Box {...boxProps()}>
         <TextField {...textFieldProps("lastname", "Nume")} />
         <TextField {...textFieldProps("firstname", "Prenume")} />
       </Box>
-      <TextField {...textFieldProps("email", "Email")} />
+      <TextField {...textFieldProps("email", "Email")} my={1.5} />
     </Box>
   );
 

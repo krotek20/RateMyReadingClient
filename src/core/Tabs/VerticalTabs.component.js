@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
+import { Tabs, Tab, Box } from "@mui/material";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -30,6 +28,7 @@ function a11yProps(index) {
   return {
     id: `vertical-tab-${index}`,
     "aria-controls": `vertical-tabpanel-${index}`,
+    key: index,
   };
 }
 
@@ -46,6 +45,8 @@ export default function VerticalTabs({ tabs }) {
         flexGrow: 1,
         bgcolor: "background.paper",
         display: "flex",
+        borderRadius: "3%",
+        boxShadow: "rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;",
       }}
     >
       <Tabs
@@ -61,7 +62,7 @@ export default function VerticalTabs({ tabs }) {
         ))}
       </Tabs>
       {tabs.map((tab, index) => (
-        <TabPanel value={value} index={index}>
+        <TabPanel value={value} index={index} key={index}>
           {tab.children}
         </TabPanel>
       ))}

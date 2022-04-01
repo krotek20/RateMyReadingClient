@@ -44,3 +44,21 @@ export const register = (user, role, school) => {
       };
   }
 };
+
+export const resetPassword = (body) => {
+  return {
+    type: "RESET_PASSWORD",
+    payload: axios.post("/resetPassword", body, {
+      headers: { Authorization: `Bearer ${getAccessToken()}` },
+    }),
+  };
+};
+
+export const updateUser = (user) => {
+  return {
+    type: "UPDATE_USER",
+    payload: axios.post("/updateUser", user, {
+      headers: { Authorization: `Bearer ${getAccessToken()}` },
+    }),
+  };
+};

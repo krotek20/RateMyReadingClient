@@ -11,7 +11,7 @@ import { colorByDifficulty } from "../../utils";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentBook } from "../../redux/Book/CurrentBook";
 
-export default function BookAutoComplete({ books, bookSelection, difficulty }) {
+export default function Books({ books, bookSelection, difficulty }) {
   const currentBook = useSelector((state) => state.currentBook);
   const dispatch = useDispatch();
 

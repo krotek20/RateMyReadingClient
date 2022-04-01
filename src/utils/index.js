@@ -85,7 +85,12 @@ const divider = {
 
 export const childSections = [dashBoardScreen];
 
-export const teacherSections = [dashBoardScreen, divider, addUserScreen];
+export const teacherSections = [
+  dashBoardScreen,
+  divider,
+  addUserScreen,
+  modifyUserScreen,
+];
 
 export const contributorSections = [
   dashBoardScreen,

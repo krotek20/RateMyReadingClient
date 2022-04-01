@@ -19,7 +19,7 @@ import { setCurrentBook } from "../../redux/Book/CurrentBook";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import "./Question.css";
-import BookAutoComplete from "../../core/BookAutoComplete/BookAutoComplete.component";
+import BookAutoComplete from "../../core/AutoComplete/Books.component";
 import { getId } from "../Login/Login.api";
 import { incremenetUnapprovedQuestions } from "../../redux/Badge/Badge";
 import { getExtension } from "../../utils";
@@ -121,8 +121,10 @@ export default function AddQuestions() {
     const file = e.target.files[0];
 
     const reader = new FileReader();
+
     reader.onload = (event) => {
       const binaryString = event.target.result;
+
       const workBook = XLSX.read(binaryString, { type: "binary" });
 
       const workSheetName = workBook.SheetNames[0];
@@ -130,6 +132,7 @@ export default function AddQuestions() {
 
       const fileData = XLSX.utils.sheet_to_json(workSheet, { header: 1 });
       // column 0 : id of question, column 1 : book title / question / answers, column 2 : T / Q / correctAnswer
+      let okay = false;
       let bookId = 0;
       if (fileData[0][2] === "T") {
         books.forEach((book) => {
@@ -139,51 +142,61 @@ export default function AddQuestions() {
           ) {
             bookId = book.id;
             dispatch(setCurrentBook(book));
+            okay = true;
           }
         });
       }
-      fileData.shift();
-      let answerCount = 1;
-      let newQuestion = { ...initialQuestion, bookId: bookId };
+      if (!currentBook && !okay) {
+        handleAlert(
+          "error",
+          "Nu a fost găsită nicio carte cu acest titlu. Asigurați-vă că ați introdus corect titlul cărții în excel!"
+        );
+      } else {
+        if (bookId === 0) {
+          bookId = currentBook.id;
+        }
+        fileData.shift();
+        let answerCount = 1;
+        let newQuestion = { ...initialQuestion, bookId: bookId };
 
-      dispatch(removeAll());
-      fileData.forEach((question, index) => {
-        if (question[2] === "Q") {
-          if (answerCount === 3 || answerCount === 5) {
-            newQuestion.type = answerCount === 3 ? 0 : 1;
-            createNewQuestion({ ...newQuestion });
-            newQuestion = { ...initialQuestion, bookId: bookId };
-          }
-          newQuestion.question = question[1].trim();
-          answerCount = 1;
-        } else if (question[2] === 0 || question[2] === 1) {
-          newQuestion[`answer${answerCount}`] = question[1].trim();
-          if (question[2] === 1) {
-            newQuestion.correctAnswer = answerCount;
-          }
-          answerCount += 1;
-          if (index === fileData.length - 1) {
+        dispatch(removeAll());
+        fileData.forEach((question, index) => {
+          if (question[2] === "Q") {
             if (answerCount === 3 || answerCount === 5) {
               newQuestion.type = answerCount === 3 ? 0 : 1;
               createNewQuestion({ ...newQuestion });
+              newQuestion = { ...initialQuestion, bookId: bookId };
+            }
+            newQuestion.question = question[1].trim();
+            answerCount = 1;
+          } else if (question[2] === 0 || question[2] === 1) {
+            newQuestion[`answer${answerCount}`] = (question[1] + "").trim();
+            if (question[2] === 1) {
+              newQuestion.correctAnswer = answerCount;
+            }
+            answerCount += 1;
+            if (index === fileData.length - 1) {
+              if (answerCount === 3 || answerCount === 5) {
+                newQuestion.type = answerCount === 3 ? 0 : 1;
+                createNewQuestion({ ...newQuestion });
+              }
             }
           }
-        }
-      });
-      newQuestion.type = answerCount === 3 ? 0 : 1;
-      createNewQuestion({ ...newQuestion });
+        });
+        newQuestion.type = answerCount === 3 ? 0 : 1;
+        createNewQuestion({ ...newQuestion });
+        handleAlert("success", "Întrebările au fost incărcate cu succes!");
+      }
     };
 
     if (file !== undefined && getExtension(file)) {
       reader.readAsBinaryString(file);
-      handleAlert("success", "Întrebările au fost incărcate cu succes!");
     } else {
       handleAlert(
         "error",
         "Nu puteți incărca un fișier cu acest format! Puteți adăuga doar fișiere EXCEL sau CSV!"
       );
     }
-
     const input = document.getElementById("excelInputQuestion");
     input.value = "";
   };
@@ -396,18 +409,28 @@ export default function AddQuestions() {
           </Tooltip>
         </Box>
         <Box display="flex" flexDirection="row">
-          <Tooltip title="Trimite întrebările compuse" arrow placement="top">
+          <Tooltip
+            title="Trimite întrebările compuse către validare"
+            arrow
+            placement="top"
+          >
             <Button variant="contained" onClick={handleSendForValidation}>
               Trimite
             </Button>
           </Tooltip>
           <Tooltip
-            title="Salvează întrebările scrise (Ctrl + Shift + S)"
+            title={
+              <span style={{ whiteSpace: "pre-line" }}>
+                Salvează întrebările scrise local (Ctrl + Shift + S)
+                <br />
+                Acestea nu vor fi trimise către validare
+              </span>
+            }
             arrow
             placement="top"
           >
             <Button variant="contained" onClick={handleLocalSave}>
-              Salvează
+              Salvează temporar
             </Button>
           </Tooltip>
         </Box>

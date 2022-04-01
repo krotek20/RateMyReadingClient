@@ -17,7 +17,6 @@ export default function ConfirmForgotPassword() {
         }
       })
       .catch((error) => {
-        console.log(error.response);
         navigate("/login", { state: false });
       });
   }, [navigate]);

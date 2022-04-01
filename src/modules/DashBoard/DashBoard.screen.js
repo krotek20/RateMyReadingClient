@@ -3,7 +3,7 @@ import { Tooltip, Typography, Box, Skeleton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getBooksWithTries } from "../Book/Book.api";
 import "./DashBoard.scss";
-import BookAutoComplete from "../../core/BookAutoComplete/BookAutoComplete.component";
+import BookAutoComplete from "../../core/AutoComplete/Books.component";
 import BookCard from "./components/BookCard";
 import { avatarNames, convertToHoursAndMinutes } from "../../utils";
 import Legend from "../../core/Legend/Legend.component";
@@ -75,7 +75,6 @@ export default function DashBoard() {
             })
             .catch((error) => {
               if (error.response.status !== 403) {
-                console.log(error.response.data.message);
                 const [message, minutes] =
                   error.response.data.message.split(":");
                 let time;
