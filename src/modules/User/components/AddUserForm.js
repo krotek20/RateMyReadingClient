@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Tooltip, Button, TextField, Typography } from "@mui/material";
 import DatePicker from "@mui/lab/DatePicker";
-import { register } from "../User.api";
+import { register, studentBatchRegister } from "../User.api";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import XLSX from "xlsx";
@@ -9,6 +9,7 @@ import { getExtension } from "../../../utils";
 import { LoadingButton } from "@mui/lab";
 import SaveIcon from "@mui/icons-material/Save";
 import PublishIcon from "@mui/icons-material/Publish";
+import Schools from "../../../core/AutoComplete/Schools.component";
 
 const mailFormat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -17,10 +18,10 @@ export default function AddUserForm({ role }) {
     firstname: "",
     lastname: "",
     schoolId: 0,
-    birthYear: new Date().getFullYear(),
-    firstGradeRegistrationYear: new Date().getFullYear(),
+    birthYear: new Date("01.01.2000"),
+    firstGradeRegistrationYear: new Date("01.01.2000"),
     city: "",
-    email: "",
+    email: null,
   });
   const [school, setSchool] = useState({
     name: "",
@@ -75,15 +76,21 @@ export default function AddUserForm({ role }) {
   const handleAddUser = () => {
     setLoading(true);
     if (!checkUserFields()) {
-      register(user, role, school)
+      const yearUser = {
+        ...user,
+        birthYear: user.birthYear.getFullYear(),
+        firstGradeRegistrationYear:
+          user.firstGradeRegistrationYear.getFullYear(),
+      };
+      register(yearUser, role, school)
         .payload.then((res) => {
           if (res.status === 200) {
             setUser({
               firstname: "",
               lastname: "",
               schoolId: 0,
-              birthYear: new Date().getFullYear(),
-              firstGradeRegistrationYear: new Date().getFullYear(),
+              birthYear: new Date("01.01.2000"),
+              firstGradeRegistrationYear: new Date("01.01.2000"),
               city: "",
               email: "",
             });
@@ -118,6 +125,8 @@ export default function AddUserForm({ role }) {
     if (role) {
       const reader = new FileReader();
       reader.onload = (event) => {
+        setLoading(true);
+
         const binaryString = event.target.result;
         const workBook = XLSX.read(binaryString, { type: "binary" });
 
@@ -125,20 +134,21 @@ export default function AddUserForm({ role }) {
         const workSheet = workBook.Sheets[workSheetName];
 
         const fileData = XLSX.utils.sheet_to_json(workSheet, { header: 1 });
-        if (fileData[0][0].trim() === "Nume") {
+        if (fileData[0][0].trim().toLowerCase() === "nume") {
           fileData.shift();
         }
 
+        const newUsers = [];
         fileData.forEach((user) => {
           let newUser = null;
           let newSchool = null;
           if (role === "ROLE_STUDENT") {
-            newUser = {
+            newUsers.push({
               firstname: user[0].trim(),
               lastname: user[1].trim(),
-              birthYear: parseInt(user[2].trim()),
-              firstGradeRegistrationYear: parseInt(user[3].trim()),
-            };
+              birthYear: parseInt(user[2]),
+              firstGradeRegistrationYear: parseInt(user[3]),
+            });
           } else if (role === "ROLE_LOCALADMIN") {
             newUser = {
               firstname: user[0].trim(),
@@ -166,30 +176,56 @@ export default function AddUserForm({ role }) {
               email: user[2].trim(),
             };
           }
-          if (!newUser || !checkUserFields(newUser)) {
-            handleAlert(
-              "error",
-              "A apărut o eroare, vă rugăm să vă asigurați că ați completat corect utilizatorii introduși"
-            );
-          } else {
-            register(newUser, role, newSchool)
-              .payload.then((response) => {
-                if (response.status === 200) {
-                  handleAlert("success", "Utilizatori adăugați cu success!");
-                }
-              })
-              .catch((error) => {
-                if (error.response.status === 403) {
-                  navigate("/login", { replace: true });
-                } else {
-                  handleAlert(
-                    "error",
-                    "A apărut o eroare, vă rugăm să încercați din nou"
-                  );
-                }
-              });
+
+          if (role !== "ROLE_STUDENT") {
+            if (!newUser || !checkUserFields(newUser)) {
+              handleAlert(
+                "error",
+                "A apărut o eroare, vă rugăm să vă asigurați că ați completat corect utilizatorii introduși"
+              );
+            } else {
+              register(newUser, role, newSchool)
+                .payload.then((response) => {
+                  if (response.status === 200) {
+                    handleAlert("success", "Utilizatori adăugați cu success!");
+                  }
+                })
+                .catch((error) => {
+                  if (error.response.status === 403) {
+                    navigate("/login", { replace: true });
+                  } else {
+                    handleAlert(
+                      "error",
+                      "A apărut o eroare, vă rugăm să încercați din nou"
+                    );
+                  }
+                });
+            }
           }
         });
+
+        if (role === "ROLE_STUDENT") {
+          studentBatchRegister(newUsers)
+            .payload.then((response) => {
+              if (response.status === 200) {
+                handleAlert("success", "Utilizatori adăugați cu succes!");
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              if (error.response.status === 403) {
+                navigate("/login", { replace: true });
+              } else {
+                handleAlert(
+                  "error",
+                  "A apărut o eroare, vă rugăm să încercați din nou"
+                );
+              }
+              setLoading(false);
+            });
+        } else {
+          setLoading(false);
+        }
       };
 
       if (file !== undefined && getExtension(file)) {
@@ -242,6 +278,11 @@ export default function AddUserForm({ role }) {
         <TextField {...textFieldProps("lastname", "Nume")} />
         <TextField {...textFieldProps("firstname", "Prenume")} />
       </Box>
+      <Schools
+        variant="standard"
+        fullWidth={false}
+        onInputChange={(e, val) => setUser({ ...user, schoolId: val.id })}
+      />
       <Box {...boxProps()}>
         <DatePicker
           {...datePickerProps("birthYear", "Anul nașterii")}

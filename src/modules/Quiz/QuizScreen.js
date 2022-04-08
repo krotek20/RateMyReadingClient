@@ -76,14 +76,14 @@ export default function QuizScreen() {
         "Nu ai ales nicio variantă de răspuns. Ești sigur că vrei să treci la următoarea întrebare?",
         () => {
           setSelectedQuestion(selectedQuestion + 1);
-          if (selectedQuestion + 1 === 10) {
+          if (selectedQuestion === 10) {
             handleFinishQuiz();
           }
         }
       );
     } else {
       setSelectedQuestion(selectedQuestion + 1);
-      if (selectedQuestion + 1 === 10) {
+      if (selectedQuestion === 10) {
         handleFinishQuiz();
       }
     }
@@ -116,7 +116,7 @@ export default function QuizScreen() {
           handleAlert("error", "Acest chestionar a fost deja completat!");
           navigate("/");
         } else {
-          navigate("/login");
+          navigate("/login", { replace: true });
         }
       });
   };
@@ -177,7 +177,7 @@ export default function QuizScreen() {
         </Box>
       </Box>
       <Question
-        questionIndex={selectedQuestion - 1}
+        question={quiz.questions[selectedQuestion - 1]}
         selectedAnswer={selectedAnswers[selectedQuestion - 1]}
       />
       <Box
@@ -187,19 +187,6 @@ export default function QuizScreen() {
           justifyContent: "flex-end",
         }}
       >
-        {/* <Tooltip title="Întrebarea anterioară" arrow placement="bottom">
-          <Button
-            variant="contained"
-            size="medium"
-            onClick={decrementQuestion}
-            sx={{
-              visibility: `${selectedQuestion > 1 ? "visible" : "hidden"}`,
-              m: 2,
-            }}
-          >
-            Înapoi
-          </Button>
-        </Tooltip> */}
         <Tooltip
           title={
             selectedQuestion < 10
@@ -213,7 +200,7 @@ export default function QuizScreen() {
             variant="contained"
             size="medium"
             onClick={
-              selectedQuestion < 10
+              selectedQuestion <= 10
                 ? () => incrementQuestion(selectedQuestion - 1)
                 : handleFinishQuiz
             }

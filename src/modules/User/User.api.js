@@ -45,6 +45,15 @@ export const register = (user, role, school) => {
   }
 };
 
+export const studentBatchRegister = (users) => {
+  return {
+    type: "REGISTER_BATCH_STUDENTS",
+    payload: axios.post("/registerStudentBatch", users, {
+      headers: { Authorization: `Bearer ${getAccessToken()}` },
+    }),
+  };
+};
+
 export const resetPassword = (body) => {
   return {
     type: "RESET_PASSWORD",

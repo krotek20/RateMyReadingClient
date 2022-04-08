@@ -300,8 +300,11 @@ export default function AddQuestions() {
 
       handleAlert(
         "success",
-        "Întrebările au fost trimise cu succes catre validare"
+        user.roles.includes("ROLE_SUPERADMIN")
+          ? "Întrebările au fost adăugate cu succes!"
+          : "Întrebările au fost trimise cu succes catre validare!"
       );
+
       dispatch(removeAll());
       dispatch(setCurrentBook(null));
     } else {

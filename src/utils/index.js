@@ -3,10 +3,12 @@ import BookIcon from "@mui/icons-material/Book";
 import HomeIcon from "@mui/icons-material/Home";
 import QuizIcon from "@mui/icons-material/Quiz";
 import EditIcon from "@mui/icons-material/Edit";
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import DashBoard from "../modules/DashBoard/DashBoard.screen";
+import StartQuiz from "../modules/Start/StartQuiz.screen";
 import AddQuestions from "../modules/Question/Question.screen";
 import QuizScreen from "../modules/Quiz/QuizScreen";
 import ApprovedQuestions from "../modules/Question/ApprovedQuestions.screen";
@@ -26,6 +28,13 @@ const dashBoardScreen = {
   screen: <DashBoard />,
 };
 
+const startQuiz = {
+  name: "Începe chestionar",
+  href: "start",
+  icon: <PlayCircleOutlineIcon />,
+  screen: <StartQuiz />,
+};
+
 const booksScreen = {
   name: "Listă cărți",
   href: "carti",
@@ -41,7 +50,7 @@ const addQuestionsScreen = {
 };
 
 const quizScreen = {
-  href: "quiz/:quizId",
+  href: "start/quiz/:quizId",
   screen: <QuizScreen />,
 };
 
@@ -60,7 +69,7 @@ const deniedQuestionsScreen = {
 };
 
 const finishScreen = {
-  href: "quiz/:quizId/finish",
+  href: "start/quiz/:quizId/finish",
   screen: <FinishScreen />,
 };
 
@@ -83,10 +92,11 @@ const divider = {
   screen: "divider",
 };
 
-export const childSections = [dashBoardScreen];
+export const childSections = [dashBoardScreen, startQuiz];
 
 export const teacherSections = [
   dashBoardScreen,
+  startQuiz,
   divider,
   addUserScreen,
   modifyUserScreen,
@@ -94,12 +104,14 @@ export const teacherSections = [
 
 export const contributorSections = [
   dashBoardScreen,
+  startQuiz,
   divider,
   addQuestionsScreen,
 ];
 
 export const localAdminSections = [
   dashBoardScreen,
+  startQuiz,
   divider,
   addUserScreen,
   modifyUserScreen,
@@ -107,6 +119,7 @@ export const localAdminSections = [
 
 export const superAdminSections = [
   dashBoardScreen,
+  startQuiz,
   booksScreen,
   divider,
   addQuestionsScreen,

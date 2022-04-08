@@ -19,7 +19,7 @@ export default function AddUser() {
     if (user.roles.includes("ROLE_SUPERADMIN")) {
       return 1;
     }
-    if (user.roles.includes("ROLE_LOCALADMIn")) {
+    if (user.roles.includes("ROLE_LOCALADMIN")) {
       return 2;
     }
     if (user.roles.includes("ROLE_PROFESSOR")) {
@@ -57,7 +57,7 @@ export default function AddUser() {
           label="Rol"
           onChange={(e) => setRole(e.target.value)}
         >
-          {(checkRole() === 2 || checkRole() === 3) && (
+          {checkRole() !== 0 && (
             <MenuItem key="ROLE_STUDENT" value="ROLE_STUDENT">
               Elev
             </MenuItem>

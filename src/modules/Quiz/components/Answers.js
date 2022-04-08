@@ -36,7 +36,7 @@ export default function Answers({ labels, handleIsAnswered, selectedAnswer }) {
         Alege un răspuns
       </FormLabel>
       <RadioGroup aria-label="raspunsuri" name="radio-buttons-group">
-        {labels.map((label, index) => (
+        {labels.map((label) => (
           <Box
             sx={{
               display: "flex",
@@ -45,14 +45,14 @@ export default function Answers({ labels, handleIsAnswered, selectedAnswer }) {
               flex: 1,
               alignItems: "center",
             }}
-            key={label}
+            key={label.index}
           >
-            <Radio {...controlProps(label, index + 1)} />
+            <Radio {...controlProps(label.answer, label.index)} />
             <Typography
               sx={{ fontSize: 18, cursor: "pointer", userSelect: "none" }}
-              onClick={() => handleChange(index + 1)}
+              onClick={() => handleChange(label.index)}
             >
-              {label}
+              {label.answer}
             </Typography>
           </Box>
         ))}

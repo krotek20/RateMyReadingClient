@@ -2,16 +2,15 @@ import React from "react";
 import "../Quiz.scss";
 import { Typography, Box } from "@mui/material";
 import Answers from "./Answers";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateAnswer } from "../../../redux/Quiz/Quiz";
 
-export default function Question({ questionIndex, selectedAnswer }) {
-  const questions = useSelector((state) => state.quiz.questions);
+export default function Question({ question, selectedAnswer }) {
   const dispatch = useDispatch();
 
-  return questions.length > 0 ? (
+  return question ? (
     <Box
-      key={questionIndex}
+      key={question.id}
       className="container_question"
       sx={{
         "&:hover": {
@@ -20,24 +19,15 @@ export default function Question({ questionIndex, selectedAnswer }) {
       }}
     >
       <Typography variant="h6" sx={{ userSelect: "none" }}>
-        {questions[questionIndex].question}
+        {question.question}
       </Typography>
       <Answers
-        labels={
-          questions[questionIndex].type === 0
-            ? ["Adevărat", "Fals"]
-            : [
-                questions[questionIndex].answer1,
-                questions[questionIndex].answer2,
-                questions[questionIndex].answer3,
-                questions[questionIndex].answer4,
-              ]
-        }
+        labels={question.answers}
         handleIsAnswered={(chosenAnswer) => {
           selectedAnswer = chosenAnswer;
           dispatch(
             updateAnswer({
-              questionId: questions[questionIndex].id,
+              questionId: question.id,
               correctAnswer: chosenAnswer,
             })
           );

@@ -44,7 +44,7 @@ const drawerWidth = 240;
 const styles = (theme) => ({
   root: {
     flex: 1,
-    padding: "15px",
+    // padding: "15px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",

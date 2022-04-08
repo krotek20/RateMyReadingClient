@@ -44,7 +44,7 @@ export default function ModifyUser() {
     if (user.roles.includes("ROLE_SUPERADMIN")) {
       return 1;
     }
-    if (user.roles.includes("ROLE_LOCALADMIn")) {
+    if (user.roles.includes("ROLE_LOCALADMIN")) {
       return 2;
     }
     if (user.roles.includes("ROLE_PROFESSOR")) {
@@ -299,7 +299,7 @@ export default function ModifyUser() {
           autoComplete="new-school"
         />
       ) : (
-        <Schools />
+        <Schools variant="outlined" fullWidth={true} onInputChange={() => {}} />
       )}
       <FormGroup>
         <FormControlLabel

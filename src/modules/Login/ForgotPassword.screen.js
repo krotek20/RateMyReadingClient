@@ -37,7 +37,7 @@ export default function ForgotPassword() {
           }
         }
       })
-      .catch(() => {
+      .catch((error) => {
         handleAlert("error", "Numele de utilizator nu este valid");
         setLoading(false);
       });
@@ -46,7 +46,6 @@ export default function ForgotPassword() {
   return (
     <Box
       sx={{
-        flex: 5,
         borderRadius: "10px",
         padding: "10px",
         bgcolor: "#f8f9fa",

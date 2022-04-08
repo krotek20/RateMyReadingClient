@@ -3,7 +3,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import { getSchools } from "../../config/School.api";
 import { useNavigate } from "react-router-dom";
 
-export default function Schools() {
+export default function Schools({ variant, fullWidth, onInputChange }) {
   const [schools, setSchools] = useState([]);
   const navigate = useNavigate();
 
@@ -11,7 +11,7 @@ export default function Schools() {
     getSchools()
       .payload.then((response) => {
         if (response.status === 200) {
-          setSchools([...response.data.map((school) => school.name)]);
+          setSchools([...response.data]);
         }
       })
       .catch((error) => {
@@ -24,18 +24,24 @@ export default function Schools() {
   return (
     <Autocomplete
       disablePortal
-      fullWidth
       id="schoolsAutoComplete"
+      sx={{ mx: 1.2, mb: 1.5 }}
       options={schools}
+      fullWidth={fullWidth}
+      getOptionLabel={(option) => option.name}
+      isOptionEqualToValue={(option, value) => option === value}
       renderInput={(params) => (
         <TextField
           {...params}
           margin="normal"
           label="Școli"
+          fullWidth
           required
           name="school"
+          variant={variant}
         />
       )}
+      onChange={onInputChange}
     />
   );
 }

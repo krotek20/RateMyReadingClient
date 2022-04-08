@@ -8,6 +8,7 @@ import thunk from "redux-thunk";
 import QuizResultReducer from "./Quiz/QuizResult";
 import BadgeReducer from "./Badge/Badge";
 import CurrentBookReducer from "./Book/CurrentBook";
+import ColorReducer from "./Color/Color";
 
 const persistConfig = {
   timeout: 2000,
@@ -22,6 +23,7 @@ const reducers = combineReducers({
   quizResult: QuizResultReducer,
   badge: BadgeReducer,
   currentBook: CurrentBookReducer,
+  color: ColorReducer,
 });
 
 export const store = configureStore({
