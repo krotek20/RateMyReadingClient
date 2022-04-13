@@ -48,10 +48,10 @@ export default function AddUserForm({ role }) {
         console.log("lastname", user.lastname);
         console.log("email", user.email);
         console.log(
-          !user.firstname ||
-            !user.lastname ||
-            !user.email ||
-            !user.email.match(mailFormat)
+          !user.firstname,
+          !user.lastname,
+          !user.email,
+          !user.email.match(mailFormat)
         );
         return (
           !user.firstname ||
