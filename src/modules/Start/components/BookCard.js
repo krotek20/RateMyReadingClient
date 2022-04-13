@@ -38,11 +38,12 @@ export default function BookCard({ book }) {
         de {book.author}
       </Typography>
       <br></br>
+      <br></br>
       <Typography {...typographyProps(13, "flex-start")}>
         Dificultate: {book.difficulty}
       </Typography>
       <Typography {...typographyProps(13, "flex-start")}>
-        Puncte: {book.points}
+        Total puncte: {book.points}
       </Typography>
       <Typography {...typographyProps(13, "flex-start")}>
         Număr de încercări rămase: {2 - book.attempts}/2

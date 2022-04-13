@@ -11,8 +11,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import PublishIcon from "@mui/icons-material/Publish";
 import Schools from "../../../core/AutoComplete/Schools.component";
 
-const mailFormat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-
+const mailFormat = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
 export default function AddUserForm({ role }) {
   const [user, setUser] = useState({
     firstname: "",
@@ -21,7 +20,7 @@ export default function AddUserForm({ role }) {
     birthYear: new Date("01.01.2000"),
     firstGradeRegistrationYear: new Date("01.01.2000"),
     city: "",
-    email: null,
+    email: "",
   });
   const [school, setSchool] = useState({
     name: "",
@@ -250,7 +249,7 @@ export default function AddUserForm({ role }) {
     id: `${item}-field`,
     label: label,
     variant: "standard",
-    defaultValue: user[item],
+    value: user[item],
     onChange: (e) => setUser({ ...user, [`${item}`]: e.target.value }),
   });
 

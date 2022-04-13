@@ -4,7 +4,14 @@ import XLSX from "xlsx";
 import Search from "../../core/Search/Search.component";
 import Legend from "../../core/Legend/Legend.component";
 import { getBooks, createBook, deleteBook } from "./Book.api";
-import { Typography, Box, Button, Tooltip } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Button,
+  Tooltip,
+  Skeleton,
+  Stack,
+} from "@mui/material";
 import { useSnackbar } from "notistack";
 import "fontsource-roboto";
 import "../Layout/Layout.css";
@@ -13,11 +20,13 @@ import ConfirmDialog, {
   confirmDialog,
 } from "../../core/Dialogs/ConfirmDialog.component";
 import { localeIncludes, getExtension } from "../../utils";
+import ImportContactsIcon from "@mui/icons-material/ImportContacts";
 
 function BooksImport() {
   const [books, setBooks] = useState([]);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
+  const [loading, isLoading] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -56,9 +65,16 @@ function BooksImport() {
   }, [search, filter, books]);
 
   useEffect(() => {
+    isLoading(true);
     getBooks()
-      .payload.then((response) => setBooks(response.data))
+      .payload.then((response) => {
+        if (response.status === 200) {
+          setBooks(response.data);
+        }
+        isLoading(false);
+      })
       .catch((error) => {
+        isLoading(false);
         if (error.response.status === 403) {
           navigate("/login", { replace: true });
         }
@@ -171,17 +187,50 @@ function BooksImport() {
           <Legend onClick={(e) => setFilter(filter === e ? "" : e)} clickable />
         </Box>
       )}
-      <BookList
-        books={filteredBooks}
-        onDelete={(id) =>
-          confirmDialog("Ești sigur că dorești să ștergi acestă carte?", () =>
-            handleDelete(id)
-          )
-        }
-      />
+      {!loading ? (
+        <BookList
+          books={filteredBooks}
+          onDelete={(id) =>
+            confirmDialog("Ești sigur că dorești să ștergi acestă carte?", () =>
+              handleDelete(id)
+            )
+          }
+        />
+      ) : (
+        <Stack spacing={1} mt={2} mb={1}>
+          <Skeleton
+            sx={{ bgcolor: "primary" }}
+            animation="wave"
+            variant="rectangular"
+            width={360}
+            height={56}
+          />
+          <Skeleton
+            sx={{ bgcolor: "primary" }}
+            animation="wave"
+            variant="text"
+          />
+          <Skeleton
+            sx={{ bgcolor: "primary" }}
+            animation="wave"
+            variant="text"
+          />
+          <Skeleton
+            sx={{ bgcolor: "primary" }}
+            animation="wave"
+            variant="rectangular"
+            width={360}
+            height={316}
+          />
+        </Stack>
+      )}
       <ConfirmDialog />
       <Tooltip title="Selecteaza un excel sau un csv" arrow>
-        <Button variant="contained" component="label">
+        <Button
+          variant="contained"
+          component="label"
+          startIcon={<ImportContactsIcon />}
+        >
           Adaugă cărți
           <input
             id="excelInputBook"

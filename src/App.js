@@ -13,54 +13,50 @@ import { setColors } from "./redux/Color/Color";
 import { ro } from "date-fns/locale";
 axios.defaults.baseURL = AppConfig;
 
-const randomColor = () =>
-  `#${((Math.random() * 0xffffff) << 0).toString(16).padStart(6, "0")}`;
+const getLightness = () => {
+  return 20 + 50 * Math.random();
+};
 
-const convertToDarken = (hex, percent) => {
-  // strip the leading # if it's there
-  hex = hex.replace(/^\s*#|\s*$/g, "");
+const getColor = () => {
+  return 360 * Math.random();
+};
 
-  // convert 3 char codes --> 6, e.g. `E0F` --> `EE00FF`
-  if (hex.length === 3) {
-    hex = hex.replace(/(.)/g, "$1$1");
+const getSaturation = (lightness) => {
+  if (!lightness) {
+    lightness = 20;
   }
+  return 100 - lightness + 20 * Math.random();
+};
 
-  const r = parseInt(hex.substr(0, 2), 16),
-    g = parseInt(hex.substr(2, 2), 16),
-    b = parseInt(hex.substr(4, 2), 16);
+const randomColor = () => {
+  const color = getColor();
+  const lightness = getLightness();
+  const saturation = getSaturation(lightness);
 
-  return (
-    "#" +
-    (0 | ((1 << 8) + r * (1 - percent / 100))).toString(16).substring(1) +
-    (0 | ((1 << 8) + g * (1 - percent / 100))).toString(16).substring(1) +
-    (0 | ((1 << 8) + b * (1 - percent / 100))).toString(16).substring(1)
-  );
+  // return random color and his darken version
+  return [
+    `hsl(${color}, ${saturation}%, ${lightness}%)`,
+    `hsl(${color}, ${saturation}%, ${lightness / 2}%)`,
+  ];
 };
 
 const App = () => {
-  const firstColor = randomColor();
-  const [primary, setPrimary] = useState(firstColor);
-  const [darkenPrimary, setDarkenPrimary] = useState(
-    convertToDarken(firstColor, 30)
-  );
+  const [palette, setPalette] = useState(randomColor());
   const dispatch = useDispatch();
 
   const theme = useMemo(() => {
-    dispatch(setColors({ primary: primary, secondary: darkenPrimary }));
+    dispatch(setColors({ primary: palette[0], secondary: palette[1] }));
     return createTheme({
       palette: {
-        primary: { main: primary },
-        secondary: { main: darkenPrimary },
-        text: { primary: darkenPrimary },
+        primary: { main: palette[0] },
+        secondary: { main: palette[1] },
+        text: { primary: palette[1] },
       },
     });
-  }, [primary, darkenPrimary, dispatch]);
+  }, [palette, dispatch]);
 
   const setRandomPrimary = () => {
-    const color = randomColor();
-    const darkenColor = convertToDarken(color, 30);
-    setPrimary(color);
-    setDarkenPrimary(darkenColor);
+    setPalette(randomColor());
   };
 
   return (

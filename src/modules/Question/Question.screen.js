@@ -24,6 +24,10 @@ import { getId } from "../Login/Login.api";
 import { incremenetUnapprovedQuestions } from "../../redux/Badge/Badge";
 import { getExtension } from "../../utils";
 import { useDecode } from "../../hooks/useDecode";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import PublishIcon from "@mui/icons-material/Publish";
+import SendIcon from "@mui/icons-material/Send";
+import SaveIcon from "@mui/icons-material/Save";
 
 export default function AddQuestions() {
   const [books, setBooks] = useState([]);
@@ -389,7 +393,11 @@ export default function AddQuestions() {
           alignItems="center"
         >
           <Tooltip title="Adaugă o nouă întrebare" arrow placement="top">
-            <Button variant="contained" onClick={handleAddQuestion}>
+            <Button
+              startIcon={<AddCircleOutlineIcon />}
+              variant="contained"
+              onClick={handleAddQuestion}
+            >
               Adaugă întrebare
             </Button>
           </Tooltip>
@@ -398,7 +406,11 @@ export default function AddQuestions() {
             arrow
             placement="top"
           >
-            <Button variant="contained" component="label">
+            <Button
+              variant="contained"
+              component="label"
+              startIcon={<PublishIcon />}
+            >
               <input
                 id="excelInputQuestion"
                 className="input"
@@ -417,7 +429,11 @@ export default function AddQuestions() {
             arrow
             placement="top"
           >
-            <Button variant="contained" onClick={handleSendForValidation}>
+            <Button
+              variant="contained"
+              onClick={handleSendForValidation}
+              startIcon={<SendIcon />}
+            >
               Trimite
             </Button>
           </Tooltip>
@@ -432,7 +448,11 @@ export default function AddQuestions() {
             arrow
             placement="top"
           >
-            <Button variant="contained" onClick={handleLocalSave}>
+            <Button
+              variant="contained"
+              onClick={handleLocalSave}
+              startIcon={<SaveIcon />}
+            >
               Salvează temporar
             </Button>
           </Tooltip>

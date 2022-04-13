@@ -63,13 +63,19 @@ export default function QuizzesByDifficulty() {
       <Typography variant="h6" mb={2}>
         Numărul de chestionare create pentru fiecare dificultate
       </Typography>
-      <Pie
-        data={data}
-        colors={diffColors}
-        innerRadius={0.5}
-        marginTop={20}
-        marginBottom={60}
-      />
+      {data.length !== 0 ? (
+        <Pie
+          data={data}
+          colors={diffColors}
+          innerRadius={0.5}
+          marginTop={20}
+          marginBottom={60}
+        />
+      ) : (
+        <Typography color="secondary" fontSize={18} my={10}>
+          Nu există date de afișat
+        </Typography>
+      )}
     </Box>
   );
 }

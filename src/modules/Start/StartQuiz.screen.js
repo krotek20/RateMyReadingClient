@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Tooltip, Typography, Box, Skeleton } from "@mui/material";
+import { Tooltip, Typography, Box, Skeleton, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getBooksWithTries } from "../Book/Book.api";
 import "./StartQuiz.scss";
@@ -130,27 +130,47 @@ export default function StartQuiz() {
   };
 
   return (
-    <Box className="container_first">
-      <Box>
-        <Typography
-          color="secondary"
-          variant="h5"
-          component="div"
-          sx={{ my: 2, textAlign: "center" }}
-        >
-          Selectează o carte și începe!
-        </Typography>
-        <Legend onClick={() => {}} />
-      </Box>
-      <Box className="container_second">
-        <Box
-          sx={{ justifyContent: "center", alignItems: "center", flex: 1, m: 4 }}
-        >
-          <BookAutoComplete
-            books={books}
-            bookSelection={(book) => dispatch(setCurrentBook(book))}
-            difficulty={true}
-          />
+    <Grid
+      container
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        textAlign: "center",
+        alignItems: "center",
+        justifyContent: "space-between",
+        height: "70vh",
+      }}
+    >
+      <Typography color="secondary" variant="h5" sx={{ my: 2 }}>
+        Selectează o carte și începe!
+      </Typography>
+      <Grid
+        container
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          textAlign: "center",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Grid item>
+          <Legend onClick={() => {}} />
+          {loading ? (
+            <Skeleton
+              variant="rectangle"
+              width={300}
+              height={56}
+              animation="wave"
+              sx={{ my: 1 }}
+            />
+          ) : (
+            <BookAutoComplete
+              books={books}
+              bookSelection={(book) => dispatch(setCurrentBook(book))}
+              difficulty={true}
+            />
+          )}
           <Box
             sx={{
               mt: 2,
@@ -185,10 +205,12 @@ export default function StartQuiz() {
               </Tooltip>
             )}
           </Box>
-        </Box>
-        <BookCard book={book} />
-      </Box>
-      <Box></Box>
-    </Box>
+        </Grid>
+        <Grid item>
+          <BookCard book={book} />
+        </Grid>
+      </Grid>
+      <Grid item></Grid>
+    </Grid>
   );
 }

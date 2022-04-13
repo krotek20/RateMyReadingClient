@@ -32,7 +32,7 @@ const Copyright = (props) => {
         color="inherit"
         href="https://caravanalecturiireact-gu67xo22hq-lm.a.run.app"
       >
-        Website
+        Caravana Lecturii
       </Link>
       {` ${new Date().getFullYear()}`}
       {"."}

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { quizSubmit } from "./Quiz.api";
 import { addQuizResult } from "../../redux/Quiz/QuizResult";
 import { useSnackbar } from "notistack";
-import { minTwoDigits, getTextColor } from "../../utils";
+import { minTwoDigits } from "../../utils";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import DoneIcon from "@mui/icons-material/Done";
 import ConfirmDialog, {
@@ -162,12 +162,12 @@ export default function QuizScreen() {
                 color: `${
                   selectedAnswers[item] ||
                   item + 1 === parseInt(selectedQuestion)
-                    ? getTextColor(theme.palette.secondary.main)
+                    ? theme.palette.secondary.contrastText
                     : "black"
                 }`,
                 "&:hover, &:active": {
                   bgcolor: "secondary.main",
-                  color: `${getTextColor(theme.palette.secondary.main)}`,
+                  color: theme.palette.secondary.contrastText,
                 },
               }}
             >

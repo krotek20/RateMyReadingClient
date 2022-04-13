@@ -22,7 +22,6 @@ import { logout } from "./Logout.api";
 import {
   getNoOfDeniedQuestions,
   getNoOfUnapprovedQuestions,
-  getTextColor,
   unIndexedSections,
 } from "../../utils";
 import create from "zustand";
@@ -44,7 +43,6 @@ const drawerWidth = 240;
 const styles = (theme) => ({
   root: {
     flex: 1,
-    // padding: "15px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -73,7 +71,7 @@ const MyToolbar = withStyles(styles)(
     title,
     onMenuClick,
     onLogoutClick,
-    bgColor,
+    color,
     noOfPendingQuestions,
     role,
   }) => (
@@ -88,10 +86,10 @@ const MyToolbar = withStyles(styles)(
             >
               {role === "ROLE_SUPERADMIN" ? (
                 <Badge badgeContent={noOfPendingQuestions} color="error">
-                  <MenuIcon style={{ fill: getTextColor(bgColor) }} />
+                  <MenuIcon style={{ fill: color }} />
                 </Badge>
               ) : (
-                <MenuIcon style={{ fill: getTextColor(bgColor) }} />
+                <MenuIcon style={{ fill: color }} />
               )}
             </IconButton>
           </Tooltip>
@@ -100,7 +98,7 @@ const MyToolbar = withStyles(styles)(
           </Typography>
           <Tooltip title="Deconectare" arrow>
             <IconButton aria-label="Logout" onClick={() => onLogoutClick()}>
-              <LogoutIcon style={{ fill: getTextColor(bgColor) }} />
+              <LogoutIcon style={{ fill: color }} />
             </IconButton>
           </Tooltip>
         </Toolbar>
@@ -231,7 +229,7 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
         title={title}
         onMenuClick={toggleDrawer}
         onLogoutClick={handleLogout}
-        bgColor={theme.palette.primary.main}
+        color={theme.palette.primary.contrastText}
         noOfPendingQuestions={noOfQuestions}
         role={user.roles[0]}
       />
