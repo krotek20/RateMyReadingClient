@@ -71,3 +71,12 @@ export const updateUser = (user) => {
     }),
   };
 };
+
+export const deductPoints = (username, points) => {
+  return {
+    type: "DEDUCT_POINTS",
+    payload: axios.get(`/deductPoints?username=${username}&points=${points}`, {
+      headers: { Authorization: `Bearer ${getAccessToken()}` },
+    }),
+  };
+};

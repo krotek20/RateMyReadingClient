@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Typography,
   Box,
@@ -13,8 +13,9 @@ import PersonOffIcon from "@mui/icons-material/PersonOff";
 import PersonIcon from "@mui/icons-material/Person";
 import SchoolIcon from "@mui/icons-material/School";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
+import NumbersIcon from "@mui/icons-material/Numbers";
 import VerticalTabs from "../../core/Tabs/VerticalTabs.component";
-import { resetPassword, updateUser } from "./User.api";
+import { deductPoints, resetPassword, updateUser } from "./User.api";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
@@ -27,6 +28,7 @@ export default function ModifyUser() {
   const [randomGenerate, setRandomGenerate] = useState(false);
   const [newSchool, setNewSchool] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [currentRole, setCurrentRole] = useState(0);
   const [validate, setValidate] = useState({
     username: true,
     email: true,
@@ -39,19 +41,18 @@ export default function ModifyUser() {
     enqueueSnackbar(message, { variant });
   };
 
-  const checkRole = () => {
+  useEffect(() => {
     const user = decode();
     if (user.roles.includes("ROLE_SUPERADMIN")) {
-      return 1;
+      setCurrentRole(1);
     }
     if (user.roles.includes("ROLE_LOCALADMIN")) {
-      return 2;
+      setCurrentRole(2);
     }
     if (user.roles.includes("ROLE_PROFESSOR")) {
-      return 3;
+      setCurrentRole(3);
     }
-    return 0;
-  };
+  }, [decode]);
 
   const handleInactivateUser = (event) => {
     setLoading(true);
@@ -71,12 +72,12 @@ export default function ModifyUser() {
         }
       })
       .catch((error) => {
+        setLoading(false);
         if (error.response.status === 403) {
           navigate("/login", { replace: true });
         } else {
           setValidate({ ...validate, username: false });
         }
-        setLoading(false);
       });
   };
 
@@ -155,6 +156,7 @@ export default function ModifyUser() {
         }
       })
       .catch((error) => {
+        setLoading(false);
         if (error.response.status === 403) {
           navigate("/login", { replace: true });
         } else {
@@ -167,7 +169,6 @@ export default function ModifyUser() {
             setValidate({ ...validate, username: false });
           }
         }
-        setLoading(false);
       });
   };
 
@@ -255,12 +256,12 @@ export default function ModifyUser() {
         }
       })
       .catch((error) => {
+        setLoading(false);
         if (error.response.status === 403) {
           navigate("/login", { replace: true });
         } else {
           setValidate({ ...validate, username: false });
         }
-        setLoading(false);
       });
   };
 
@@ -358,12 +359,12 @@ export default function ModifyUser() {
           }
         })
         .catch((error) => {
+          setLoading(false);
           if (error.response.status === 403) {
             navigate("/login", { replace: true });
           } else {
             setValidate({ ...validate, username: false });
           }
-          setLoading(false);
         });
     }
   };
@@ -427,6 +428,101 @@ export default function ModifyUser() {
     </>
   );
 
+  const handleExtractPoints = (event) => {
+    setLoading(true);
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const username = data.get("username");
+    const points = data.get("points");
+    deductPoints(username, points)
+      .payload.then((resp) => {
+        if (resp.status === 200) {
+          handleAlert(
+            "success",
+            `Puncte extrase cu succes pentru utilizatorul cu numele ${username}`
+          );
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error.response.data.message);
+        if (error.response.status === 403) {
+          navigate("/login", { replace: true });
+        } else {
+          if (error.response.data.message === "User not found") {
+            setValidate({ ...validate, username: false });
+          } else if (error.response.data.message === "Puncte insuficiente") {
+            handleAlert(
+              "error",
+              `Utilizatorul ${username} nu are suficiente puncte!`
+            );
+          } else {
+            handleAlert(
+              "error",
+              "Nu puteți să introduceți un număr negativ de puncte!"
+            );
+          }
+        }
+      });
+  };
+
+  const formExtractPoints = () => (
+    <>
+      <Typography fontSize={13}>
+        Introduceți numele utilizatorului căruia doriți sa îi extrageți puncte
+      </Typography>
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="username_extract_points"
+        label="Numele utilizatorului"
+        name="username"
+        autoComplete="user"
+        onChange={() => setValidate({ ...validate, username: true })}
+        error={!validate.username}
+        helperText={
+          validate.username ? "" : "Nu exista un utilizator cu acest nume"
+        }
+        autoFocus
+      />
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        name="points"
+        label="Puncte extrase"
+        type="number"
+        id="points_change"
+        autoComplete="extract-points"
+        InputProps={{ inputProps: { min: 0 } }}
+      />
+      {loading ? (
+        <LoadingButton
+          sx={{ mt: 1.5 }}
+          fullWidth
+          loading
+          loadingPosition="start"
+          startIcon={<NumbersIcon />}
+          variant="contained"
+        >
+          Extrage puncte
+        </LoadingButton>
+      ) : (
+        <Button
+          sx={{ mt: 1.5 }}
+          variant="contained"
+          fullWidth
+          startIcon={<NumbersIcon />}
+          type="submit"
+        >
+          Extrage puncte
+        </Button>
+      )}
+    </>
+  );
+
   const wrapper = (renderFunction, handleSubmit) => (
     <Box
       component="form"
@@ -446,7 +542,7 @@ export default function ModifyUser() {
   return (
     <VerticalTabs
       tabs={
-        checkRole() === 1
+        currentRole === 1
           ? [
               {
                 children: wrapper(formResetPassword, handleResetPassword),
@@ -464,8 +560,23 @@ export default function ModifyUser() {
                 children: wrapper(formChangeEmail, handleChangeEmail),
                 label: "Schimbă email",
               },
+              {
+                children: wrapper(formExtractPoints, handleExtractPoints),
+                label: "Extrage puncte",
+              },
             ]
-          : checkRole() === 2 || checkRole() === 3
+          : currentRole === 2
+          ? [
+              {
+                children: wrapper(formResetPassword, handleResetPassword),
+                label: "Resetează parola",
+              },
+              {
+                children: wrapper(formExtractPoints, handleExtractPoints),
+                label: "Extrage puncte",
+              },
+            ]
+          : currentRole === 3
           ? [
               {
                 children: wrapper(formResetPassword, handleResetPassword),

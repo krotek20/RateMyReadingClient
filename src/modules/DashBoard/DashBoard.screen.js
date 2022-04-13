@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { CssBaseline, Grid } from "@mui/material";
 // import { useSelector } from "react-redux";
 import QuizzesByDifficulty from "./components/QuizzesByDifficulty";
@@ -7,22 +7,22 @@ import QuizzesByDifficultyInPeriod from "./components/QuizzesByDifficultyInPerio
 
 export default function DashBoard() {
   // const color = useSelector((state) => state.color);
+  const [currentRole, setCurrentRole] = useState(0);
 
   const decode = useDecode();
 
-  const checkRole = () => {
+  useEffect(() => {
     const user = decode();
     if (user.roles.includes("ROLE_SUPERADMIN")) {
-      return 1;
+      setCurrentRole(1);
     }
     if (user.roles.includes("ROLE_LOCALADMIN")) {
-      return 2;
+      setCurrentRole(2);
     }
     if (user.roles.includes("ROLE_PROFESSOR")) {
-      return 3;
+      setCurrentRole(3);
     }
-    return 0;
-  };
+  }, [decode]);
 
   const gridItem = (xs, sm, md, lg, pt) => ({
     xs: xs,
@@ -53,12 +53,12 @@ export default function DashBoard() {
   return (
     <Grid container justifyContent="center" alignItems="center" width="100%">
       <CssBaseline />
-      {checkRole() === 1 && (
+      {currentRole === 1 && (
         <Grid {...gridItem(9, 9, 5, 6, 7)} item>
           <QuizzesByDifficulty />
         </Grid>
       )}
-      {checkRole() !== 0 && (
+      {currentRole !== 0 && (
         <Grid {...gridItem(9, 9, 6, 5, 12)} item>
           <QuizzesByDifficultyInPeriod />
         </Grid>

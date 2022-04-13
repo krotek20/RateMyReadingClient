@@ -55,7 +55,7 @@ export default function FinishScreen() {
       }}
     >
       <Box sx={{ flex: 1, minHeight: "50px" }}>
-        <Typography variant="h3">REZULTATE QUIZ</Typography>
+        <Typography variant="h3">SCOR</Typography>
         <Typography>{quiz.book.title}</Typography>
         <Typography>
           Finalizat în: {minTwoDigits(time.minutes)}:

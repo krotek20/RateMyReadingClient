@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   FormControl,
@@ -12,21 +12,21 @@ import { useDecode } from "../../hooks/useDecode";
 
 export default function AddUser() {
   const [role, setRole] = useState("");
+  const [currentRole, setCurrentRole] = useState(0);
   const decode = useDecode();
 
-  const checkRole = () => {
+  useEffect(() => {
     const user = decode();
     if (user.roles.includes("ROLE_SUPERADMIN")) {
-      return 1;
+      setCurrentRole(1);
     }
     if (user.roles.includes("ROLE_LOCALADMIN")) {
-      return 2;
+      setCurrentRole(2);
     }
     if (user.roles.includes("ROLE_PROFESSOR")) {
-      return 3;
+      setCurrentRole(3);
     }
-    return 0;
-  };
+  }, [decode]);
 
   return (
     <Box
@@ -57,27 +57,27 @@ export default function AddUser() {
           label="Rol"
           onChange={(e) => setRole(e.target.value)}
         >
-          {checkRole() !== 0 && (
+          {currentRole !== 0 && (
             <MenuItem key="ROLE_STUDENT" value="ROLE_STUDENT">
               Elev
             </MenuItem>
           )}
-          {(checkRole() === 1 || checkRole() === 2) && (
+          {(currentRole === 1 || currentRole === 2) && (
             <MenuItem key="ROLE_PROFESSOR" value="ROLE_PROFESSOR">
               Profesor
             </MenuItem>
           )}
-          {checkRole() === 1 && (
+          {currentRole === 1 && (
             <MenuItem key="ROLE_CONTRIBUTOR" value="ROLE_CONTRIBUTOR">
               Contributor
             </MenuItem>
           )}
-          {checkRole() === 1 && (
+          {currentRole === 1 && (
             <MenuItem key="ROLE_LOCALADMIN" value="ROLE_LOCALADMIN">
               Local Admin
             </MenuItem>
           )}
-          {checkRole() === 1 && (
+          {currentRole === 1 && (
             <MenuItem key="ROLE_SUPERADMIN" value="ROLE_SUPERADMIN">
               Super Admin
             </MenuItem>
