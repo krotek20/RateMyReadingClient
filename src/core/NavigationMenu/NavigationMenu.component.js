@@ -15,9 +15,11 @@ import {
   Divider,
   ListItemButton,
   Badge,
+  Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { logout } from "./Logout.api";
 import {
   getNoOfDeniedQuestions,
@@ -33,6 +35,7 @@ import {
 } from "../../redux/Badge/Badge";
 import { setCurrentBook } from "../../redux/Book/CurrentBook";
 import { useDecode } from "../../hooks/useDecode";
+import { getMyPoints } from "../../modules/User/User.api";
 
 const useDrawerStore = create(() => ({
   selected: 0,
@@ -47,6 +50,14 @@ const styles = (theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+  },
+  pointsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 20,
+    marginRight: 40,
   },
   flex: {
     flex: 1,
@@ -74,6 +85,7 @@ const MyToolbar = withStyles(styles)(
     color,
     noOfPendingQuestions,
     role,
+    points,
   }) => (
     <Fragment>
       <AppBar position="fixed">
@@ -96,6 +108,12 @@ const MyToolbar = withStyles(styles)(
           <Typography variant="h6" className={classes.flex}>
             {title}
           </Typography>
+          <Tooltip title="Punctele tale">
+            <Box className={classes.pointsContainer}>
+              <EmojiEventsIcon sx={{ mx: 1 }} />
+              <Typography>{points}</Typography>
+            </Box>
+          </Tooltip>
           <Tooltip title="Deconectare" arrow>
             <IconButton aria-label="Logout" onClick={() => onLogoutClick()}>
               <LogoutIcon style={{ fill: color }} />
@@ -178,6 +196,7 @@ const MyDrawer = withStyles(styles)(
 function NavigationMenu({ classes, variant, sections, changePrimary }) {
   const [drawer, setDrawer] = useState(false);
   const [title, setTitle] = useState("");
+  const [points, setPoints] = useState(0);
   const decode = useDecode();
   const user = decode();
 
@@ -211,13 +230,36 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
   };
 
   useEffect(() => {
-    getNoOfDeniedQuestions().then((res1) => {
-      dispatch(setDeniedQuestions(res1));
-      getNoOfUnapprovedQuestions().then((res2) => {
-        dispatch(setUnapprovedQuestions(res2));
+    if (user.roles.includes("ROLE_SUPERADMIN")) {
+      getNoOfDeniedQuestions()
+        .then((res1) => {
+          dispatch(setDeniedQuestions(res1));
+          return getNoOfUnapprovedQuestions();
+        })
+        .then((res2) => {
+          dispatch(setUnapprovedQuestions(res2));
+        })
+        .catch((error) => {
+          if (error.response.status === 403) {
+            navigate("/login", { replace: true });
+          }
+        });
+    }
+  }, [dispatch, navigate, user.roles]);
+
+  useEffect(() => {
+    getMyPoints()
+      .payload.then((response) => {
+        if (response.status === 200) {
+          setPoints(response.data);
+        }
+      })
+      .catch((error) => {
+        if (error.response.status === 403) {
+          navigate("/login", { replace: true });
+        }
       });
-    });
-  }, [dispatch]);
+  }, [navigate]);
 
   const noOfQuestions = useMemo(() => {
     return noOfDeniedQuestions + noOfUnapprovedQuestions;
@@ -232,6 +274,7 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
         color={theme.palette.primary.contrastText}
         noOfPendingQuestions={noOfQuestions}
         role={user.roles[0]}
+        points={points}
       />
       <MyDrawer
         open={drawer}

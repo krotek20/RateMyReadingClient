@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import { getSchools } from "../../config/School.api";
+import { getSchools } from "./School.api";
 import { useNavigate } from "react-router-dom";
 
 export default function Schools({ variant, fullWidth, onInputChange }) {

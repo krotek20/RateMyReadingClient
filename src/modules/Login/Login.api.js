@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAccessToken } from "axios-jwt";
+import { config } from "../../config/Api.config";
 
 export const login = (params) => {
   return {
@@ -13,9 +13,7 @@ export const login = (params) => {
 export const getId = () => {
   return {
     type: "GET_ID",
-    payload: axios.get("/id", {
-      headers: { Authorization: `Bearer ${getAccessToken()}` },
-    }),
+    payload: axios.get("/id", config()),
   };
 };
 

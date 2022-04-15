@@ -7,21 +7,25 @@ export default function Pie({
   innerRadius,
   marginTop,
   marginBottom,
+  valueFormat,
 }) {
   return (
     <ResponsivePie
       data={data}
       margin={{ top: marginTop, right: 80, bottom: marginBottom, left: 80 }}
       innerRadius={innerRadius}
+      valueFormat={valueFormat}
       padAngle={0.7}
       cornerRadius={3}
-      activeOuterRadiusOffset={8}
+      activeOuterRadiusOffset={5}
+      activeInnerRadiusOffset={3}
       borderWidth={1}
       colors={colors}
       borderColor={{
         from: "color",
         modifiers: [["darker", 0.2]],
       }}
+      sortByValue
       arcLinkLabelsSkipAngle={10}
       arcLinkLabelsTextColor="#333333"
       arcLinkLabelsThickness={2}
@@ -53,44 +57,5 @@ export default function Pie({
         },
       ]}
     />
-    // <ResponsivePie
-    //   data={data}
-    //   keys={["Număr de chestionare"]}
-    //   indexBy="nivel"
-    //   margin={{ right: 100, bottom: 70, left: 100 }}
-    //   padding={0.5}
-    //   layout="horizontal"
-    //   valueScale={{ type: "linear" }}
-    //   indexScale={{ type: "band", round: true }}
-    //   colors={color.primary}
-    //   borderColor={{
-    //     from: "color",
-    //     modifiers: [["darker", 1.6]],
-    //   }}
-    //   axisTop={null}
-    //   axisRight={null}
-    //   axisBottom={{
-    //     tickSize: 5,
-    //     tickPadding: 5,
-    //     tickRotation: 0,
-    //     legend: "Număr de chestionare",
-    //     legendPosition: "middle",
-    //     legendOffset: 32,
-    //   }}
-    //   axisLeft={{
-    //     tickSize: 5,
-    //     tickPadding: 5,
-    //     tickRotation: 0,
-    //     legend: "Nivel de dificultate",
-    //     legendPosition: "middle",
-    //     legendOffset: -70,
-    //   }}
-    //   enableGridX={true}
-    //   labelSkipWidth={12}
-    //   labelSkipHeight={12}
-    //   labelTextColor={getTextColor(color.primary)}
-    //   role="application"
-    //   ariaLabel="Chart for number of quizzes"
-    // />
   );
 }
