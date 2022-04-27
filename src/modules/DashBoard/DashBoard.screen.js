@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { CssBaseline, Grid } from "@mui/material";
+import { Box, Stack, TextField, Typography } from "@mui/material";
 import { useDecode } from "../../hooks/useDecode";
 import SuperAdminDashboard from "./screens/SuperAdminDashboard";
 import LocalAdminDashboard from "./screens/LocalAdminDashboard";
+import MobileDateRangePicker from "@mui/lab/MobileDateRangePicker";
+import StudentDashboard from "./screens/StudentDashboard";
 
 export default function DashBoard() {
   const [currentRole, setCurrentRole] = useState(0);
+  const [period, setPeriod] = useState([null, null]);
 
   const decode = useDecode();
 
@@ -20,13 +23,53 @@ export default function DashBoard() {
     if (user.roles.includes("ROLE_PROFESSOR")) {
       setCurrentRole(3);
     }
+    if (user.roles.includes("ROLE_STUDENT")) {
+      setCurrentRole(4);
+    }
   }, [decode]);
 
   return (
-    <Grid container alignItems="center" justifyContent="center" p={3}>
-      <CssBaseline />
-      {currentRole === 1 && <SuperAdminDashboard />}
-      {(currentRole === 2 || currentRole === 3) && <LocalAdminDashboard />}
-    </Grid>
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+      my={2}
+      px={2}
+    >
+      <Typography variant="h5" color="secondary" mb={1}>
+        Selectează perioada
+      </Typography>
+      <Stack spacing={3} mb={5}>
+        <MobileDateRangePicker
+          mask="__.__.____"
+          startText="Din data de"
+          endText="Până în data de"
+          cancelText="Renunță"
+          toolbarTitle="Alege perioada"
+          todayText="Astăzi"
+          clearText="Ștergeți"
+          clearable
+          value={period}
+          onChange={(newValue) => {
+            setPeriod(newValue);
+          }}
+          renderInput={(startProps, endProps) => (
+            <React.Fragment>
+              <TextField {...startProps} />
+              <Box sx={{ mx: 2, fontSize: 32 }}> - </Box>
+              <TextField {...endProps} />
+            </React.Fragment>
+          )}
+        />
+      </Stack>
+      <Box flexGrow={1}>
+        {currentRole === 1 && <SuperAdminDashboard period={period} />}
+        {(currentRole === 2 || currentRole === 3) && (
+          <LocalAdminDashboard period={period} />
+        )}
+        {currentRole === 4 && <StudentDashboard period={period} />}
+      </Box>
+    </Box>
   );
 }

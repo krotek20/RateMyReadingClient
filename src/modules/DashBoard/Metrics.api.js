@@ -125,3 +125,47 @@ export const getCorrectAnswerPercentage = () => {
     ),
   };
 };
+
+export const getSelfQuizCount = () => {
+  return {
+    type: "GET_SELF_QUIZ_COUNT",
+    payload: axios.get("/metrics/selfQuizCount", config()),
+  };
+};
+
+export const getSelfAnswersByDiff = () => {
+  return {
+    type: "GET_SELF_ANSWERS_BY_DIFFICULTY",
+    payload: axios.get(
+      "/metrics/selfCorrectAnswerPercentageByDifficulty",
+      config()
+    ),
+  };
+};
+
+export const getSelfPointsInPeriod = (start, end) => {
+  return {
+    type: "GET_SELF_POINTS_IN_PERIOD",
+    payload: axios.get(
+      `/metrics/selfPointsByPeriod?start=${start}&end=${end}`,
+      config()
+    ),
+  };
+};
+
+export const getSelfPointsDiffInPeriod = (start, end) => {
+  return {
+    type: "GET_SELF_POINTS_BY_DIFF_IN_PERIOD",
+    payload: axios.get(
+      `/metrics/selfPointsByDifficultyAndPeriod?start=${start}&end=${end}`,
+      config()
+    ),
+  };
+};
+
+export const getSelfQuizCountDiff = () => {
+  return {
+    type: "GET_SELF_QUIZ_COUNT_BY_DIFFICULTY",
+    payload: axios.get("/metrics/selfQuizCountByDifficulty", config()),
+  };
+};

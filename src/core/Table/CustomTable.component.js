@@ -57,7 +57,7 @@ export default function CustomTable({ data, header }) {
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[5, 10, 25, { value: -1, label: "Toate" }]}
               colSpan={5}
               count={data.length}
               rowsPerPage={rowsPerPage}

@@ -1,32 +1,50 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Stack, TextField } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { getTop5SchoolsInPeriod } from "../Metrics.api";
 import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
-import MobileDateRangePicker from "@mui/lab/MobileDateRangePicker";
 import Table from "../../../core/Table/CustomTable.component";
+import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
 
 const useStyles = makeStyles((theme) => ({
   container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: "10px",
+    zIndex: 10,
+    opacity: 0.75,
+    background: "#f8f7ff",
+    transition: "1s ease",
+    boxShadow:
+      "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+    "&:hover": {
+      opacity: 1,
+      background: "#fff",
+      transition: "1s ease",
+    },
+    minHeight: 350,
+    position: "relative",
+  },
+  box: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
+    padding: "10px",
+    marginTop: "20px",
   },
 }));
 
-export default function TopSchoolsInPeriod() {
+export default function TopSchoolsInPeriod({ period }) {
   const [data, setData] = useState([]);
-  const [value, setValue] = useState([null, null]);
-  const [loading, isLoading] = useState(false);
 
   const navigate = useNavigate();
   const c = useStyles();
 
   useEffect(() => {
-    isLoading(true);
-    const [start, end] = [...value];
+    const [start, end] = [...period];
     const endFinalDay = new Date(end);
     endFinalDay.setDate(endFinalDay.getDate() + 1);
     getTop5SchoolsInPeriod(
@@ -45,53 +63,35 @@ export default function TopSchoolsInPeriod() {
           });
 
           setData(newData);
-          isLoading(false);
         }
       })
       .catch((error) => {
-        isLoading(false);
         if (error.response.status === 403) {
           navigate("/login", { replace: true });
         }
       });
-  }, [navigate, value]);
+  }, [navigate, period]);
 
   return (
     <Box className={c.container}>
-      <Typography variant="h6" mb={2}>
-        Top 5 școli într-o anumită perioadă
-      </Typography>
-      <Stack spacing={3}>
-        <MobileDateRangePicker
-          mask="__.__.____"
-          startText="Din data de"
-          endText="Până în data de"
-          cancelText="Renunță"
-          toolbarTitle="Alege perioada"
-          todayText="Astăzi"
-          clearText="Ștergeți"
-          clearable
-          loading={loading}
-          value={value}
-          onChange={(newValue) => {
-            setValue(newValue);
-          }}
-          renderInput={(startProps, endProps) => (
-            <React.Fragment>
-              <TextField {...startProps} />
-              <Box sx={{ mx: 2, fontSize: 32 }}> - </Box>
-              <TextField {...endProps} />
-            </React.Fragment>
-          )}
-        />
-      </Stack>
-      {data.length !== 0 ? (
-        <Table data={data} header={["Școală", "Puncte obținute"]} />
-      ) : (
-        <Typography color="secondary" fontSize={18} my={10}>
-          Nu există date de afișat pentru perioada selectată
+      <DownloadFab
+        divId="topSchools"
+        downloadName={`top_5_scoli${
+          period[0] ? "_" + period[0].toLocaleDateString("ro-RO") : ""
+        }${period[1] ? "_" + period[1].toLocaleDateString("ro-RO") : ""}.png`}
+      />
+      <Box id="topSchools" className={c.box}>
+        <Typography variant="h6" mb={2}>
+          Top 5 școli într-o anumită perioadă
         </Typography>
-      )}
+        {data.length !== 0 ? (
+          <Table data={data} header={["Școală", "Puncte obținute"]} />
+        ) : (
+          <Typography color="secondary" fontSize={18} my={10}>
+            Nu există date de afișat pentru perioada selectată
+          </Typography>
+        )}
+      </Box>
     </Box>
   );
 }

@@ -102,12 +102,7 @@ export const teacherSections = [
   modifyUserScreen,
 ];
 
-export const contributorSections = [
-  dashBoardScreen,
-  startQuiz,
-  divider,
-  addQuestionsScreen,
-];
+export const contributorSections = [addQuestionsScreen];
 
 export const localAdminSections = [
   dashBoardScreen,

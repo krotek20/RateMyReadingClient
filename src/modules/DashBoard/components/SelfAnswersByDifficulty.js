@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Grid } from "@mui/material";
-import { getCorrectAnswerPercentage } from "../Metrics.api";
+import { getSelfAnswersByDiff } from "../Metrics.api";
 import { useNavigate } from "react-router-dom";
 import { colorByDifficulty } from "../../../utils";
 import { makeStyles } from "@mui/styles";
 import Progress from "../../../core/Charts/Progress.component";
-import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    textAlign: "center",
     borderRadius: "10px",
     zIndex: 10,
     opacity: 0.75,
@@ -24,28 +25,19 @@ const useStyles = makeStyles((theme) => ({
       background: "#fff",
       transition: "1s ease",
     },
-    minHeight: 300,
-    position: "relative",
-  },
-  box: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
+    minHeight: 250,
     padding: "10px",
-    width: "100%",
   },
 }));
 
-export default function AverageOfCorrectAnswers() {
+export default function SelfAnswersByDifficulty() {
   const [data, setData] = useState([]);
 
   const navigate = useNavigate();
   const c = useStyles();
 
   useEffect(() => {
-    getCorrectAnswerPercentage()
+    getSelfAnswersByDiff()
       .payload.then((response) => {
         if (response.status === 200) {
           const newData = [];
@@ -81,43 +73,37 @@ export default function AverageOfCorrectAnswers() {
 
   return (
     <Box className={c.container}>
-      <DownloadFab
-        divId="averageOfCorrectAnswers"
-        downloadName="medie_raspunsuri_corecte.png"
-      />
-      <Box id="averageOfCorrectAnswers" className={c.box}>
-        <Typography variant="h6" mb={2}>
-          Media răspunsurilor corecte în funcție de dificultate
+      <Typography variant="h6" mb={2}>
+        MEDIA RĂSPUNSURILOR CORECTE ÎN FUNCȚIE DE DIFICULTATE
+      </Typography>
+      {data.length !== 0 ? (
+        <Grid container>
+          {data.map((progress) => (
+            <Grid key={progress.difficulty} item xs={6}>
+              <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Typography>{progress.difficulty}</Typography>
+                <Progress
+                  value={progress.count}
+                  total={100}
+                  mb={2}
+                  mt={1}
+                  barColorPrimary={progress.barColor}
+                  colorPrimary={progress.color}
+                />
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        <Typography color="secondary" fontSize={18} my={10}>
+          Nu există date de afișat
         </Typography>
-        {data.length !== 0 ? (
-          <Grid container>
-            {data.map((progress) => (
-              <Grid key={progress.difficulty} item xs={6}>
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Typography>{progress.difficulty}</Typography>
-                  <Progress
-                    value={progress.count}
-                    total={100}
-                    mb={2}
-                    mt={1}
-                    barColorPrimary={progress.barColor}
-                    colorPrimary={progress.color}
-                  />
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        ) : (
-          <Typography color="secondary" fontSize={18} my={10}>
-            Nu există date de afișat
-          </Typography>
-        )}
-      </Box>
+      )}
     </Box>
   );
 }

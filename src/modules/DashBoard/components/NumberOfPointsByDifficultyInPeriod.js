@@ -1,37 +1,54 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Stack, TextField } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { getPointsByDiffInPeriod } from "../Metrics.api";
 import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import Bar from "../../../core/Charts/Bar.component";
-import MobileDateRangePicker from "@mui/lab/MobileDateRangePicker";
 import { colorByDifficulty } from "../../../utils";
+import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
 
 const useStyles = makeStyles((theme) => ({
   container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: "10px",
+    zIndex: 10,
+    opacity: 0.75,
+    background: "#f8f7ff",
+    transition: "1s ease",
+    boxShadow:
+      "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+    "&:hover": {
+      opacity: 1,
+      background: "#fff",
+      transition: "1s ease",
+    },
+    position: "relative",
+  },
+  box: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
-    height: 400,
+    height: 300,
     [theme.breakpoints.down("md")]: {
-      height: 350,
+      height: 250,
     },
+    padding: "50px 25px",
+    marginTop: "20px",
   },
 }));
 
-export default function NumberOfPointsByDifficultyInPeriod() {
+export default function NumberOfPointsByDifficultyInPeriod({ period }) {
   const [data, setData] = useState([]);
-  const [value, setValue] = useState([null, null]);
-  const [loading, isLoading] = useState(false);
 
   const navigate = useNavigate();
   const c = useStyles();
 
   useEffect(() => {
-    isLoading(true);
-    const [start, end] = [...value];
+    const [start, end] = [...period];
     const endFinalDay = new Date(end);
     endFinalDay.setDate(endFinalDay.getDate() + 1);
     getPointsByDiffInPeriod(
@@ -54,53 +71,35 @@ export default function NumberOfPointsByDifficultyInPeriod() {
           });
 
           setData(newData);
-          isLoading(false);
         }
       })
       .catch((error) => {
-        isLoading(false);
         if (error.response.status === 403) {
           navigate("/login", { replace: true });
         }
       });
-  }, [navigate, value]);
+  }, [navigate, period]);
 
   return (
     <Box className={c.container}>
-      <Typography variant="h6" mb={2}>
-        Numărul total de puncte pe fiecare dificultate într-o anumită perioadă
-      </Typography>
-      <Stack spacing={3}>
-        <MobileDateRangePicker
-          mask="__.__.____"
-          startText="Din data de"
-          endText="Până în data de"
-          cancelText="Renunță"
-          toolbarTitle="Alege perioada"
-          todayText="Astăzi"
-          clearText="Ștergeți"
-          clearable
-          loading={loading}
-          value={value}
-          onChange={(newValue) => {
-            setValue(newValue);
-          }}
-          renderInput={(startProps, endProps) => (
-            <React.Fragment>
-              <TextField {...startProps} />
-              <Box sx={{ mx: 2, fontSize: 32 }}> - </Box>
-              <TextField {...endProps} />
-            </React.Fragment>
-          )}
-        />
-      </Stack>
-      {data.length !== 0 ? (
-        <Bar data={data} marginTop={50} marginBottom={100} />
-      ) : (
-        <Typography color="secondary" fontSize={18} my={10}>
-          Nu există date de afișat pentru perioada selectată
+      <DownloadFab
+        divId="numberOfPoints"
+        downloadName={`numar_puncte${
+          period[0] ? "_" + period[0].toLocaleDateString("ro-RO") : ""
+        }${period[1] ? "_" + period[1].toLocaleDateString("ro-RO") : ""}.png`}
+      />
+      <Box id="numberOfPoints" className={c.box}>
+        <Typography variant="h6" mb={2}>
+          Numărul total de puncte pe fiecare dificultate într-o anumită perioadă
         </Typography>
-      )}
+        {data.length !== 0 ? (
+          <Bar data={data} marginTop={20} marginBottom={60} />
+        ) : (
+          <Typography color="secondary" fontSize={18} my={10}>
+            Nu există date de afișat pentru perioada selectată
+          </Typography>
+        )}
+      </Box>
     </Box>
   );
 }

@@ -7,7 +7,7 @@ export default function Bar({ data, marginTop, marginBottom }) {
       data={data}
       keys={["count"]}
       indexBy="difficulty"
-      margin={{ top: marginTop, right: 130, bottom: marginBottom, left: 60 }}
+      margin={{ top: marginTop, right: 120, bottom: marginBottom, left: 60 }}
       padding={0.5}
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
