@@ -6,6 +6,7 @@ import { colorByDifficulty } from "../../../utils";
 import Pie from "../../../core/Charts/Pie.component";
 import { getQuizzesByDiffPeriod } from "../Metrics.api";
 import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
+import PeriodView from "../../../core/Text/PeriodView.component";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -98,6 +99,7 @@ export default function QuizzesByDifficultyInPeriod({ period }) {
           Numărul de chestionare create pentru fiecare dificultate într-o
           anumită perioadă
         </Typography>
+        <PeriodView period={period} />
         {data.length !== 0 ? (
           <Pie
             data={data}

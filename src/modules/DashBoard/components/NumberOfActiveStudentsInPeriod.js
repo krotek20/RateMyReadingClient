@@ -5,6 +5,7 @@ import Progress from "../../../core/Charts/Progress.component";
 import { getActiveStudentsByPeriod, getTotalStudents } from "../Metrics.api";
 import { useNavigate } from "react-router-dom";
 import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
+import PeriodView from "../../../core/Text/PeriodView.component";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -82,6 +83,7 @@ export default function NumberOfActiveStudentsInPeriod({ period }) {
           Elevii care au rezolvat cel puțin un chestionar într-o anumită
           perioadă
         </Typography>
+        <PeriodView period={period} />
         <Progress value={active} total={total} mb={5} mt={2} />
         <Typography fontSize={14}>Numărul elevilor activi: {active}</Typography>
         <Typography fontSize={14}>Numărul total de elevi: {total}</Typography>

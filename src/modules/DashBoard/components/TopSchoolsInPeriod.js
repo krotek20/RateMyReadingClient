@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import Table from "../../../core/Table/CustomTable.component";
 import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
+import PeriodView from "../../../core/Text/PeriodView.component";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -84,6 +85,7 @@ export default function TopSchoolsInPeriod({ period }) {
         <Typography variant="h6" mb={2}>
           Top 5 școli într-o anumită perioadă
         </Typography>
+        <PeriodView period={period} />
         {data.length !== 0 ? (
           <Table data={data} header={["Școală", "Puncte obținute"]} />
         ) : (

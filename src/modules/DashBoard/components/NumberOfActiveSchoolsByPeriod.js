@@ -5,6 +5,7 @@ import Progress from "../../../core/Charts/Progress.component";
 import { getActiveSchoolsByPeriod, getTotalSchools } from "../Metrics.api";
 import { useNavigate } from "react-router-dom";
 import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
+import PeriodView from "../../../core/Text/PeriodView.component";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -82,6 +83,7 @@ export default function NumberOfActiveSchoolsInPeriod({ period }) {
           Școlile în care cel puțin 10 elevi au rezolvat un chestionar într-o
           anumită perioadă
         </Typography>
+        <PeriodView period={period} />
         <Progress value={active} total={total} mb={5} mt={2} />
         <Typography fontSize={14}>Numărul școlilor active: {active}</Typography>
         <Typography fontSize={14}>Numărul total de școli: {total}</Typography>

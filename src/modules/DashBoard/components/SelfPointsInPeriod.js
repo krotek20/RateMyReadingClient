@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useNavigate } from "react-router-dom";
 import { getSelfPointsInPeriod } from "../Metrics.api";
+import PeriodView from "../../../core/Text/PeriodView.component";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -77,6 +78,7 @@ export default function SelfPointsInPeriod({ period }) {
         <Typography variant="h6">
           NUMĂR TOTAL DE PUNCTE OBȚINUTE ÎN PERIOADA SELECTATĂ
         </Typography>
+        <PeriodView period={period} />
         <Box className={c.number} my={3}>
           <Typography fontSize={36}>{count}</Typography>
         </Box>

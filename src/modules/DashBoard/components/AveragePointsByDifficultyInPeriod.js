@@ -6,6 +6,7 @@ import { colorByDifficulty } from "../../../utils";
 import { makeStyles } from "@mui/styles";
 import Bar from "../../../core/Charts/Bar.component";
 import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
+import PeriodView from "../../../core/Text/PeriodView.component";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -93,6 +94,7 @@ export default function AveragePointsByDifficultyInPeriod({ period }) {
           Media punctelor obținute pe chestionare (după dificultate) într-o
           anumită perioadă
         </Typography>
+        <PeriodView period={period} />
         {data.length !== 0 ? (
           <Bar data={data} marginTop={20} marginBottom={60} />
         ) : (

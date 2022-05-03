@@ -5,6 +5,7 @@ import { colorByDifficulty } from "../../../utils";
 import { makeStyles } from "@mui/styles";
 import { getSelfPointsDiffInPeriod } from "../Metrics.api";
 import Bar from "../../../core/Charts/Bar.component";
+import PeriodView from "../../../core/Text/PeriodView.component";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -71,11 +72,14 @@ export default function SelfPointsByDifficultyInPeriod({ period }) {
       });
   }, [navigate, period]);
 
+  console.log(period);
+
   return (
     <Box className={c.container}>
       <Typography variant="h6" mb={2}>
         PUNCTE OBȚINUTE ÎN PERIOADA SELECTATĂ
       </Typography>
+      <PeriodView period={period} />
       {data.length !== 0 ? (
         <Bar data={data} marginTop={20} marginBottom={60} />
       ) : (
