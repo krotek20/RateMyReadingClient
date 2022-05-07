@@ -51,7 +51,7 @@ export default function QuizScreen() {
     const timer = setTimeout(() => {
       setTimeLeft(calculateTimeLeft());
       if (timeLeft === null) {
-        // handleFinishQuiz();
+        handleFinishQuiz();
       }
     }, 1000);
 
@@ -111,8 +111,8 @@ export default function QuizScreen() {
       .then(() => {
         navigate("finish");
       })
-      .catch((err) => {
-        if (err.response.status === 500) {
+      .catch((error) => {
+        if (error.response.status === 500) {
           handleAlert("error", "Acest chestionar a fost deja completat!");
           navigate("/");
         } else {
@@ -133,11 +133,11 @@ export default function QuizScreen() {
             // timeLeft.minutes && timeLeft.minutes < 1 ? "#ee6c4d" : "#000",
           }}
         >
-          {timeLeft !== null
+          {timeLeft !== null && timeLeft.minutes < 2
             ? `Timp rămas: ${minTwoDigits(timeLeft.minutes)}:${minTwoDigits(
                 timeLeft.seconds
               )}`
-            : `Timpul a expirat`}
+            : ``}
         </Typography>
       </Box>
       <Box className="container_tab">

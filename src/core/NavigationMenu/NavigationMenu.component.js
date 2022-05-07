@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, Fragment } from "react";
 import clsx from "clsx";
 import { Route, NavLink, useNavigate, Routes } from "react-router-dom";
-import { withStyles } from "@mui/styles";
+import { withStyles, useTheme } from "@mui/styles";
 import {
   AppBar,
   Toolbar,
@@ -27,7 +27,6 @@ import {
   unIndexedSections,
 } from "../../utils";
 import create from "zustand";
-import { useTheme } from "@mui/styles";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setDeniedQuestions,

@@ -85,7 +85,12 @@ export default function AveragePointsByDifficulty() {
           Media punctelor obținute pe chestionare (după dificultate)
         </Typography>
         {data.length !== 0 ? (
-          <Bar data={data} marginTop={20} marginBottom={60} />
+          <Bar
+            data={data}
+            marginTop={20}
+            marginBottom={60}
+            leftAxisText="Media"
+          />
         ) : (
           <Typography color="secondary" fontSize={18} my={10}>
             Nu există date de afișat

@@ -313,6 +313,7 @@ export const getExtension = (file) => {
 };
 
 export const feedbackQuiz = {
+  0: ["Ar fi bine să mai citești o dată cartea"],
   1: ["Ar fi bine să mai citești o dată cartea"],
   2: ["Ar fi bine să mai citești o dată cartea"],
   3: ["Citește cu mai multă atenție"],

@@ -71,7 +71,12 @@ export default function SelfNumberOfQuizzesByDifficulty() {
         CHESTIONARE REZOLVATE IN FUNCȚIE DE DIFICULTATE
       </Typography>
       {data.length !== 0 ? (
-        <Bar data={data} marginTop={20} marginBottom={60} />
+        <Bar
+          data={data}
+          marginTop={20}
+          marginBottom={60}
+          leftAxisText="Număr"
+        />
       ) : (
         <Typography color="secondary" fontSize={18} my={10}>
           Nu există date de afișat

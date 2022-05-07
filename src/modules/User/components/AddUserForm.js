@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Tooltip, Button, TextField, Typography } from "@mui/material";
 import DatePicker from "@mui/lab/DatePicker";
 import { register, studentBatchRegister } from "../User.api";
@@ -10,9 +10,11 @@ import { LoadingButton } from "@mui/lab";
 import SaveIcon from "@mui/icons-material/Save";
 import PublishIcon from "@mui/icons-material/Publish";
 import Schools from "../../../core/AutoComplete/Schools.component";
+import { getSchools } from "../../../core/AutoComplete/School.api";
 
 const mailFormat = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
-export default function AddUserForm({ role }) {
+export default function AddUserForm({ role, currentUserRole }) {
+  const [schools, setSchools] = useState([]);
   const [user, setUser] = useState({
     firstname: "",
     lastname: "",
@@ -30,8 +32,31 @@ export default function AddUserForm({ role }) {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    getSchools()
+      .payload.then((response) => {
+        if (response.status === 200) {
+          setSchools(response.data);
+        }
+      })
+      .catch((error) => {
+        if (error.response.status === 403) {
+          navigate("/login", { replace: true });
+        }
+      });
+  }, [navigate]);
+
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, { variant });
+  };
+
+  const getSchoolId = (schoolName) => {
+    for (const index in schools) {
+      if (schools[index].name === schoolName) {
+        return schools[index].id;
+      }
+    }
+    return -1;
   };
 
   const checkUserFields = () => {
@@ -138,25 +163,42 @@ export default function AddUserForm({ role }) {
         }
 
         const newUsers = [];
+        let userError = false;
         fileData.forEach((user) => {
           let newUser = null;
           let newSchool = null;
           if (role === "ROLE_STUDENT") {
-            newUsers.push({
+            newUser = {
               firstname: user[0].trim(),
               lastname: user[1].trim(),
               birthYear: parseInt(user[2]),
               firstGradeRegistrationYear: parseInt(user[3]),
-            });
+            };
+
+            if (user[4] && currentUserRole === 1) {
+              // school
+              const id = getSchoolId(user[4].trim());
+              if (id === -1) {
+                userError = true;
+                handleAlert(
+                  "error",
+                  `Școală introdusă incorect (${user[0].trim()} ${user[1].trim()})`
+                );
+              } else {
+                newUser.schoolId = id;
+              }
+            }
+
+            newUsers.push(newUser);
           } else if (role === "ROLE_LOCALADMIN") {
             newUser = {
               firstname: user[0].trim(),
               lastname: user[1].trim(),
-              city: user[3].trim(),
-              email: user[4].trim(),
+              city: user[2].trim(),
+              email: user[3].trim(),
             };
             newSchool = {
-              name: user[2].trim(),
+              name: user[4].trim(),
             };
           } else if (role === "ROLE_PROFESSOR") {
             newUser = {
@@ -165,6 +207,19 @@ export default function AddUserForm({ role }) {
               city: user[2].trim(),
               email: user[3].trim(),
             };
+            if (user[4] && currentUserRole === 1) {
+              // school
+              const id = getSchoolId(user[4].trim());
+              if (id === -1) {
+                userError = true;
+                handleAlert(
+                  "error",
+                  `Școală introdusă incorect (${user[0].trim()} ${user[1].trim()})`
+                );
+              } else {
+                newUser.schoolId = id;
+              }
+            }
           } else if (
             role === "ROLE_CONTRIBUTOR" ||
             role === "ROLE_SUPERADMIN"
@@ -176,7 +231,7 @@ export default function AddUserForm({ role }) {
             };
           }
 
-          if (role !== "ROLE_STUDENT") {
+          if (role !== "ROLE_STUDENT" && !userError) {
             if (!newUser || !checkUserFields(newUser)) {
               handleAlert(
                 "error",
@@ -203,7 +258,7 @@ export default function AddUserForm({ role }) {
           }
         });
 
-        if (role === "ROLE_STUDENT") {
+        if (role === "ROLE_STUDENT" && !userError) {
           studentBatchRegister(newUsers)
             .payload.then((response) => {
               if (response.status === 200) {
@@ -277,11 +332,13 @@ export default function AddUserForm({ role }) {
         <TextField {...textFieldProps("lastname", "Nume")} />
         <TextField {...textFieldProps("firstname", "Prenume")} />
       </Box>
-      <Schools
-        variant="standard"
-        fullWidth={false}
-        onInputChange={(e, val) => setUser({ ...user, schoolId: val.id })}
-      />
+      {currentUserRole === 1 && (
+        <Schools
+          variant="standard"
+          fullWidth={false}
+          onInputChange={(e, val) => setUser({ ...user, schoolId: val.id })}
+        />
+      )}
       <Box {...boxProps()}>
         <DatePicker
           {...datePickerProps("birthYear", "Anul nașterii")}
@@ -323,6 +380,13 @@ export default function AddUserForm({ role }) {
         <TextField {...textFieldProps("lastname", "Nume")} />
         <TextField {...textFieldProps("firstname", "Prenume")} />
       </Box>
+      {currentUserRole === 1 && (
+        <Schools
+          variant="standard"
+          fullWidth={false}
+          onInputChange={(e, val) => setUser({ ...user, schoolId: val.id })}
+        />
+      )}
       <Box {...boxProps()}>
         <TextField {...textFieldProps("city", "Localitate")} />
         <TextField {...textFieldProps("email", "Email")} />

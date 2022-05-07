@@ -95,7 +95,12 @@ export default function NumberOfPointsByDifficultyInPeriod({ period }) {
         </Typography>
         <PeriodView period={period} />
         {data.length !== 0 ? (
-          <Bar data={data} marginTop={20} marginBottom={60} />
+          <Bar
+            data={data}
+            marginTop={20}
+            marginBottom={60}
+            leftAxisText="Număr de puncte"
+          />
         ) : (
           <Typography color="secondary" fontSize={18} my={10}>
             Nu există date de afișat pentru perioada selectată

@@ -1,7 +1,7 @@
 import React from "react";
 import { ResponsiveBar } from "@nivo/bar";
 
-export default function Bar({ data, marginTop, marginBottom }) {
+export default function Bar({ data, marginTop, marginBottom, leftAxisText }) {
   return (
     <ResponsiveBar
       data={data}
@@ -23,7 +23,7 @@ export default function Bar({ data, marginTop, marginBottom }) {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "Media",
+        legend: leftAxisText,
         legendPosition: "middle",
         legendOffset: -40,
       }}

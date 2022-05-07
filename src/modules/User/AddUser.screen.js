@@ -84,7 +84,7 @@ export default function AddUser() {
           )}
         </Select>
       </FormControl>
-      <AddUserForm role={role} />
+      <AddUserForm role={role} currentUserRole={currentRole} />
     </Box>
   );
 }
