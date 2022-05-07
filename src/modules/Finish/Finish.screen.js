@@ -54,9 +54,13 @@ export default function FinishScreen() {
             ]
           }
         </Typography>
-        <Typography mt={2} color={theme.palette.primary.contrastText}>
-          Ai obținut {quiz.points} puncte.
-        </Typography>
+        <Box
+          sx={{ bgcolor: "primary.contrastText", px: 2, borderRadius: "2rem" }}
+        >
+          <Typography mt={2} fontSize={24} color={theme.palette.primary.main}>
+            Ai obținut {quiz.points} puncte.
+          </Typography>
+        </Box>
       </Box>
       <Box>
         <Tooltip title="ÎNTOARCE-TE LA PRIMA PAGINĂ" arrow>
