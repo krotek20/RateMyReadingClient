@@ -102,11 +102,15 @@ export default function AddUserForm({ role, currentUserRole }) {
     if (!checkUserFields()) {
       const yearUser = {
         ...user,
+        firstname: user.firstname.trim(),
+        lastname: user.lastname.trim(),
+        city: user.city.trim(),
+        email: user.email.trim(),
         birthYear: user.birthYear.getFullYear(),
         firstGradeRegistrationYear:
           user.firstGradeRegistrationYear.getFullYear(),
       };
-      register(yearUser, role, school)
+      register(yearUser, role, { ...school, name: school.name.trim() })
         .payload.then((res) => {
           if (res.status === 200) {
             setUser({
@@ -262,7 +266,11 @@ export default function AddUserForm({ role, currentUserRole }) {
           studentBatchRegister(newUsers)
             .payload.then((response) => {
               if (response.status === 200) {
-                handleAlert("success", "Utilizatori adăugați cu succes!");
+                if (response.data.error) {
+                  handleAlert("error", response.data.errorMessage);
+                } else {
+                  handleAlert("success", "Utilizatori adăugați cu succes!");
+                }
                 setLoading(false);
               }
             })
@@ -405,8 +413,8 @@ export default function AddUserForm({ role, currentUserRole }) {
       </Box>
       <TextField
         {...textFieldProps("school", "Școală")}
-        defaultValue={school.name}
-        onBlur={(e) => setSchool({ ...school, name: e.target.value })}
+        value={school.name}
+        onChange={(e) => setSchool({ ...school, name: e.target.value })}
       />
       <Box {...boxProps()}>
         <TextField {...textFieldProps("city", "Localitate")} />
