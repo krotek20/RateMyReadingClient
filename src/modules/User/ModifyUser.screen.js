@@ -416,6 +416,7 @@ export default function ModifyUser() {
         </LoadingButton>
       ) : (
         <Button
+          id="change-email-button"
           sx={{ mt: 1.5 }}
           variant="contained"
           fullWidth

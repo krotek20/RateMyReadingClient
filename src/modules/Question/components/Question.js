@@ -43,116 +43,98 @@ export default function Question({
   };
 
   return (
-    <Tooltip
-      componentsProps={{
-        arrow: {
-          sx: {
-            color: "#6c757d",
-          },
-        },
-        tooltip: {
-          sx: {
-            backgroundColor: "#f8f9fa",
-            borderRadius: "20%",
-            boxShadow:
-              "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-          },
+    <Box
+      sx={{
+        flex: 1,
+        width: 450,
+        border: "1px solid #ccc",
+        borderRadius: "10px",
+        bgcolor: "white",
+        padding: "10px",
+        alignItems: "center",
+        marginTop: "30px",
+        mx: 2,
+        zIndex: 11,
+        transition: "0.4s",
+        "&:hover": {
+          backgroundColor: "#f8f9fa",
         },
       }}
-      title={
-        noOfActiveQuestions > 5 ? (
-          <IconButton aria-label="delete" onClick={() => onDelete(question.id)}>
-            <DeleteTwoToneIcon color="primary" />
-          </IconButton>
-        ) : (
-          ""
-        )
-      }
-      placement="right"
-      arrow
     >
       <Box
         sx={{
           flex: 1,
-          width: 450,
-          border: "1px solid #ccc",
-          borderRadius: "10px",
-          bgcolor: "white",
-          padding: "10px",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
           alignItems: "center",
-          marginTop: "30px",
-          mx: 2,
-          zIndex: 11,
-          transition: "0.4s",
-          "&:hover": {
-            backgroundColor: "#f8f9fa",
-          },
         }}
       >
-        <Box
+        <Typography sx={{ fontSize: 20 }}>{counter}.</Typography>
+        <TextField
           sx={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
+            width: "100%",
+            mx: 1.2,
           }}
-        >
-          <Typography sx={{ fontSize: 20 }}>{counter}.</Typography>
-          <TextField
-            sx={{
-              width: "100%",
-              mx: 1.2,
-            }}
-            inputProps={{ maxLength: 250 }}
-            id="outlined-textarea"
-            label="Enunțul întrebării"
-            defaultValue={question.question}
-            onBlur={handleOnChangeQuestion}
-            multiline
-          />
-        </Box>
-        <Answers
-          labels={
-            question.type === 0
-              ? ["Adevărat", "Fals"]
-              : [...Array(4).keys()].map((x) => "answer" + (x + 1))
-          }
-          question={question}
+          inputProps={{ maxLength: 250 }}
+          id="outlined-textarea"
+          label="Enunțul întrebării"
+          defaultValue={question.question}
+          onBlur={handleOnChangeQuestion}
+          multiline
         />
-        <Box display="flex" alignItems="center" justifyContent="center" m={0.8}>
-          <Typography color="secondary.main">
-            Răspunsul se găsește la pagina{" "}
-          </Typography>
-          <TextField
-            sx={{ mx: 1, width: 70 }}
-            type="number"
-            defaultValue={question.pageNumber}
-            onChange={handleOnChangePageNumber}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          mb={2}
-        >
-          <Typography color={`${question.type === 1 ? "secondary" : ""}`}>
-            4 variante de răspunsuri
-          </Typography>
-          <Switch
-            checked={question.type === 0 ? true : false}
-            color="primary"
-            onChange={handleSwitchChange}
-          />
-          <Typography color={`${question.type === 0 ? "secondary" : ""}`}>
-            Adevărat / Fals
-          </Typography>
-        </Box>
+        {noOfActiveQuestions > 5 && (
+          <Tooltip title="Șterge" arrow>
+            <IconButton
+              variant="contained"
+              aria-label="delete"
+              onClick={() => onDelete(question.id)}
+            >
+              <DeleteTwoToneIcon color="primary" />
+            </IconButton>
+          </Tooltip>
+        )}
       </Box>
-    </Tooltip>
+      <Answers
+        labels={
+          question.type === 0
+            ? ["Adevărat", "Fals"]
+            : [...Array(4).keys()].map((x) => "answer" + (x + 1))
+        }
+        question={question}
+      />
+      <Box display="flex" alignItems="center" justifyContent="center" m={0.8}>
+        <Typography color="secondary.main">
+          Răspunsul se găsește la pagina{" "}
+        </Typography>
+        <TextField
+          sx={{ mx: 1, width: 70 }}
+          type="number"
+          defaultValue={question.pageNumber}
+          onChange={handleOnChangePageNumber}
+        />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        mb={2}
+      >
+        <Typography color={`${question.type === 1 ? "secondary" : ""}`}>
+          4 variante de răspunsuri
+        </Typography>
+        <Switch
+          checked={question.type === 0 ? true : false}
+          color="primary"
+          onChange={handleSwitchChange}
+        />
+        <Typography color={`${question.type === 0 ? "secondary" : ""}`}>
+          Adevărat / Fals
+        </Typography>
+      </Box>
+    </Box>
   );
 }

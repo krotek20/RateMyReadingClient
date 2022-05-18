@@ -91,6 +91,7 @@ const MyToolbar = withStyles(styles)(
         <Toolbar>
           <Tooltip title="Meniu" arrow>
             <IconButton
+              id="menu-button"
               className={classes.menuButton}
               aria-label="Menu"
               onClick={onMenuClick}
@@ -114,7 +115,11 @@ const MyToolbar = withStyles(styles)(
             </Box>
           </Tooltip>
           <Tooltip title="Deconectare" arrow>
-            <IconButton aria-label="Logout" onClick={() => onLogoutClick()}>
+            <IconButton
+              id="logout-button"
+              aria-label="Logout"
+              onClick={() => onLogoutClick()}
+            >
               <LogoutIcon style={{ fill: color }} />
             </IconButton>
           </Tooltip>
@@ -156,6 +161,7 @@ const MyDrawer = withStyles(styles)(
               <Divider key={index} />
             ) : (
               <ListItemButton
+                id={`list-item-${index}`}
                 key={index}
                 component={NavLink}
                 to={href}

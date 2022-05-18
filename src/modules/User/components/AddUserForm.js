@@ -463,6 +463,7 @@ export default function AddUserForm({ role, currentUserRole }) {
         ) : (
           <Tooltip title="Înregistrează utilizator" arrow placement="bottom">
             <Button
+              id="button-save"
               variant="contained"
               size="medium"
               onClick={handleAddUser}
