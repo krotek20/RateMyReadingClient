@@ -13,6 +13,7 @@ import FormDialogEdit, {
 } from "../../core/Dialogs/FormDialogEdit.component";
 import { useDispatch } from "react-redux";
 import { decrementDeniedQuestions } from "../../redux/Badge/Badge";
+import { logout } from "../../core/NavigationMenu/Logout.api";
 
 export default function DeniedQuestions() {
   const [questions, setQuestions] = useState([]);
@@ -27,6 +28,7 @@ export default function DeniedQuestions() {
       .payload.then((response) => setQuestions(response.data))
       .catch((error) => {
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });
@@ -51,6 +53,7 @@ export default function DeniedQuestions() {
       })
       .catch((error) => {
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });
@@ -67,6 +70,7 @@ export default function DeniedQuestions() {
       })
       .catch((error) => {
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });

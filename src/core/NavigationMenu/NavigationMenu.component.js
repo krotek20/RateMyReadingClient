@@ -246,6 +246,7 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
         })
         .catch((error) => {
           if (error.response.status === 403) {
+            logout();
             navigate("/login", { replace: true });
           }
         });
@@ -261,6 +262,7 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
       })
       .catch((error) => {
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });

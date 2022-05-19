@@ -28,6 +28,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import PublishIcon from "@mui/icons-material/Publish";
 import SendIcon from "@mui/icons-material/Send";
 import SaveIcon from "@mui/icons-material/Save";
+import { logout } from "../../core/NavigationMenu/Logout.api";
 
 export default function AddQuestions() {
   const [books, setBooks] = useState([]);
@@ -57,6 +58,7 @@ export default function AddQuestions() {
       .payload.then((response) => setBooks(response.data))
       .catch((error) => {
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });
@@ -83,6 +85,7 @@ export default function AddQuestions() {
         })
         .catch((error) => {
           if (error.response.status === 403) {
+            logout();
             navigate("/login", { replace: true });
           }
         });
@@ -102,6 +105,7 @@ export default function AddQuestions() {
           })
           .catch((error) => {
             if (error.response.status === 403) {
+              logout();
               navigate("/login", { replace: true });
             }
           });
@@ -220,6 +224,7 @@ export default function AddQuestions() {
           }
           updateQuestion({ ...x, status: 0 }).payload.catch((error) => {
             if (error.response.status === 403) {
+              logout();
               navigate("/login", { replace: true });
             }
           });
@@ -250,6 +255,7 @@ export default function AddQuestions() {
       })
       .catch((error) => {
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });
@@ -297,6 +303,7 @@ export default function AddQuestions() {
           status: user.roles.includes("ROLE_SUPERADMIN") ? 2 : 1,
         }).payload.catch((error) => {
           if (error.response.status === 403) {
+            logout();
             navigate("/login", { replace: true });
           }
         });

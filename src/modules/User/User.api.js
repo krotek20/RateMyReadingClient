@@ -68,3 +68,10 @@ export const getMyPoints = () => {
     payload: axios.get("/myPoints", config()),
   };
 };
+
+export const getAllUsers = () => {
+  return {
+    type: "GET_ALL_USERS",
+    payload: axios.get("/users", config()),
+  };
+};

@@ -10,7 +10,8 @@ import { LoadingButton } from "@mui/lab";
 import SaveIcon from "@mui/icons-material/Save";
 import PublishIcon from "@mui/icons-material/Publish";
 import Schools from "../../../core/AutoComplete/Schools.component";
-import { getSchools } from "../../../core/AutoComplete/School.api";
+import { getSchools } from "../../School/School.api";
+import { logout } from "../../../core/NavigationMenu/Logout.api";
 
 const mailFormat = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
 export default function AddUserForm({ role, currentUserRole }) {
@@ -41,6 +42,7 @@ export default function AddUserForm({ role, currentUserRole }) {
       })
       .catch((error) => {
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });
@@ -129,6 +131,7 @@ export default function AddUserForm({ role, currentUserRole }) {
         })
         .catch((error) => {
           if (error.response.status === 403) {
+            logout();
             navigate("/login", { replace: true });
           } else {
             handleAlert(
@@ -250,6 +253,7 @@ export default function AddUserForm({ role, currentUserRole }) {
                 })
                 .catch((error) => {
                   if (error.response.status === 403) {
+                    logout();
                     navigate("/login", { replace: true });
                   } else {
                     handleAlert(
@@ -276,6 +280,7 @@ export default function AddUserForm({ role, currentUserRole }) {
             })
             .catch((error) => {
               if (error.response.status === 403) {
+                logout();
                 navigate("/login", { replace: true });
               } else {
                 handleAlert(

@@ -21,6 +21,7 @@ import ConfirmDialog, {
 } from "../../core/Dialogs/ConfirmDialog.component";
 import { localeIncludes, getExtension } from "../../utils";
 import ImportContactsIcon from "@mui/icons-material/ImportContacts";
+import { logout } from "../../core/NavigationMenu/Logout.api";
 
 function BooksImport() {
   const [books, setBooks] = useState([]);
@@ -76,6 +77,7 @@ function BooksImport() {
       .catch((error) => {
         isLoading(false);
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });

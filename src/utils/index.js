@@ -6,6 +6,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import SchoolIcon from "@mui/icons-material/School";
+import GroupIcon from "@mui/icons-material/Group";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import DashBoard from "../modules/DashBoard/DashBoard.screen";
 import StartQuiz from "../modules/Start/StartQuiz.screen";
@@ -20,6 +22,8 @@ import {
   getUnapprovedQuestions,
 } from "../modules/Question/Question.api";
 import ModifyUser from "../modules/User/ModifyUser.screen";
+import UsersList from "../modules/User/UsersList.screen";
+import SchoolsList from "../modules/School/SchoolsList.screen";
 
 const dashBoardScreen = {
   name: "Prima pagină",
@@ -40,6 +44,20 @@ const booksScreen = {
   href: "carti",
   icon: <BookIcon />,
   screen: <BooksImport />,
+};
+
+const usersScreen = {
+  name: "Listă utilizatori",
+  href: "user",
+  icon: <GroupIcon />,
+  screen: <UsersList />,
+};
+
+const schoolsScreen = {
+  name: "Listă școli",
+  href: "school",
+  icon: <SchoolIcon />,
+  screen: <SchoolsList />,
 };
 
 const addQuestionsScreen = {
@@ -108,6 +126,7 @@ export const localAdminSections = [
   dashBoardScreen,
   startQuiz,
   divider,
+  usersScreen,
   addUserScreen,
   modifyUserScreen,
 ];
@@ -115,7 +134,10 @@ export const localAdminSections = [
 export const superAdminSections = [
   dashBoardScreen,
   startQuiz,
+  divider,
   booksScreen,
+  usersScreen,
+  schoolsScreen,
   divider,
   addQuestionsScreen,
   approvedQuestionsScreen,

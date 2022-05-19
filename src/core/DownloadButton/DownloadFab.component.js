@@ -6,7 +6,7 @@ import { Tooltip } from "@material-ui/core";
 
 export default function DownloadFab({ divId, downloadName }) {
   return (
-    <Tooltip arrow placement="top" title="Descarcă">
+    <Tooltip arrow placement="top" title="Descarcă PNG">
       <Fab
         sx={{
           position: "absolute",

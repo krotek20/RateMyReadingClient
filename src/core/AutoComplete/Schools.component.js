@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import { getSchools } from "./School.api";
+import { getSchools } from "../../modules/School/School.api";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../NavigationMenu/Logout.api";
 
 export default function Schools({ variant, fullWidth, onInputChange }) {
   const [schools, setSchools] = useState([]);
@@ -16,6 +17,7 @@ export default function Schools({ variant, fullWidth, onInputChange }) {
       })
       .catch((error) => {
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });

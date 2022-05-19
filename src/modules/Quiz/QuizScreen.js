@@ -14,6 +14,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import ConfirmDialog, {
   confirmDialog,
 } from "../../core/Dialogs/ConfirmDialog.component";
+import { logout } from "../../core/NavigationMenu/Logout.api";
 
 export default function QuizScreen() {
   const quiz = useSelector((state) => state.quiz);
@@ -116,6 +117,7 @@ export default function QuizScreen() {
           handleAlert("error", "Acest chestionar a fost deja completat!");
           navigate("/");
         } else {
+          logout();
           navigate("/login", { replace: true });
         }
       });

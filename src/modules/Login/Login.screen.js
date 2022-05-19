@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Avatar,
   Button,
@@ -9,8 +9,15 @@ import {
   Box,
   Grid,
   Typography,
+  InputAdornment,
+  IconButton,
+  InputLabel,
+  FormControl,
+  OutlinedInput,
 } from "@mui/material";
 import { login } from "./Login.api";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import { useSnackbar } from "notistack";
@@ -41,6 +48,7 @@ const Copyright = (props) => {
 };
 
 export default function Login() {
+  const [showPassword, setShowPassword] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -51,6 +59,14 @@ export default function Login() {
     },
     [enqueueSnackbar]
   );
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   useEffect(() => {
     if (state === true) {
@@ -128,19 +144,30 @@ export default function Login() {
               id="username"
               label="Nume de utilizator"
               name="username"
-              autoComplete="user"
               autoFocus
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Parola"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
+            <FormControl fullWidth required margin="normal">
+              <InputLabel htmlFor="password">Parolă</InputLabel>
+              <OutlinedInput
+                variant="contained"
+                name="password"
+                label="Parola *"
+                type={showPassword ? "text" : "password"}
+                id="password"
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
             <Button
               startIcon={<VpnKeyIcon />}
               type="submit"

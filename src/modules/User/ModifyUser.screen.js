@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 import { useDecode } from "../../hooks/useDecode";
 import Schools from "../../core/AutoComplete/Schools.component";
+import { logout } from "../../core/NavigationMenu/Logout.api";
 
 const mailFormat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -74,6 +75,7 @@ export default function ModifyUser() {
       .catch((error) => {
         setLoading(false);
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         } else {
           setValidate({ ...validate, username: false });
@@ -158,6 +160,7 @@ export default function ModifyUser() {
       .catch((error) => {
         setLoading(false);
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         } else {
           if (error.response.data.message === "Cerere respinsa") {
@@ -258,6 +261,7 @@ export default function ModifyUser() {
       .catch((error) => {
         setLoading(false);
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         } else {
           setValidate({ ...validate, username: false });
@@ -361,6 +365,7 @@ export default function ModifyUser() {
         .catch((error) => {
           setLoading(false);
           if (error.response.status === 403) {
+            logout();
             navigate("/login", { replace: true });
           } else {
             setValidate({ ...validate, username: false });
@@ -449,6 +454,7 @@ export default function ModifyUser() {
         setLoading(false);
         console.log(error.response.data.message);
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         } else {
           if (error.response.data.message === "User not found") {

@@ -13,6 +13,7 @@ import { useSnackbar } from "notistack";
 import { addQuiz, removeQuiz } from "../../redux/Quiz/Quiz";
 import { setCurrentBook } from "../../redux/Book/CurrentBook";
 import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../core/NavigationMenu/Logout.api";
 
 const unselectedPalette = "?colors=e9ecef,dee2e6,adb5bd,6c757d,495057";
 
@@ -48,6 +49,7 @@ export default function StartQuiz() {
       .payload.then((response) => setBooks(response.data))
       .catch((error) => {
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });
@@ -122,6 +124,7 @@ export default function StartQuiz() {
                     : "Server error"
                 );
               } else {
+                logout();
                 navigate("/login", { replace: true });
               }
             })

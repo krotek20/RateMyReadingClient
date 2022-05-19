@@ -12,6 +12,7 @@ import {
   decrementUnapprovedQuestions,
   incremenetDeniedQuestions,
 } from "../../redux/Badge/Badge";
+import { logout } from "../../core/NavigationMenu/Logout.api";
 
 export default function ApprovedQuestions() {
   const [questions, setQuestions] = useState([]);
@@ -26,6 +27,7 @@ export default function ApprovedQuestions() {
       .payload.then((response) => setQuestions(response.data))
       .catch((error) => {
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });
@@ -50,6 +52,7 @@ export default function ApprovedQuestions() {
       })
       .catch((error) => {
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });
@@ -67,6 +70,7 @@ export default function ApprovedQuestions() {
       })
       .catch((error) => {
         if (error.response.status === 403) {
+          logout();
           navigate("/login", { replace: true });
         }
       });
