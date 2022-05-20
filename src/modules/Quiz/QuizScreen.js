@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Tooltip, Button } from "@mui/material";
-import { useTheme } from "@mui/styles";
+import { Box, Typography, Tooltip, Button, Grid } from "@mui/material";
 import "./Quiz.scss";
 import Question from "./components/Question";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +14,7 @@ import ConfirmDialog, {
   confirmDialog,
 } from "../../core/Dialogs/ConfirmDialog.component";
 import { logout } from "../../core/NavigationMenu/Logout.api";
+import NavCircle from "./components/NavCircle";
 
 export default function QuizScreen() {
   const quiz = useSelector((state) => state.quiz);
@@ -45,7 +45,6 @@ export default function QuizScreen() {
 
   const [selectedQuestion, setSelectedQuestion] = useState(1);
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-  const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
@@ -144,38 +143,22 @@ export default function QuizScreen() {
       </Box>
       <Box className="container_tab">
         <Typography color="secondary">Navigare printre întrebări</Typography>
-        <Box className="container_navigation">
-          {[...Array(10).keys()].map((item) => (
-            <Box
-              key={item}
-              className="container_navigation_circle"
-              // onClick={() => handleNavigationClick(item + 1)}
-              sx={{
-                bgcolor: `${
-                  selectedAnswers[item] &&
-                  item + 1 === parseInt(selectedQuestion)
-                    ? "secondary.main"
-                    : selectedAnswers[item]
-                    ? "primary.main"
-                    : item + 1 === parseInt(selectedQuestion)
-                    ? "secondary.main"
-                    : "white"
-                }`,
-                color: `${
-                  selectedAnswers[item] ||
-                  item + 1 === parseInt(selectedQuestion)
-                    ? theme.palette.secondary.contrastText
-                    : "black"
-                }`,
-                "&:hover, &:active": {
-                  bgcolor: "secondary.main",
-                  color: theme.palette.secondary.contrastText,
-                },
-              }}
-            >
-              <div className="history_content">{item + 1}</div>
-            </Box>
-          ))}
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Grid container columnGap={0.5} className="container_navigation">
+            {[...Array(10).keys()].map((item) => (
+              <NavCircle
+                key={item}
+                item={item}
+                selectedQuestion={selectedQuestion}
+                selectedAnswer={selectedAnswers[item]}
+              />
+            ))}
+          </Grid>
         </Box>
       </Box>
       <Question

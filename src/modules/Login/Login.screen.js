@@ -83,8 +83,8 @@ export default function Login() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const body = new URLSearchParams();
-    body.append("username", data.get("username"));
-    body.append("password", data.get("password"));
+    body.append("username", data.get("username").toLowerCase().trim());
+    body.append("password", data.get("password").trim());
     login(body)
       .payload.then((response) => {
         setAuthTokens({
