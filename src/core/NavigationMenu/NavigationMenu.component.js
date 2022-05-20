@@ -25,6 +25,7 @@ import {
   getNoOfDeniedQuestions,
   getNoOfUnapprovedQuestions,
   unIndexedSections,
+  avatarNames,
 } from "../../utils";
 import create from "zustand";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,7 +35,7 @@ import {
 } from "../../redux/Badge/Badge";
 import { setCurrentBook } from "../../redux/Book/CurrentBook";
 import { useDecode } from "../../hooks/useDecode";
-import { getMyPoints } from "../../modules/User/User.api";
+import { getMyInfo, getMyPoints } from "../../modules/User/User.api";
 
 const useDrawerStore = create(() => ({
   selected: 0,
@@ -57,6 +58,13 @@ const styles = (theme) => ({
     alignItems: "center",
     marginLeft: 20,
     marginRight: 40,
+  },
+  avatar: {
+    cursor: "pointer",
+    transition: "all 0.2s ease-in-out",
+    "&:hover": {
+      transform: "scale(1.1)",
+    },
   },
   flex: {
     flex: 1,
@@ -84,6 +92,7 @@ const MyToolbar = withStyles(styles)(
     color,
     noOfPendingQuestions,
     role,
+    name,
     points,
   }) => (
     <Fragment>
@@ -107,6 +116,20 @@ const MyToolbar = withStyles(styles)(
           </Tooltip>
           <Typography variant="h6" className={classes.flex}>
             {title}
+          </Typography>
+          <Tooltip arrow title="Începe un chestionar">
+            <Box component={NavLink} to={"start"} mr={2}>
+              <img
+                className={classes.avatar}
+                src={`https://source.boringavatars.com/beam/40/${
+                  avatarNames[Math.floor(Math.random() * avatarNames.length)]
+                }/`}
+                alt="START"
+              />
+            </Box>
+          </Tooltip>
+          <Typography variant="h6" mr={2}>
+            Salut, {name}!
           </Typography>
           <Tooltip title="Punctele tale">
             <Box className={classes.pointsContainer}>
@@ -202,6 +225,7 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
   const [drawer, setDrawer] = useState(false);
   const [title, setTitle] = useState("");
   const [points, setPoints] = useState(0);
+  const [currentUser, setCurrentUser] = useState(null);
   const decode = useDecode();
   const user = decode();
 
@@ -259,6 +283,12 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
         if (response.status === 200) {
           setPoints(response.data);
         }
+        return getMyInfo().payload;
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setCurrentUser(response.data);
+        }
       })
       .catch((error) => {
         if (error.response.status === 403) {
@@ -281,6 +311,9 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
         color={theme.palette.primary.contrastText}
         noOfPendingQuestions={noOfQuestions}
         role={user.roles[0]}
+        name={
+          currentUser ? currentUser.lastName + " " + currentUser.firstName : ""
+        }
         points={points}
       />
       <MyDrawer

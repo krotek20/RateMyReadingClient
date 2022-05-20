@@ -75,3 +75,10 @@ export const getAllUsers = () => {
     payload: axios.get("/users", config()),
   };
 };
+
+export const getMyInfo = () => {
+  return {
+    type: "GET_MY_INFO",
+    payload: axios.get("/myInfo", config()),
+  };
+};
