@@ -5,10 +5,12 @@ import SuperAdminDashboard from "./screens/SuperAdminDashboard";
 import LocalAdminDashboard from "./screens/LocalAdminDashboard";
 import MobileDateRangePicker from "@mui/lab/MobileDateRangePicker";
 import StudentDashboard from "./screens/StudentDashboard";
+import { ExportCSV } from "../../core/DownloadButton/ExportCSV.component";
 
 export default function DashBoard() {
   const [currentRole, setCurrentRole] = useState(0);
   const [period, setPeriod] = useState([null, null]);
+  const [collectedData, setCollectedData] = useState({});
 
   const decode = useDecode();
 
@@ -27,6 +29,10 @@ export default function DashBoard() {
       setCurrentRole(4);
     }
   }, [decode]);
+
+  const handleCollectData = (key, data) => {
+    setCollectedData({ ...collectedData, [`${key}`]: data });
+  };
 
   return (
     <Box
@@ -63,8 +69,17 @@ export default function DashBoard() {
           )}
         />
       </Stack>
+      {/* <ExportCSV
+        csvData={collectedData}
+        fileName={`Caravana_Lecturii_${new Date().toLocaleDateString("ro-RO")}`}
+      /> */}
       <Box flexGrow={1}>
-        {currentRole === 1 && <SuperAdminDashboard period={period} />}
+        {currentRole === 1 && (
+          <SuperAdminDashboard
+            period={period}
+            onCollectData={handleCollectData}
+          />
+        )}
         {(currentRole === 2 || currentRole === 3) && (
           <LocalAdminDashboard period={period} />
         )}

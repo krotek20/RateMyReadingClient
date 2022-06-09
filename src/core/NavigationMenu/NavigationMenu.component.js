@@ -86,9 +86,9 @@ const styles = (theme) => ({
 const MyToolbar = withStyles(styles)(
   ({
     classes,
-    title,
     onMenuClick,
     onLogoutClick,
+    onAvatarClick,
     color,
     noOfPendingQuestions,
     role,
@@ -115,10 +115,15 @@ const MyToolbar = withStyles(styles)(
             </IconButton>
           </Tooltip>
           <Typography variant="h6" className={classes.flex}>
-            {title}
+            {localStorage.getItem("title")}
           </Typography>
           <Tooltip arrow title="Începe un chestionar">
-            <Box component={NavLink} to={"start"} mr={2}>
+            <Box
+              component={NavLink}
+              to={"start"}
+              mx={2}
+              onClick={onAvatarClick("Începe chestionar", 1)}
+            >
               <img
                 className={classes.avatar}
                 src={`https://source.boringavatars.com/beam/40/${
@@ -128,7 +133,7 @@ const MyToolbar = withStyles(styles)(
               />
             </Box>
           </Tooltip>
-          <Typography variant="h6" mr={2}>
+          <Typography variant="body2" mr={2}>
             Salut, {name}!
           </Typography>
           <Tooltip title="Punctele tale">
@@ -223,7 +228,6 @@ const MyDrawer = withStyles(styles)(
 
 function NavigationMenu({ classes, variant, sections, changePrimary }) {
   const [drawer, setDrawer] = useState(false);
-  const [title, setTitle] = useState("");
   const [points, setPoints] = useState(0);
   const [currentUser, setCurrentUser] = useState(null);
   const decode = useDecode();
@@ -244,8 +248,15 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
     setDrawer(!drawer);
   };
 
+  const onAvatarClick = (title, index) => () => {
+    localStorage.setItem("title", title);
+    useDrawerStore.setState({ selected: index });
+    dispatch(setCurrentBook(null));
+    changePrimary();
+  };
+
   const onItemClick = (title, index) => () => {
-    setTitle(title);
+    localStorage.setItem("title", title);
     useDrawerStore.setState({ selected: index });
     setDrawer(variant === "temporary" ? false : drawer);
     setDrawer(!drawer);
@@ -303,11 +314,11 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
   }, [noOfDeniedQuestions, noOfUnapprovedQuestions]);
 
   return (
-    <div className={classes.root}>
+    <Box className={classes.root}>
       <MyToolbar
-        title={title}
         onMenuClick={toggleDrawer}
         onLogoutClick={handleLogout}
+        onAvatarClick={onAvatarClick}
         color={theme.palette.primary.contrastText}
         noOfPendingQuestions={noOfQuestions}
         role={user.roles[0]}
@@ -325,7 +336,7 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
         noOfDeniedQuestions={noOfDeniedQuestions}
         noOfUnapprovedQuestions={noOfUnapprovedQuestions}
       />
-    </div>
+    </Box>
   );
 }
 

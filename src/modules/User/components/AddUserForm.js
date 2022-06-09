@@ -34,19 +34,21 @@ export default function AddUserForm({ role, currentUserRole }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getSchools()
-      .payload.then((response) => {
-        if (response.status === 200) {
-          setSchools(response.data);
-        }
-      })
-      .catch((error) => {
-        if (error.response.status === 403) {
-          logout();
-          navigate("/login", { replace: true });
-        }
-      });
-  }, [navigate]);
+    if (currentUserRole === 1) {
+      getSchools()
+        .payload.then((response) => {
+          if (response.status === 200) {
+            setSchools(response.data);
+          }
+        })
+        .catch((error) => {
+          if (error.response.status === 403) {
+            logout();
+            navigate("/login", { replace: true });
+          }
+        });
+    }
+  }, [navigate, currentUserRole]);
 
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, { variant });

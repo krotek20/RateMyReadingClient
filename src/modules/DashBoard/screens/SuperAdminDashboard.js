@@ -13,7 +13,7 @@ import TopBooksInPeriod from "../components/TopBooksInPeriod";
 import NumberOfPointsByDifficultyInPeriod from "../components/NumberOfPointsByDifficultyInPeriod";
 import AverageOfCorrectAnswers from "../components/AverageOfCorrectAnswers";
 
-export default function SuperAdminDashboard({ period }) {
+export default function SuperAdminDashboard({ period, onCollectData }) {
   return (
     <Box
       display="flex"
@@ -23,10 +23,13 @@ export default function SuperAdminDashboard({ period }) {
     >
       <Grid container spacing={3}>
         <Grid item xs={12} md={6} lg={4}>
-          <NumberOfActiveStudents />
+          <NumberOfActiveStudents onCollectData={onCollectData} />
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
-          <NumberOfActiveStudentsInPeriod period={period} />
+          <NumberOfActiveStudentsInPeriod
+            period={period}
+            onCollectData={onCollectData}
+          />
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
           <NumberOfActiveSchoolsInPeriod period={period} />

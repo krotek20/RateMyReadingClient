@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
-import { Box, Typography } from "@mui/material";
+import { Box, Checkbox, Typography } from "@mui/material";
 import Progress from "../../../core/Charts/Progress.component";
 import { getActiveStudents, getTotalStudents } from "../Metrics.api";
 import { useNavigate } from "react-router-dom";
+import BeenhereOutlinedIcon from "@mui/icons-material/BeenhereOutlined";
+import BeenhereIcon from "@mui/icons-material/Beenhere";
 import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
 
 const useStyles = makeStyles((theme) => ({
@@ -34,9 +36,15 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     padding: "10px",
   },
+  checkbox: {
+    position: "absolute",
+    left: 10,
+    top: 10,
+    "& .MuiSvgIcon-root": { fontSize: 28 },
+  },
 }));
 
-export default function NumberOfActiveStudents() {
+export default function NumberOfActiveStudents({ onCollectData }) {
   const [active, setActive] = useState(0);
   const [total, setTotal] = useState(0);
 
@@ -65,6 +73,17 @@ export default function NumberOfActiveStudents() {
 
   return (
     <Box className={c.container}>
+      {/* <Checkbox
+        className={c.checkbox}
+        onChange={(event, value) => {
+          onCollectData(
+            "studenti activi",
+            value ? [{ activi: active }, { total: total }] : []
+          );
+        }}
+        icon={<BeenhereOutlinedIcon />}
+        checkedIcon={<BeenhereIcon />}
+      /> */}
       <DownloadFab
         divId="numberOfActiveStudents"
         downloadName="numar_elevi_activi.png"

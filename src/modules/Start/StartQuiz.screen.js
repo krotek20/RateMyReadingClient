@@ -14,6 +14,9 @@ import { addQuiz, removeQuiz } from "../../redux/Quiz/Quiz";
 import { setCurrentBook } from "../../redux/Book/CurrentBook";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../core/NavigationMenu/Logout.api";
+import ConfirmDialog, {
+  confirmDialog,
+} from "../../core/Dialogs/ConfirmDialog.component";
 
 const unselectedPalette = "?colors=e9ecef,dee2e6,adb5bd,6c757d,495057";
 
@@ -144,6 +147,7 @@ export default function StartQuiz() {
         height: "70vh",
       }}
     >
+      <ConfirmDialog />
       <Typography color="secondary" variant="h5" sx={{ my: 2 }}>
         Selectează o carte și începe!
       </Typography>
@@ -192,7 +196,14 @@ export default function StartQuiz() {
             ) : (
               <Tooltip title="START" arrow>
                 {book ? (
-                  <Box onClick={generateQuiz}>
+                  <Box
+                    onClick={() =>
+                      confirmDialog(
+                        `Ești sigur că dorești să începi chestionarul pentru cartea ${book.title}?`,
+                        () => generateQuiz()
+                      )
+                    }
+                  >
                     <img
                       className="start_quiz_img_active"
                       src={`https://source.boringavatars.com/beam/100/${avatarName}/`}

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Checkbox } from "@mui/material";
 import Progress from "../../../core/Charts/Progress.component";
 import { getActiveStudentsByPeriod, getTotalStudents } from "../Metrics.api";
 import { useNavigate } from "react-router-dom";
 import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
+import BeenhereOutlinedIcon from "@mui/icons-material/BeenhereOutlined";
+import BeenhereIcon from "@mui/icons-material/Beenhere";
 import PeriodView from "../../../core/Text/PeriodView.component";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,9 +37,18 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     padding: "10px",
   },
+  checkbox: {
+    position: "absolute",
+    left: 10,
+    top: 10,
+    "& .MuiSvgIcon-root": { fontSize: 28 },
+  },
 }));
 
-export default function NumberOfActiveStudentsInPeriod({ period }) {
+export default function NumberOfActiveStudentsInPeriod({
+  period,
+  onCollectData,
+}) {
   const [active, setActive] = useState(0);
   const [total, setTotal] = useState(0);
 
@@ -72,6 +83,17 @@ export default function NumberOfActiveStudentsInPeriod({ period }) {
 
   return (
     <Box className={c.container}>
+      {/* <Checkbox
+        className={c.checkbox}
+        onChange={(event, value) => {
+          onCollectData(
+            "studenti activi perioada",
+            value ? [{ activi: active, total: total }] : []
+          );
+        }}
+        icon={<BeenhereOutlinedIcon />}
+        checkedIcon={<BeenhereIcon />}
+      /> */}
       <DownloadFab
         divId="numberOfActiveStudentsInPeriod"
         downloadName={`numar_elevi_activi${

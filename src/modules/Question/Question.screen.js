@@ -280,9 +280,15 @@ export default function AddQuestions() {
     if (questions.length >= 5 && currentBook) {
       let index = 1;
       for (let question of questions) {
-        if (question.type === 0) {
-          question = { ...question, answer1: "Adevarat", answer2: "Fals" };
-        }
+        // if (question.type === 0) {
+        //   dispatch(
+        //     updateQuestion({
+        //       ...question,
+        //       answer1: "Adevarat",
+        //       answer2: "Fals",
+        //     })
+        //   );
+        // }
         if (!checkQuestion(question)) {
           handleAlert(
             "error",
@@ -300,6 +306,8 @@ export default function AddQuestions() {
         }
         updateQuestion({
           ...x,
+          answer1: x.type === 0 ? "Adevărat" : x.answer1,
+          answer2: x.type === 0 ? "Fals" : x.answer2,
           status: user.roles.includes("ROLE_SUPERADMIN") ? 2 : 1,
         }).payload.catch((error) => {
           if (error.response.status === 403) {
@@ -313,7 +321,7 @@ export default function AddQuestions() {
         "success",
         user.roles.includes("ROLE_SUPERADMIN")
           ? "Întrebările au fost adăugate cu succes!"
-          : "Întrebările au fost trimise cu succes catre validare!"
+          : "Întrebările au fost trimise cu succes către validare!"
       );
 
       dispatch(removeAll());
