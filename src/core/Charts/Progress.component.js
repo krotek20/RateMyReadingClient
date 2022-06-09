@@ -17,12 +17,12 @@ function LinearProgressWithLabel({ value, barColorPrimary, colorPrimary }) {
             },
           }}
           variant="determinate"
-          value={value}
+          value={parseFloat(value)}
         />
       </Box>
       <Box sx={{ minWidth: 35 }}>
         <Typography variant="body2" color="secondary">{`${Math.round(
-          value
+          parseFloat(value)
         )}%`}</Typography>
       </Box>
     </Box>
@@ -40,7 +40,7 @@ export default function Progress({
   return (
     <Box width="90%" mb={mb} mt={mt}>
       <LinearProgressWithLabel
-        value={(value * 100) / total}
+        value={((value * 100) / total).toFixed(3)}
         colorPrimary={colorPrimary}
         barColorPrimary={barColorPrimary}
       />

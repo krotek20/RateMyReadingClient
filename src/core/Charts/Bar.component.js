@@ -10,6 +10,7 @@ export default function Bar({ data, marginTop, marginBottom, leftAxisText }) {
       margin={{ top: marginTop, right: 120, bottom: marginBottom, left: 60 }}
       padding={0.5}
       valueScale={{ type: "linear" }}
+      valueFormat=">-.2"
       indexScale={{ type: "band", round: true }}
       colorBy="indexValue"
       colors={[...data.map((x) => x.color)]}
