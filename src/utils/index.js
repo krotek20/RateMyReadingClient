@@ -6,6 +6,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import EqualizerIcon from "@mui/icons-material/Equalizer";
 import SchoolIcon from "@mui/icons-material/School";
 import GroupIcon from "@mui/icons-material/Group";
 import AddTaskIcon from "@mui/icons-material/AddTask";
@@ -24,6 +25,7 @@ import {
 import ModifyUser from "../modules/User/ModifyUser.screen";
 import UsersList from "../modules/User/UsersList.screen";
 import SchoolsList from "../modules/School/SchoolsList.screen";
+import UserDetails from "../modules/User/UserDetails.screen";
 
 const dashBoardScreen = {
   name: "Prima pagină",
@@ -32,9 +34,23 @@ const dashBoardScreen = {
   screen: <DashBoard />,
 };
 
+const studentReportScreen = {
+  name: "Statistici",
+  href: "statistici",
+  icon: <EqualizerIcon />,
+  screen: <DashBoard />,
+};
+
 const startQuiz = {
   name: "Începe chestionar",
   href: "start",
+  icon: <PlayCircleOutlineIcon />,
+  screen: <StartQuiz />,
+};
+
+const startQuizStudent = {
+  name: "Chestionare",
+  href: "/",
   icon: <PlayCircleOutlineIcon />,
   screen: <StartQuiz />,
 };
@@ -68,7 +84,7 @@ const addQuestionsScreen = {
 };
 
 const quizScreen = {
-  href: "start/quiz/:quizId",
+  href: "quiz/:quizId",
   screen: <QuizScreen />,
 };
 
@@ -87,8 +103,13 @@ const deniedQuestionsScreen = {
 };
 
 const finishScreen = {
-  href: "start/quiz/:quizId/finish",
+  href: "quiz/:quizId/finish",
   screen: <FinishScreen />,
+};
+
+const infoUserScreen = {
+  href: "user/info",
+  screen: <UserDetails />,
 };
 
 const addUserScreen = {
@@ -110,7 +131,7 @@ const divider = {
   screen: "divider",
 };
 
-export const childSections = [dashBoardScreen, startQuiz];
+export const childSections = [startQuizStudent, studentReportScreen];
 
 export const teacherSections = [
   dashBoardScreen,
@@ -147,7 +168,7 @@ export const superAdminSections = [
   modifyUserScreen,
 ];
 
-export const unIndexedSections = [quizScreen, finishScreen];
+export const unIndexedSections = [quizScreen, finishScreen, infoUserScreen];
 
 export const avatarNames = [
   "Mary Baker",

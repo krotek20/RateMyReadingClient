@@ -20,12 +20,13 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import { logout } from "./Logout.api";
 import {
   getNoOfDeniedQuestions,
   getNoOfUnapprovedQuestions,
   unIndexedSections,
-  avatarNames,
 } from "../../utils";
 import create from "zustand";
 import { useDispatch, useSelector } from "react-redux";
@@ -56,8 +57,8 @@ const styles = (theme) => ({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 20,
-    marginRight: 40,
+    marginRight: 20,
+    userSelect: "none",
   },
   avatar: {
     cursor: "pointer",
@@ -88,12 +89,12 @@ const MyToolbar = withStyles(styles)(
     classes,
     onMenuClick,
     onLogoutClick,
-    onAvatarClick,
     color,
     noOfPendingQuestions,
     role,
     name,
-    points,
+    currentPoints,
+    totalPoints,
   }) => (
     <Fragment>
       <AppBar position="fixed">
@@ -117,31 +118,28 @@ const MyToolbar = withStyles(styles)(
           <Typography variant="h6" className={classes.flex}>
             {localStorage.getItem("title")}
           </Typography>
-          <Tooltip arrow title="Începe un chestionar">
-            <Box
-              component={NavLink}
-              to={"start"}
-              mx={2}
-              onClick={onAvatarClick("Începe chestionar", 1)}
-            >
-              <img
-                className={classes.avatar}
-                src={`https://source.boringavatars.com/beam/40/${
-                  avatarNames[Math.floor(Math.random() * avatarNames.length)]
-                }/`}
-                alt="START"
-              />
-            </Box>
-          </Tooltip>
-          <Typography variant="body2" mr={2}>
-            Salut, {name}!
-          </Typography>
-          <Tooltip title="Punctele tale">
-            <Box className={classes.pointsContainer}>
-              <EmojiEventsIcon sx={{ mx: 1 }} />
-              <Typography>{points}</Typography>
-            </Box>
-          </Tooltip>
+          <Box className={classes.pointsContainer} ml={2}>
+            <EmojiEmotionsIcon sx={{ mx: 1 }} />
+            <Typography variant="body2" mr={2}>
+              Salut, {name}!
+            </Typography>
+          </Box>
+          {role === "ROLE_STUDENT" && (
+            <>
+              <Tooltip title="Puncte curente">
+                <Box className={classes.pointsContainer}>
+                  <WorkspacePremiumIcon sx={{ mx: 1 }} />
+                  <Typography>{currentPoints}</Typography>
+                </Box>
+              </Tooltip>
+              <Tooltip title="Total puncte">
+                <Box className={classes.pointsContainer}>
+                  <EmojiEventsIcon sx={{ mx: 1 }} />
+                  <Typography>{totalPoints}</Typography>
+                </Box>
+              </Tooltip>
+            </>
+          )}
           <Tooltip title="Deconectare" arrow>
             <IconButton
               id="logout-button"
@@ -228,7 +226,8 @@ const MyDrawer = withStyles(styles)(
 
 function NavigationMenu({ classes, variant, sections, changePrimary }) {
   const [drawer, setDrawer] = useState(false);
-  const [points, setPoints] = useState(0);
+  const [currentPoints, setCurrentPoints] = useState(0);
+  const [totalPoints, setTotalPoints] = useState(0);
   const [currentUser, setCurrentUser] = useState(null);
   const decode = useDecode();
   const user = decode();
@@ -246,13 +245,6 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
 
   const toggleDrawer = () => {
     setDrawer(!drawer);
-  };
-
-  const onAvatarClick = (title, index) => () => {
-    localStorage.setItem("title", title);
-    useDrawerStore.setState({ selected: index });
-    dispatch(setCurrentBook(null));
-    changePrimary();
   };
 
   const onItemClick = (title, index) => () => {
@@ -292,7 +284,8 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
     getMyPoints()
       .payload.then((response) => {
         if (response.status === 200) {
-          setPoints(response.data);
+          setCurrentPoints(response.data.currentPoints);
+          setTotalPoints(response.data.totalPoints);
         }
         return getMyInfo().payload;
       })
@@ -318,14 +311,14 @@ function NavigationMenu({ classes, variant, sections, changePrimary }) {
       <MyToolbar
         onMenuClick={toggleDrawer}
         onLogoutClick={handleLogout}
-        onAvatarClick={onAvatarClick}
         color={theme.palette.primary.contrastText}
         noOfPendingQuestions={noOfQuestions}
         role={user.roles[0]}
         name={
           currentUser ? currentUser.lastName + " " + currentUser.firstName : ""
         }
-        points={points}
+        currentPoints={currentPoints}
+        totalPoints={totalPoints}
       />
       <MyDrawer
         open={drawer}

@@ -5,6 +5,7 @@ import SelfAnswersByDifficulty from "../components/SelfAnswersByDifficulty";
 import SelfPointsInPeriod from "../components/SelfPointsInPeriod";
 import SelfPointsByDifficultyInPeriod from "../components/SelfPointsByDifficultyInPeriod";
 import SelfNumberOfQuizzesByDifficulty from "../components/SelfNumberOfQuizzesByDifficulty";
+import SelfStudentReport from "../components/SelfStudentReport";
 
 export default function StudentDashboard({ period }) {
   return (
@@ -30,6 +31,11 @@ export default function StudentDashboard({ period }) {
           <SelfAnswersByDifficulty />
         </Grid>
       </Grid>
+      {/* <Grid container spacing={3} mt={1.5}>
+        <Grid item xs={12} md={12} lg={12}>
+          <SelfStudentReport period={period} />
+        </Grid>
+      </Grid> */}
     </Box>
   );
 }

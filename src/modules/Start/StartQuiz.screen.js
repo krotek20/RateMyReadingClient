@@ -136,8 +136,7 @@ export default function StartQuiz() {
   };
 
   return (
-    <Grid
-      container
+    <Box
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -225,6 +224,6 @@ export default function StartQuiz() {
         </Grid>
       </Grid>
       <Grid item></Grid>
-    </Grid>
+    </Box>
   );
 }

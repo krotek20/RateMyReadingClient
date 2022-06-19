@@ -72,8 +72,6 @@ export default function SelfPointsByDifficultyInPeriod({ period }) {
       });
   }, [navigate, period]);
 
-  console.log(period);
-
   return (
     <Box className={c.container}>
       <Typography variant="h6" mb={2}>

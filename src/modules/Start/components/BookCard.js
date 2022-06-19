@@ -15,11 +15,12 @@ export default function BookCard({ book }) {
         display: "flex",
         flexDirection: "column",
         flex: 1,
-        borderRadius: "10px",
-        p: 3,
+        px: 3,
+        pb: 3,
+        pt: 5,
         maxWidth: 360,
         bgcolor: "#f2f2f2",
-        // zIndex: 10,
+        position: "relative",
         m: 4,
         boxShadow:
           "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
@@ -28,6 +29,9 @@ export default function BookCard({ book }) {
       <MenuBookTwoToneIcon
         style={{
           fill: colorByDifficulty(book.difficulty),
+          position: "absolute",
+          top: -30,
+          fontSize: 60,
           alignSelf: "center",
         }}
       />
@@ -43,10 +47,10 @@ export default function BookCard({ book }) {
         Dificultate: {book.difficulty}
       </Typography>
       <Typography {...typographyProps(13, "flex-start")}>
-        Total puncte: {book.points}
+        Puncte carte: {book.points}
       </Typography>
       <Typography {...typographyProps(13, "flex-start")}>
-        Număr de încercări rămase: {2 - book.attempts}/2
+        Încercări rămase: {2 - book.attempts}
       </Typography>
     </Box>
   ) : (

@@ -126,6 +126,16 @@ export const getCorrectAnswerPercentage = () => {
   };
 };
 
+export const getStudentReport = (username, start, end) => {
+  return {
+    type: "GET_SELF_STUDENT_REPORT",
+    payload: axios.get(
+      `/metrics/studentReport?username=${username}&start=${start}&end=${end}`,
+      config()
+    ),
+  };
+};
+
 export const getSelfQuizCount = () => {
   return {
     type: "GET_SELF_QUIZ_COUNT",
@@ -167,5 +177,15 @@ export const getSelfQuizCountDiff = () => {
   return {
     type: "GET_SELF_QUIZ_COUNT_BY_DIFFICULTY",
     payload: axios.get("/metrics/selfQuizCountByDifficulty", config()),
+  };
+};
+
+export const getSelfStudentReport = (start, end) => {
+  return {
+    type: "GET_SELF_STUDENT_REPORT",
+    payload: axios.get(
+      `/metrics/selfStudentReport?start=${start}&end=${end}`,
+      config()
+    ),
   };
 };

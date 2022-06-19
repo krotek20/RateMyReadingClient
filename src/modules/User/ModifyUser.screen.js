@@ -452,7 +452,6 @@ export default function ModifyUser() {
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error.response.data.message);
         if (error.response.status === 403) {
           logout();
           navigate("/login", { replace: true });

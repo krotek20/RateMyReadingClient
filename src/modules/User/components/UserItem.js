@@ -3,10 +3,18 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  IconButton,
   Typography,
+  Tooltip,
 } from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+import { useTheme } from "@mui/styles";
+import { useNavigate } from "react-router-dom";
 
 export default function UserItem({ user }) {
+  const theme = useTheme();
+  const navigate = useNavigate();
+
   const getRole = (role) => {
     if (role === "ROLE_STUDENT") return "Elev";
     if (role === "ROLE_PROFESSOR") return "Profesor";
@@ -17,7 +25,28 @@ export default function UserItem({ user }) {
   };
 
   return (
-    <ListItem disablePadding>
+    <ListItem
+      disablePadding
+      secondaryAction={
+        user.role === "ROLE_STUDENT" && (
+          <Tooltip title="Istoric puncte" arrow>
+            <IconButton
+              edge="end"
+              aria-label="points history"
+              // onClick={() => {
+              //   navigate(`info`, {
+              //     state: { username: user.username },
+              //   });
+              // }}
+            >
+              <InfoIcon
+                style={{ fill: theme.palette.primary.main, fontSize: 30 }}
+              />
+            </IconButton>
+          </Tooltip>
+        )
+      }
+    >
       <ListItemButton>
         <ListItemText
           primary={

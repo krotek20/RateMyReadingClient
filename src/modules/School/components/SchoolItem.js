@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 
 export default function SchoolItem({ school }) {
-  console.log(school);
   return (
     <ListItem disablePadding>
       <ListItemButton>
