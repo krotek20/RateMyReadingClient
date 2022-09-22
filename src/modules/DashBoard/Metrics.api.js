@@ -126,16 +126,6 @@ export const getCorrectAnswerPercentage = () => {
   };
 };
 
-export const getStudentReport = (username, start, end) => {
-  return {
-    type: "GET_SELF_STUDENT_REPORT",
-    payload: axios.get(
-      `/metrics/studentReport?username=${username}&start=${start}&end=${end}`,
-      config()
-    ),
-  };
-};
-
 export const getSelfQuizCount = () => {
   return {
     type: "GET_SELF_QUIZ_COUNT",

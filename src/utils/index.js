@@ -25,7 +25,6 @@ import {
 import ModifyUser from "../modules/User/ModifyUser.screen";
 import UsersList from "../modules/User/UsersList.screen";
 import SchoolsList from "../modules/School/SchoolsList.screen";
-import UserDetails from "../modules/User/UserDetails.screen";
 
 const dashBoardScreen = {
   name: "Prima pagină",
@@ -107,11 +106,6 @@ const finishScreen = {
   screen: <FinishScreen />,
 };
 
-const infoUserScreen = {
-  href: "user/info",
-  screen: <UserDetails />,
-};
-
 const addUserScreen = {
   name: "Adaugă utilizatori",
   href: "user/add",
@@ -168,7 +162,7 @@ export const superAdminSections = [
   modifyUserScreen,
 ];
 
-export const unIndexedSections = [quizScreen, finishScreen, infoUserScreen];
+export const unIndexedSections = [quizScreen, finishScreen];
 
 export const avatarNames = [
   "Mary Baker",

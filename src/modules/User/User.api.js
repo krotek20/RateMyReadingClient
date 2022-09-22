@@ -52,11 +52,11 @@ export const updateUser = (user) => {
   };
 };
 
-export const deductPoints = (username, points) => {
+export const deductPoints = (username, points, message) => {
   return {
     type: "DEDUCT_POINTS",
     payload: axios.get(
-      `/deductPoints?username=${username}&points=${points}`,
+      `/deductPoints?username=${username}&points=${points}&message=${message}`,
       config()
     ),
   };
@@ -80,5 +80,15 @@ export const getMyInfo = () => {
   return {
     type: "GET_MY_INFO",
     payload: axios.get("/myInfo", config()),
+  };
+};
+
+export const getStudentReport = (username, start, end) => {
+  return {
+    type: "GET_SELF_STUDENT_REPORT",
+    payload: axios.get(
+      `/metrics/studentReport?username=${username}&start=${start}&end=${end}`,
+      config()
+    ),
   };
 };

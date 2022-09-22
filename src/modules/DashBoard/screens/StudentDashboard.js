@@ -31,11 +31,11 @@ export default function StudentDashboard({ period }) {
           <SelfAnswersByDifficulty />
         </Grid>
       </Grid>
-      {/* <Grid container spacing={3} mt={1.5}>
+      <Grid container spacing={3} mt={1.5}>
         <Grid item xs={12} md={12} lg={12}>
           <SelfStudentReport period={period} />
         </Grid>
-      </Grid> */}
+      </Grid>
     </Box>
   );
 }

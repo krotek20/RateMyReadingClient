@@ -9,11 +9,9 @@ import {
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import { useTheme } from "@mui/styles";
-import { useNavigate } from "react-router-dom";
 
-export default function UserItem({ user }) {
+export default function UserItem({ user, infoClick }) {
   const theme = useTheme();
-  const navigate = useNavigate();
 
   const getRole = (role) => {
     if (role === "ROLE_STUDENT") return "Elev";
@@ -33,11 +31,7 @@ export default function UserItem({ user }) {
             <IconButton
               edge="end"
               aria-label="points history"
-              // onClick={() => {
-              //   navigate(`info`, {
-              //     state: { username: user.username },
-              //   });
-              // }}
+              onClick={infoClick}
             >
               <InfoIcon
                 style={{ fill: theme.palette.primary.main, fontSize: 30 }}

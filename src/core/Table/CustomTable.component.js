@@ -9,11 +9,37 @@ import {
   TableFooter,
   TablePagination,
 } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import TablePaginationActions from "./TablePaginationActions.component";
 
-export default function CustomTable({ data, header }) {
+const useStyles = makeStyles((theme) => ({
+  tableCellGreen: {
+    color: "green",
+  },
+  tableCellRed: {
+    color: "red",
+  },
+  tableCellHeaderFooter: {
+    color: theme.palette.primary.contrastText,
+    "$hover:hover &": {
+      transition: "all 0.2s ease-in-out",
+      color: theme.palette.secondary.contrastText,
+    },
+  },
+  tableRow: {
+    background: theme.palette.primary.main,
+    "&$hover:hover": {
+      transition: "all 0.2s ease-in-out",
+      background: theme.palette.secondary.main,
+    },
+  },
+  hover: {},
+}));
+
+export default function CustomTable({ data, header, colorful }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const c = useStyles();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -28,10 +54,17 @@ export default function CustomTable({ data, header }) {
     <TableContainer sx={{ my: 2 }}>
       <Table aria-label="table">
         <TableHead>
-          <TableRow>
-            <TableCell>#</TableCell>
+          <TableRow classes={{ hover: c.hover }} className={c.tableRow} hover>
+            <TableCell className={c.tableCellHeaderFooter} scope="row">
+              #
+            </TableCell>
             {header.map((head) => (
-              <TableCell key={head} align="center">
+              <TableCell
+                key={head}
+                align="center"
+                className={c.tableCellHeaderFooter}
+                scope="row"
+              >
                 {head}
               </TableCell>
             ))}
@@ -42,12 +75,22 @@ export default function CustomTable({ data, header }) {
             ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : data
           ).map((row, index) => (
-            <TableRow key={row.name}>
+            <TableRow key={index} hover>
               <TableCell component="th" scope="row">
                 {index + 1}
               </TableCell>
-              {Object.keys(row).map((key) => (
-                <TableCell key={row[key]} align="center">
+              {Object.keys(row).map((key, index) => (
+                <TableCell
+                  key={index}
+                  align="center"
+                  className={
+                    index === 0 && colorful
+                      ? row[key] >= 0
+                        ? c.tableCellGreen
+                        : c.tableCellRed
+                      : ""
+                  }
+                >
                   {row[key]}
                 </TableCell>
               ))}
@@ -55,7 +98,7 @@ export default function CustomTable({ data, header }) {
           ))}
         </TableBody>
         <TableFooter>
-          <TableRow>
+          <TableRow hover>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { value: -1, label: "Toate" }]}
               colSpan={5}

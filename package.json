@@ -25,6 +25,7 @@
     "boring-avatars": "^1.6.1",
     "date-fns": "^2.28.0",
     "file-saver": "^2.0.5",
+    "firebase": "^9.9.4",
     "fontsource-roboto": "^4.0.0",
     "html2canvas": "^1.4.1",
     "jwt-decode": "^3.1.2",

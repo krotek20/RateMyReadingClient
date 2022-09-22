@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
-import { Box, Checkbox, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Progress from "../../../core/Charts/Progress.component";
 import { getActiveStudents, getTotalStudents } from "../Metrics.api";
 import { useNavigate } from "react-router-dom";
-import BeenhereOutlinedIcon from "@mui/icons-material/BeenhereOutlined";
-import BeenhereIcon from "@mui/icons-material/Beenhere";
+// import BeenhereOutlinedIcon from "@mui/icons-material/BeenhereOutlined";
+// import BeenhereIcon from "@mui/icons-material/Beenhere";
 import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
 
 const useStyles = makeStyles((theme) => ({

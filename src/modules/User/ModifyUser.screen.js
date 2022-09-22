@@ -440,7 +440,8 @@ export default function ModifyUser() {
     const data = new FormData(event.currentTarget);
     const username = data.get("username");
     const points = data.get("points");
-    deductPoints(username, points)
+    const message = data.get("message");
+    deductPoints(username, points, message)
       .payload.then((resp) => {
         if (resp.status === 200) {
           handleAlert(
@@ -503,6 +504,17 @@ export default function ModifyUser() {
         id="points_change"
         autoComplete="extract-points"
         InputProps={{ inputProps: { min: 0 } }}
+      />
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        multiline
+        name="message"
+        label="Descriere / Motiv"
+        id="description_reason"
+        autoComplete="description"
+        rows={3}
       />
       {loading ? (
         <LoadingButton
