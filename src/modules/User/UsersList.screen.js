@@ -1,23 +1,14 @@
 import React, { useEffect, useState, useMemo } from "react";
-import {
-  Box,
-  Skeleton,
-  Typography,
-  Stack,
-  List,
-  Divider,
-  Grid,
-  Fade,
-} from "@mui/material";
+import { Box, Skeleton, Typography, Stack, Grid, Fade } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getAllUsers } from "./User.api";
 import { localeIncludes } from "../../utils";
 import { useDecode } from "../../hooks/useDecode";
 import Search from "../../core/Search/Search.component";
-import UserItem from "./components/UserItem";
 import Roles from "../../core/AutoComplete/Roles.component";
 import { logout } from "../../core/NavigationMenu/Logout.api";
 import StudentPointsHistory from "./components/StudentPointsHistory";
+import UserList from "./components/UserList";
 
 export default function UsersList() {
   const [loading, isLoading] = useState(false);
@@ -77,6 +68,19 @@ export default function UsersList() {
       });
   }, [navigate]);
 
+  const userInfoHandler = (user) => {
+    if (animation) {
+      setAnimation(false);
+      setTimeout(() => {
+        setAnimation(true);
+        setShowInfo(user);
+      }, 500);
+    } else {
+      setAnimation(true);
+      setShowInfo(user);
+    }
+  };
+
   return (
     <Grid
       container
@@ -127,39 +131,7 @@ export default function UsersList() {
           </Box>
         )}
         {!loading ? (
-          <List
-            dense
-            sx={{
-              width: "100%",
-              maxWidth: 360,
-              bgcolor: "background.paper",
-              position: "relative",
-              overflow: "auto",
-              maxHeight: 300,
-              marginBottom: "15px",
-            }}
-          >
-            {filteredUsers.map((user, index) => (
-              <Box key={index}>
-                <UserItem
-                  user={user}
-                  infoClick={() => {
-                    if (animation) {
-                      setAnimation(false);
-                      setTimeout(() => {
-                        setAnimation(true);
-                        setShowInfo(user);
-                      }, 500);
-                    } else {
-                      setAnimation(true);
-                      setShowInfo(user);
-                    }
-                  }}
-                />
-                <Divider variant="middle" />
-              </Box>
-            ))}
-          </List>
+          <UserList users={filteredUsers} infoClick={userInfoHandler} />
         ) : (
           <Stack spacing={1} mt={2} mb={1}>
             <Skeleton

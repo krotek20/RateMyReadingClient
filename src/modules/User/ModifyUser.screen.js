@@ -15,13 +15,19 @@ import SchoolIcon from "@mui/icons-material/School";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import NumbersIcon from "@mui/icons-material/Numbers";
 import VerticalTabs from "../../core/Tabs/VerticalTabs.component";
-import { deductPoints, resetPassword, updateUser } from "./User.api";
+import {
+  deductPoints,
+  getAllUsers,
+  resetPassword,
+  updateUser,
+} from "./User.api";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
-import { LoadingButton } from "@mui/lab";
 import { useDecode } from "../../hooks/useDecode";
 import Schools from "../../core/AutoComplete/Schools.component";
 import { logout } from "../../core/NavigationMenu/Logout.api";
+import CustomLoadingButton from "../../core/LoadingButton/CustomLoadingButton";
+import UsernameField from "../../core/AutoComplete/Usernames.component";
 
 const mailFormat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -30,10 +36,8 @@ export default function ModifyUser() {
   const [newSchool, setNewSchool] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentRole, setCurrentRole] = useState(0);
-  const [validate, setValidate] = useState({
-    username: true,
-    email: true,
-  });
+  const [usernames, setUsernames] = useState();
+  const [emailIsValid, setEmailIsValid] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const decode = useDecode();
@@ -41,6 +45,19 @@ export default function ModifyUser() {
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, { variant });
   };
+
+  useEffect(() => {
+    getAllUsers()
+      .payload.then((response) => {
+        setUsernames(response.data.map((data) => data.username));
+      })
+      .catch((error) => {
+        if (error.response.status === 403) {
+          logout();
+          navigate("/login", { replace: true });
+        }
+      });
+  }, [navigate]);
 
   useEffect(() => {
     const user = decode();
@@ -78,7 +95,7 @@ export default function ModifyUser() {
           logout();
           navigate("/login", { replace: true });
         } else {
-          setValidate({ ...validate, username: false });
+          handleAlert("error", "A apărut o eroare! Încercați din nou.");
         }
       });
   };
@@ -95,33 +112,14 @@ export default function ModifyUser() {
       <Typography fontSize={13}>
         Altfel, daca contul acestuia este inactiv atunci va fi activat
       </Typography>
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        id="username_inactivate"
-        label="Numele utilizatorului"
-        name="username"
-        autoComplete="user"
-        onChange={() => setValidate({ ...validate, username: true })}
-        error={!validate.username}
-        helperText={
-          validate.username ? "" : "Nu exista un utilizator cu acest nume"
-        }
-        autoFocus
-      />
+      <UsernameField usernames={usernames} />
       {loading ? (
-        <LoadingButton
-          sx={{ mt: 1.5 }}
-          fullWidth
-          loading
-          loadingPosition="start"
+        <CustomLoadingButton
           startIcon={<PersonIcon />}
           endIcon={<PersonOffIcon />}
-          variant="contained"
         >
           Activează / Inactivează
-        </LoadingButton>
+        </CustomLoadingButton>
       ) : (
         <Button
           sx={{ mt: 1.5 }}
@@ -169,7 +167,7 @@ export default function ModifyUser() {
               "Nu aveți acces să schimbați parola acestui utilizator!"
             );
           } else {
-            setValidate({ ...validate, username: false });
+            handleAlert("error", "A apărut o eroare! Încercați din nou.");
           }
         }
       });
@@ -180,21 +178,7 @@ export default function ModifyUser() {
       <Typography fontSize={13}>
         Introduceți numele utilizatorului căruia doriți să îi resetați parola!
       </Typography>
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        id="username_reset_password"
-        label="Numele utilizatorului"
-        name="username"
-        autoComplete="user"
-        onChange={() => setValidate({ ...validate, username: true })}
-        error={!validate.username}
-        helperText={
-          validate.username ? "" : "Nu exista un utilizator cu acest nume"
-        }
-        autoFocus
-      />
+      <UsernameField usernames={usernames} />
       <TextField
         margin="normal"
         required={!randomGenerate}
@@ -218,16 +202,9 @@ export default function ModifyUser() {
         />
       </FormGroup>
       {loading ? (
-        <LoadingButton
-          sx={{ mt: 1.5 }}
-          fullWidth
-          loading
-          loadingPosition="start"
-          startIcon={<LockResetIcon />}
-          variant="contained"
-        >
+        <CustomLoadingButton startIcon={<LockResetIcon />}>
           Resetează
-        </LoadingButton>
+        </CustomLoadingButton>
       ) : (
         <Button
           sx={{ mt: 1.5 }}
@@ -264,7 +241,7 @@ export default function ModifyUser() {
           logout();
           navigate("/login", { replace: true });
         } else {
-          setValidate({ ...validate, username: false });
+          handleAlert("error", "A apărut o eroare! Încercați din nou.");
         }
       });
   };
@@ -277,21 +254,7 @@ export default function ModifyUser() {
       <Typography fontSize={13}>
         Puteți să adăugați o școală nouă sau să alegeți una deja salvată
       </Typography>
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        id="username_change_school"
-        label="Numele utilizatorului"
-        name="username"
-        autoComplete="user"
-        onChange={() => setValidate({ ...validate, username: true })}
-        error={!validate.username}
-        helperText={
-          validate.username ? "" : "Nu exista un utilizator cu acest nume"
-        }
-        autoFocus
-      />
+      <UsernameField usernames={usernames} />
       {newSchool ? (
         <TextField
           margin="normal"
@@ -318,16 +281,9 @@ export default function ModifyUser() {
         />
       </FormGroup>
       {loading ? (
-        <LoadingButton
-          sx={{ mt: 1.5 }}
-          fullWidth
-          loading
-          loadingPosition="start"
-          startIcon={<SchoolIcon />}
-          variant="contained"
-        >
+        <CustomLoadingButton startIcon={<SchoolIcon />}>
           Schimbă școala
-        </LoadingButton>
+        </CustomLoadingButton>
       ) : (
         <Button
           sx={{ mt: 1.5 }}
@@ -349,7 +305,7 @@ export default function ModifyUser() {
     const username = data.get("username");
     const email = data.get("email");
     if (!email.match(mailFormat)) {
-      setValidate({ ...validate, email: false });
+      setEmailIsValid(false);
       setLoading(false);
     } else {
       updateUser({ username: username, email: email })
@@ -368,7 +324,7 @@ export default function ModifyUser() {
             logout();
             navigate("/login", { replace: true });
           } else {
-            setValidate({ ...validate, username: false });
+            handleAlert("error", "A apărut o eroare! Încercați din nou.");
           }
         });
     }
@@ -380,21 +336,7 @@ export default function ModifyUser() {
         Introduceți numele utilizatorului căruia doriți să îi schimbați
         email-ul!
       </Typography>
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        id="username_change_email"
-        label="Numele utilizatorului"
-        name="username"
-        autoComplete="user"
-        onChange={() => setValidate({ ...validate, username: true })}
-        error={!validate.username}
-        helperText={
-          validate.username ? "" : "Nu exista un utilizator cu acest nume"
-        }
-        autoFocus
-      />
+      <UsernameField usernames={usernames} />
       <TextField
         margin="normal"
         required
@@ -404,24 +346,16 @@ export default function ModifyUser() {
         type="email"
         id="email_change"
         autoComplete="new-email"
-        onChange={() => setValidate({ ...validate, email: true })}
-        error={!validate.email}
-        helperText={validate.email ? "" : "Email invalid: example@yahoo.com"}
+        onChange={() => setEmailIsValid(true)}
+        error={!emailIsValid}
+        helperText={emailIsValid ? "" : "Email invalid: example@yahoo.com"}
       />
       {loading ? (
-        <LoadingButton
-          sx={{ mt: 1.5 }}
-          fullWidth
-          loading
-          loadingPosition="start"
-          startIcon={<AlternateEmailIcon />}
-          variant="contained"
-        >
+        <CustomLoadingButton startIcon={<AlternateEmailIcon />}>
           Schimbă email
-        </LoadingButton>
+        </CustomLoadingButton>
       ) : (
         <Button
-          id="change-email-button"
           sx={{ mt: 1.5 }}
           variant="contained"
           fullWidth
@@ -458,7 +392,7 @@ export default function ModifyUser() {
           navigate("/login", { replace: true });
         } else {
           if (error.response.data.message === "User not found") {
-            setValidate({ ...validate, username: false });
+            handleAlert("error", "Nu există un utilizator cu acest nume!");
           } else if (error.response.data.message === "Puncte insuficiente") {
             handleAlert(
               "error",
@@ -479,21 +413,7 @@ export default function ModifyUser() {
       <Typography fontSize={13}>
         Introduceți numele utilizatorului căruia doriți sa îi extrageți puncte
       </Typography>
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        id="username_extract_points"
-        label="Numele utilizatorului"
-        name="username"
-        autoComplete="user"
-        onChange={() => setValidate({ ...validate, username: true })}
-        error={!validate.username}
-        helperText={
-          validate.username ? "" : "Nu exista un utilizator cu acest nume"
-        }
-        autoFocus
-      />
+      <UsernameField usernames={usernames} />
       <TextField
         margin="normal"
         required
@@ -517,16 +437,9 @@ export default function ModifyUser() {
         rows={3}
       />
       {loading ? (
-        <LoadingButton
-          sx={{ mt: 1.5 }}
-          fullWidth
-          loading
-          loadingPosition="start"
-          startIcon={<NumbersIcon />}
-          variant="contained"
-        >
+        <CustomLoadingButton startIcon={<NumbersIcon />}>
           Extrage puncte
-        </LoadingButton>
+        </CustomLoadingButton>
       ) : (
         <Button
           sx={{ mt: 1.5 }}

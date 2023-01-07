@@ -29,6 +29,7 @@ import PublishIcon from "@mui/icons-material/Publish";
 import SendIcon from "@mui/icons-material/Send";
 import SaveIcon from "@mui/icons-material/Save";
 import { logout } from "../../core/NavigationMenu/Logout.api";
+import BookDetails from "./components/BookDetails";
 
 export default function AddQuestions() {
   const [books, setBooks] = useState([]);
@@ -280,15 +281,6 @@ export default function AddQuestions() {
     if (questions.length >= 5 && currentBook) {
       let index = 1;
       for (let question of questions) {
-        // if (question.type === 0) {
-        //   dispatch(
-        //     updateQuestion({
-        //       ...question,
-        //       answer1: "Adevarat",
-        //       answer2: "Fals",
-        //     })
-        //   );
-        // }
         if (!checkQuestion(question)) {
           handleAlert(
             "error",
@@ -351,26 +343,12 @@ export default function AddQuestions() {
       }}
     >
       <BookAutoComplete books={books} bookSelection={handleBookSelection} />
-      {currentBook ? (
-        <Box
-          mt={2}
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Typography fontSize={13} color="secondary.main">
-            Autor: {currentBook.author}
-          </Typography>
-          <Typography fontSize={13} color="secondary.main">
-            Dificultate: {currentBook.difficulty}
-          </Typography>
-          <Typography fontSize={13} color="secondary.main">
-            Puncte: {currentBook.points}
-          </Typography>
-        </Box>
-      ) : (
-        <></>
+      {currentBook && (
+        <BookDetails
+          author={currentBook.author}
+          difficulty={currentBook.difficulty}
+          points={currentBook.points}
+        />
       )}
       <Box sx={{ mt: 2 }}>
         <Typography sx={{ fontSize: 13 }}>
@@ -378,7 +356,8 @@ export default function AddQuestions() {
         </Typography>
       </Box>
       <Typography sx={{ fontSize: 13 }}>CTRL + SHIFT + S</Typography>
-      {currentBook && questions.length !== 0 ? (
+      {currentBook &&
+        questions.length !== 0 &&
         questions.map((question, index) => (
           <Question
             key={question.id}
@@ -387,10 +366,7 @@ export default function AddQuestions() {
             onDelete={handleOnDelete}
             counter={index + 1}
           />
-        ))
-      ) : (
-        <></>
-      )}
+        ))}
       <Box
         sx={{
           display: "flex",

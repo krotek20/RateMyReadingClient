@@ -35,10 +35,7 @@ const Copyright = (props) => {
       {...props}
     >
       {"Copyright © "}
-      <Link
-        color="inherit"
-        href="https://caravanalecturiireact-gu67xo22hq-lm.a.run.app"
-      >
+      <Link color="inherit" href="https://caravanalecturii.ro/">
         Caravana Lecturii
       </Link>
       {` ${new Date().getFullYear()}`}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, Fragment } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
 import { Route, NavLink, useNavigate, Routes } from "react-router-dom";
 import { withStyles, useTheme } from "@mui/styles";
@@ -96,7 +96,7 @@ const MyToolbar = withStyles(styles)(
     currentPoints,
     totalPoints,
   }) => (
-    <Fragment>
+    <>
       <AppBar position="fixed">
         <Toolbar>
           <Tooltip title="Meniu" arrow>
@@ -152,7 +152,7 @@ const MyToolbar = withStyles(styles)(
         </Toolbar>
       </AppBar>
       <div className={classes.toolbarMargin} />
-    </Fragment>
+    </>
   )
 );
 

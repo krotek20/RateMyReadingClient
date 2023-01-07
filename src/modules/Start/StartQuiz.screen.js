@@ -85,6 +85,26 @@ export default function StartQuiz() {
     ];
   };
 
+  const errorMessage = (error) => {
+    const [message, minutes] = error.response.data.message.split(":");
+    let time;
+    if (minutes) {
+      time = convertToHoursAndMinutes(minutes);
+    }
+    handleAlert(
+      "error",
+      message === "Intrebari insuficiente"
+        ? "Nu există suficiente întrebări pentru a începe un chestionar pe această carte!"
+        : message === "Maxim quizuri pe zi atins"
+        ? "Limită atinsă! Ai voie sa rezolvi maxim 3 chestionare pe zi"
+        : message === "Maxim incercari atins"
+        ? "Ai atins numărul maxim de încercări pentru această carte! (maxim 2)"
+        : message === "Prea putin timp intre incercari"
+        ? `Poți completa din nou acest chestionar în ${time}`
+        : "Server error"
+    );
+  };
+
   const generateQuiz = () => {
     if (book !== null) {
       getId()
@@ -108,24 +128,7 @@ export default function StartQuiz() {
             })
             .catch((error) => {
               if (error.response.status !== 403) {
-                const [message, minutes] =
-                  error.response.data.message.split(":");
-                let time;
-                if (minutes) {
-                  time = convertToHoursAndMinutes(minutes);
-                }
-                handleAlert(
-                  "error",
-                  message === "Intrebari insuficiente"
-                    ? "Nu există suficiente întrebări pentru a începe un chestionar pe această carte!"
-                    : message === "Maxim quizuri pe zi atins"
-                    ? "Limită atinsă! Ai voie sa rezolvi maxim 3 chestionare pe zi"
-                    : message === "Maxim incercari atins"
-                    ? "Ai atins numărul maxim de încercări pentru această carte! (maxim 2)"
-                    : message === "Prea putin timp intre incercari"
-                    ? `Poți completa din nou acest chestionar în ${time}`
-                    : "Server error"
-                );
+                errorMessage(error);
               } else {
                 logout();
                 navigate("/login", { replace: true });

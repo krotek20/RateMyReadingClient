@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import BookList from "../Book/components/BookList.component";
+import BookList from "./components/BookList";
 import XLSX from "xlsx";
 import Search from "../../core/Search/Search.component";
 import Legend from "../../core/Legend/Legend.component";

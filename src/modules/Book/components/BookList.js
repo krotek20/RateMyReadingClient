@@ -1,6 +1,6 @@
 import React from "react";
 import List from "@mui/material/List";
-import Book from "./Book.component";
+import Book from "./Book";
 
 export default function BookList({ books, onDelete }) {
   return (
