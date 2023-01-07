@@ -173,7 +173,7 @@ export default function AddQuestions() {
           if (question[2] === "Q") {
             if (answerCount === 3 || answerCount === 5) {
               newQuestion.type = answerCount === 3 ? 0 : 1;
-              createNewQuestion({ ...newQuestion });
+              createNewQuestion(newQuestion);
               newQuestion = { ...initialQuestion, bookId: bookId };
             }
             newQuestion.question = question[1].trim();
@@ -187,13 +187,13 @@ export default function AddQuestions() {
             if (index === fileData.length - 1) {
               if (answerCount === 3 || answerCount === 5) {
                 newQuestion.type = answerCount === 3 ? 0 : 1;
-                createNewQuestion({ ...newQuestion });
+                createNewQuestion(newQuestion);
               }
             }
           }
         });
         newQuestion.type = answerCount === 3 ? 0 : 1;
-        createNewQuestion({ ...newQuestion });
+        createNewQuestion(newQuestion);
         handleAlert("success", "Întrebările au fost incărcate cu succes!");
       }
     };

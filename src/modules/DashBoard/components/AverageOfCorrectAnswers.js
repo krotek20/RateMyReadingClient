@@ -50,8 +50,6 @@ export default function AverageOfCorrectAnswers() {
         if (response.status === 200) {
           const newData = [];
 
-          console.log(response.data);
-
           response.data.forEach((resp) => {
             const difficulty =
               resp.difficulty.charAt(0).toUpperCase() +
