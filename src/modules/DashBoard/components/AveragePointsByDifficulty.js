@@ -58,7 +58,7 @@ export default function AveragePointsByDifficulty() {
               resp.difficulty.charAt(0).toUpperCase() +
               resp.difficulty.slice(1);
             newData.push({
-              count: resp.count,
+              count: resp.count.toFixed(2),
               difficulty: difficulty,
               color: colorByDifficulty(resp.difficulty),
             });
