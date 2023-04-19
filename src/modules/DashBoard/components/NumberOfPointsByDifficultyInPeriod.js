@@ -64,6 +64,7 @@ export default function NumberOfPointsByDifficultyInPeriod({ period }) {
             const difficulty =
               resp.difficulty.charAt(0).toUpperCase() +
               resp.difficulty.slice(1);
+            console.log(resp.count);
             newData.push({
               count: resp.count,
               difficulty: difficulty,

@@ -37,7 +37,7 @@ export default function ForgotPassword() {
           }
         }
       })
-      .catch((error) => {
+      .catch(() => {
         handleAlert("error", "Numele de utilizator nu este valid");
         setLoading(false);
       });

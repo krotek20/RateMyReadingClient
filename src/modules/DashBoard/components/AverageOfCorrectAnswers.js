@@ -7,7 +7,7 @@ import { makeStyles } from "@mui/styles";
 import Progress from "../../../core/Charts/Progress.component";
 import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
     display: "flex",
     justifyContent: "center",

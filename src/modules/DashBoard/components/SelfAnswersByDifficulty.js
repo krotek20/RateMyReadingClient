@@ -6,7 +6,7 @@ import { colorByDifficulty } from "../../../utils";
 import { makeStyles } from "@mui/styles";
 import Progress from "../../../core/Charts/Progress.component";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
     display: "flex",
     flexDirection: "column",

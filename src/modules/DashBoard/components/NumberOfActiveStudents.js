@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 // import BeenhereIcon from "@mui/icons-material/Beenhere";
 import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
     display: "flex",
     justifyContent: "center",
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NumberOfActiveStudents({ onCollectData }) {
+export default function NumberOfActiveStudents(/* { onCollectData } */) {
   const [active, setActive] = useState(0);
   const [total, setTotal] = useState(0);
 

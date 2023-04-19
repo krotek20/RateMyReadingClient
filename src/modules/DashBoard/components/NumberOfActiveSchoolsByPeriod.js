@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
 import PeriodView from "../../../core/Text/PeriodView.component";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
     display: "flex",
     justifyContent: "center",

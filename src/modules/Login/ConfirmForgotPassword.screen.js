@@ -16,7 +16,7 @@ export default function ConfirmForgotPassword() {
           navigate("/login", { state: true });
         }
       })
-      .catch((error) => {
+      .catch(() => {
         navigate("/login", { state: false });
       });
   }, [navigate]);

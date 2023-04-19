@@ -11,6 +11,8 @@
     "@mui/lab": "^5.0.0-alpha.69",
     "@mui/material": "^5.0.6",
     "@mui/styles": "^5.0.2",
+    "@mui/x-date-pickers": "^6.2.0",
+    "@mui/x-date-pickers-pro": "^6.2.0",
     "@nivo/bar": "^0.79.1",
     "@nivo/core": "^0.79.0",
     "@nivo/pie": "^0.79.1",
@@ -32,11 +34,11 @@
     "material-ui-image": "^3.3.2",
     "notistack": "^2.0.2",
     "pdfkit": "^0.13.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-redux": "^7.2.5",
     "react-router-dom": "^6.0.2",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.1",
     "react-transition-group": "^4.4.2",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.1",
@@ -49,7 +51,9 @@
     "start": "react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src/**/*.js",
+    "lint-fix": "eslint src/**/*.js --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -70,6 +74,7 @@
     ]
   },
   "devDependencies": {
-    "@welldone-software/why-did-you-render": "^6.2.1"
+    "@welldone-software/why-did-you-render": "^6.2.1",
+    "eslint-plugin-react": "^7.32.2"
   }
 }

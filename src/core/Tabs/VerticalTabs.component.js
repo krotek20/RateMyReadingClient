@@ -58,7 +58,7 @@ export default function VerticalTabs({ tabs }) {
         sx={{ borderRight: 1, borderColor: "divider" }}
       >
         {tabs.map((tab, index) => (
-          <Tab label={tab.label} {...a11yProps(index)} />
+          <Tab key={index} label={tab.label} {...a11yProps(index)} />
         ))}
       </Tabs>
       {tabs.map((tab, index) => (

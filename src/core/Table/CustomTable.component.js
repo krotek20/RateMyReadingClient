@@ -75,9 +75,9 @@ export default function CustomTable({ data, header, colorful }) {
             ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : data
           ).map((row, index) => (
-            <TableRow key={index} hover>
+            <TableRow key={index + page * rowsPerPage + 1} hover>
               <TableCell component="th" scope="row">
-                {index + 1}
+                {index + page * rowsPerPage + 1}
               </TableCell>
               {Object.keys(row).map((key, index) => (
                 <TableCell

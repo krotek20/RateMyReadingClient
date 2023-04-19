@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Tooltip, Button, TextField, Typography } from "@mui/material";
-import DatePicker from "@mui/lab/DatePicker";
+import { DatePicker } from "@mui/x-date-pickers";
 import { register, studentBatchRegister } from "../User.api";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";

@@ -5,7 +5,7 @@ import Table from "../../../core/Table/CustomTable.component";
 import { getStudentReport } from "../User.api";
 import { useNavigate } from "react-router-dom";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
     display: "flex",
     justifyContent: "center",

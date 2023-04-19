@@ -25,7 +25,7 @@ export const ExportCSV = ({ csvData, fileName }) => {
       sx={{ mb: 3 }}
       variant="contained"
       startIcon={<FileDownloadIcon />}
-      onClick={(e) => exportToCSV(csvData, fileName)}
+      onClick={() => exportToCSV(csvData, fileName)}
     >
       Export Excel
     </Button>

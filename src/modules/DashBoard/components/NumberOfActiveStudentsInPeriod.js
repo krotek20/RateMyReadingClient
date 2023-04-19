@@ -9,7 +9,7 @@ import DownloadFab from "../../../core/DownloadButton/DownloadFab.component";
 // import BeenhereIcon from "@mui/icons-material/Beenhere";
 import PeriodView from "../../../core/Text/PeriodView.component";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
     display: "flex",
     justifyContent: "center",
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NumberOfActiveStudentsInPeriod({
   period,
-  onCollectData,
+  // onCollectData,
 }) {
   const [active, setActive] = useState(0);
   const [total, setTotal] = useState(0);

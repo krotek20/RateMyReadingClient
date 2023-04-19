@@ -6,7 +6,7 @@ import Table from "../../../core/Table/CustomTable.component";
 // import PeriodView from "../../../core/Text/PeriodView.component";
 import { Box, Typography } from "@mui/material";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
     display: "flex",
     justifyContent: "center",
