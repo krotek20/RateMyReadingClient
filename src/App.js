@@ -13,50 +13,68 @@ import { setColors } from "./redux/Color/Color";
 import { ro } from "date-fns/locale";
 axios.defaults.baseURL = AppConfig;
 
-const getLightness = () => {
-  return 20 + 50 * Math.random();
-};
+// const getLightness = () => {
+//   return 20 + 50 * Math.random();
+// };
 
-const getColor = () => {
-  return 360 * Math.random();
-};
+// const getColor = () => {
+//   return 360 * Math.random();
+// };
 
-const getSaturation = (lightness) => {
-  if (!lightness) {
-    lightness = 20;
-  }
-  return 100 - lightness + 20 * Math.random();
-};
+// const getSaturation = (lightness) => {
+//   if (!lightness) {
+//     lightness = 20;
+//   }
+//   return 100 - lightness + 20 * Math.random();
+// };
 
-const randomColor = () => {
-  const color = getColor();
-  const lightness = getLightness();
-  const saturation = getSaturation(lightness);
+const colorPaletteHSL = [
+  ["hsl(170, 45%, 45%)", "hsl(170, 45%, 22%)"],
+  ["hsl(282, 52%, 26%)", "hsl(282, 52%, 13%)"],
+  ["hsl(40, 100%, 60%)", "hsl(40, 100%, 30%)"],
+  ["hsl(200, 77%, 36%)", "hsl(200, 77%, 18%)"],
+];
 
-  // return random color and his darken version
-  return [
-    `hsl(${color}, ${saturation}%, ${lightness}%)`,
-    `hsl(${color}, ${saturation}%, ${lightness / 2}%)`,
-  ];
-};
+// const randomColor = () => {
+//   // const color = getColor();
+//   // const lightness = getLightness();
+//   // const saturation = getSaturation(lightness);
+//   const randomValue = Math.floor(Math.random() * colorPaletteHSL.length);
+
+//   // return random color and his darken version
+//   return colorPaletteHSL[randomValue];
+// };
 
 const App = () => {
-  const [palette, setPalette] = useState(randomColor());
+  const [randomValue, setRandomValue] = useState(
+    Math.floor(Math.random() * colorPaletteHSL.length)
+  );
   const dispatch = useDispatch();
 
   const theme = useMemo(() => {
-    dispatch(setColors({ primary: palette[0], secondary: palette[1] }));
+    dispatch(
+      setColors({
+        primary: colorPaletteHSL[randomValue][0],
+        secondary: colorPaletteHSL[randomValue][1],
+      })
+    );
     return createTheme({
       palette: {
-        primary: { main: palette[0] },
-        secondary: { main: palette[1] },
-        text: { primary: palette[1] },
+        primary: { main: colorPaletteHSL[randomValue][0] },
+        secondary: { main: colorPaletteHSL[randomValue][1] },
+        text: { primary: colorPaletteHSL[randomValue][1] },
       },
     });
-  }, [palette, dispatch]);
+  }, [randomValue, dispatch]);
 
   const setRandomPrimary = () => {
-    setPalette(randomColor());
+    setRandomValue((prevState) => {
+      let random = Math.floor(Math.random() * colorPaletteHSL.length);
+      while (random === prevState) {
+        random = Math.floor(Math.random() * colorPaletteHSL.length);
+      }
+      return random;
+    });
   };
 
   return (

@@ -12,7 +12,7 @@ export default function Legend({ onClick, clickable }) {
         <CircleIcon
           sx={{ color: "#3FA796", transform: "scale(0.7)" }}
         ></CircleIcon>
-        <p className="Text">Începtător</p>
+        <p className="Text">Începător</p>
       </div>
       <div
         className={`Container ${clickable ? "clickable" : ""}`}

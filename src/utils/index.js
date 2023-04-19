@@ -41,12 +41,12 @@ const studentReportScreen = {
   screen: <DashBoard />,
 };
 
-const startQuiz = {
-  name: "Începe chestionar",
-  href: "start",
-  icon: <PlayCircleOutlineIcon />,
-  screen: <StartQuiz />,
-};
+// const startQuiz = {
+//   name: "Începe chestionar",
+//   href: "start",
+//   icon: <PlayCircleOutlineIcon />,
+//   screen: <StartQuiz />,
+// };
 
 const startQuizStudent = {
   name: "Chestionare",
@@ -130,7 +130,6 @@ export const childSections = [startQuizStudent, studentReportScreen];
 
 export const teacherSections = [
   dashBoardScreen,
-  startQuiz,
   divider,
   addUserScreen,
   modifyUserScreen,
@@ -140,7 +139,6 @@ export const contributorSections = [addQuestionsScreen];
 
 export const localAdminSections = [
   dashBoardScreen,
-  startQuiz,
   divider,
   usersScreen,
   addUserScreen,
@@ -149,7 +147,6 @@ export const localAdminSections = [
 
 export const superAdminSections = [
   dashBoardScreen,
-  startQuiz,
   divider,
   booksScreen,
   usersScreen,
